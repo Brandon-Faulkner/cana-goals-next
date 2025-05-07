@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Color Tokens */
+  --color-white: #ffffff;
+  --color-white-light: #f8f8f8;
+  --color-white-off: #e6e6e6;
+  --color-black: #2d2d2d;
+  --color-black-light: #3d3d3d;
+  --color-black-dark: #1d1d1d;
+  --color-green: #00aa63;
+  --color-green-alt: #4fc3a1;
+  --color-red: #d53d3d;
+  --color-blue: #324960;
+  --color-blue-light: #b3c8cf;
+  --color-gray: #778899;
+  --color-gray-light: #b6b8bd;
+  --color-gray-dark: #494d59;
+  --color-gray-hover: #6d717a;
+  --color-status-blue: #1679AB;
+  --color-status-orange: #FF7F3E;
+  --color-placeholder: rgba(0, 0, 0, 0.5);
+  --color-placeholder-light: rgba(255, 255, 255, 0.5);
+  --color-menu: rgba(45, 45, 45, .8);
+  --color-menu-light: rgba(255, 255, 255, .8);
+
+  /* Theme Tokens */
+  --color-bg: var(--color-white);
+  --color-fg: var(--color-black);
+  --table-odd: var(--color-white-light);
+  --table-even: var(--color-white-off);
+  --scrollbar: var(--color-gray-light);
+  --context-menu-bg: var(--color-white-light);
+  --placeholder-text: var(--color-placeholder-light);
+  --h2-placeholder: var(--color-placeholder);
+  --menu-background: var(--color-menu-light);
+
+  /* Font Weights */
+  --font-weight-default: 450;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer theme {
+  .dark {
+    --color-bg: var(--color-black);
+    --color-fg: var(--color-white);
+    --table-odd: var(--color-gray);
+    --table-even: var(--color-blue-light);
+    --scrollbar: var(--color-gray-dark);
+    --context-menu-bg: var(--color-black-light);
+    --placeholder-text: var(--color-placeholder);
+    --h2-placeholder: var(--color-placeholder-light);
+    --menu-background: var(--color-menu);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    font-family: var(--font-futura), sans-serif;
+  }
 }
