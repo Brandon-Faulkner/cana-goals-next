@@ -1,5 +1,7 @@
-import localFont from 'next/font/local';
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/contexts/AuthProvider";
+import localFont from 'next/font/local';
 import Header from '@/components/nav/Header';
 
 const futura = localFont({
@@ -68,14 +70,18 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${futura.variable} antialiased`}>
-        <div className='flex flex-col h-screen'>
-          <Header />
-          <main className='flex-grow overflow-auto'>
-            {children}
-          </main>
-        </div>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${futura.variable} font-default antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <div className='flex flex-col h-screen'>
+              <Header />
+              <main className='flex-grow overflow-auto'>
+                {children}
+              </main>
+            </div>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

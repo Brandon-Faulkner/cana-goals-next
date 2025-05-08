@@ -1,33 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "@firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useAuth } from "@/contexts/AuthProvider";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const { user, loading } = useAuth();
 
-  //Check auth state through Firebase
+  // Redirect based on auth state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (!loading) {
       if (user) {
         router.replace('/main');
       } else {
         router.replace('/login');
       }
-      setCheckingAuth(false);
-    })
-    return () => unsubscribe();
-  }, [router]);
+    }
+  }, [user, loading, router]);
 
-  if (checkingAuth) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Checking authentication…</p>
+  // Show loading state while checking auth
+  return (
+    <div className="flex flex-col flex-grow h-full bg-white-light dark:bg-black-dark items-center justify-center">
+      <div className="animate-spin inline-block size-12 border-3 border-current border-t-transparent text-green rounded-full" role="status" aria-label="loading">
+        <span className="sr-only">Loading...</span>
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 }

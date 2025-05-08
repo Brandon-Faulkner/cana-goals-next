@@ -10,7 +10,7 @@ export default function LoginForm({ onForgot }) {
                 <form className="space-y-4">
                     <div className="mb-8">
                         <h1 className="text-green text-4xl font-bold flex justify-center">Sign In</h1>
-                        <p className="text-black dark:text-white text-xl mt-4 leading-relaxed flex justify-center">Welcome back to Cana Goals!</p>
+                        <p className="text-black dark:text-white font-normal text-xl mt-4 leading-relaxed flex justify-center">Welcome back to Cana Goals!</p>
                     </div>
 
                     <TextInput label={"Email Address"} name={"email"} type={"email"} Icon={FaEnvelope} placeholder={"E.g. example@canachurch.com"} />

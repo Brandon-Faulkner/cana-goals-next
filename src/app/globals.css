@@ -13,7 +13,9 @@
   --color-green: #00aa63;
   --color-green-alt: #4fc3a1;
   --color-red: #d53d3d;
+  --color-red-alt: #d95050;
   --color-blue: #324960;
+  --color-blue-alt: #475b70;
   --color-blue-light: #b3c8cf;
   --color-gray: #778899;
   --color-gray-light: #b6b8bd;
@@ -39,6 +41,10 @@
 
   /* Font Weights */
   --font-weight-default: 450;
+
+  /* Breakpoints */
+  --breakpoint-xxs: 20rem;
+  --breakpoint-xs: 30rem;
 }
 
 @layer theme {
