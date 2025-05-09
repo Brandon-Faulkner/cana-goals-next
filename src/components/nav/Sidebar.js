@@ -37,7 +37,7 @@ export default function Sidebar() {
                         />
 
                         <motion.aside
-                            className="fixed top-0 right-2.5 pt-16 h-auto w-52 bg-white dark:bg-black rounded-lg shadow-2xl"
+                            className="fixed top-0 right-0 pt-16 w-52 bg-white-light dark:bg-black-light rounded-bl-lg shadow-2xl"
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}

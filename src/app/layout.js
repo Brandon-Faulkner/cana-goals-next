@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthProvider";
+import { ToastContainer } from "react-toastify";
 import localFont from 'next/font/local';
 import Header from '@/components/nav/Header';
 
@@ -80,6 +81,8 @@ export default function RootLayout({ children }) {
                 {children}
               </main>
             </div>
+
+            <ToastContainer position="top-right" limit={4} theme="colored" className={"font-medium"}/>
           </AuthProvider>
         </ThemeProvider>
       </body>

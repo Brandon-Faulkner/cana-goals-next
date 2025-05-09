@@ -1,6 +1,7 @@
 import { FaCircleCheck } from 'react-icons/fa6';
 import Image from 'next/image';
 import Sidebar from './Sidebar';
+import SaveStatus from './SaveStatus';
 
 export default function Header() {
     return (
@@ -11,11 +12,7 @@ export default function Header() {
                     <h1 className="ml-2 text-xl font-semibold text-black dark:text-white max-xxs:hidden">Cana Goals</h1>
                 </div>
                 <div className='flex items-center gap-4'>
-                    <div className='flex items-center gap-2'>
-                        <FaCircleCheck className='text-green' />
-                        <span className='text-black dark:text-white max-xs:hidden'>Up to Date</span>
-                    </div>
-
+                    <SaveStatus />
                     <Sidebar />
                 </div>
             </div>

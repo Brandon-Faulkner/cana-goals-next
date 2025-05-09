@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  /* Toastify Styles */
+  --toastify-color-success: var(--color-green);
+  --toastify-color-error: var(--color-red);
+  --toastify-font-family: var(--font-futura), sans-serif;
+}
+
 @theme {
   /* Color Tokens */
   --color-white: #ffffff;
