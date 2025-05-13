@@ -36,11 +36,21 @@ export default function ForgotPassForm({ onBack }) {
                     </div>
 
                     <div className="space-y-4">
-                        <TextInput label={"Email Address"} name={"email"} type={"email"} Icon={FaEnvelope} placeholder={"E.g. example@canachurch.com"} />
+                        <TextInput
+                            label={"Email Address"}
+                            name={"email"}
+                            type={"email"}
+                            Icon={FaEnvelope}
+                            placeholder={"E.g. example@canachurch.com"}
+                        />
                     </div>
 
                     <div className="mt-8">
-                        <Button label={"Reset Password"} type={"submit"} Icon={FaKey} />
+                        <Button
+                            label={"Reset Password"}
+                            type={"submit"}
+                            Icon={FaKey}
+                        />
                     </div>
 
                     <div className="mt-4 text-center">

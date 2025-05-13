@@ -1,4 +1,5 @@
-import { FaEnvelope, FaLock, FaRightToBracket } from "react-icons/fa6";
+import { FaEnvelope, FaLock, FaRightToBracket, FaSpinner } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import Image from "next/image";
@@ -6,7 +7,12 @@ import TextInput from "../actions/TextInput";
 import Checkbox from "../actions/Checkbox";
 import Button from "../actions/Button";
 
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+
 export default function LoginForm({ onForgot }) {
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -30,13 +36,20 @@ export default function LoginForm({ onForgot }) {
             return;
         }
 
+        setLoading(true);
         try {
-            if (formData.email && formData.password) {
-                // Send data to firebase and check auth
-                toast.success("Logged in!");
-            }
+            // Set persistence based on "rememeber me"
+            const persistence = formData.rememberMe ? browserLocalPersistence : browserSessionPersistence;
+            await setPersistence(auth, persistence);
+
+            // Attempt to sign in
+            await signInWithEmailAndPassword(auth, formData.email, formData.password);
+
+            router.replace("/main");
         } catch (error) {
-            toast.error("Error loggin in: " + error.message);
+            toast.error("Error logging in: " + error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -51,8 +64,25 @@ export default function LoginForm({ onForgot }) {
                         <p className="text-black dark:text-white font-normal text-xl mt-4 leading-relaxed flex justify-center">Welcome back to Cana Goals!</p>
                     </div>
 
-                    <TextInput label={"Email Address"} name={"email"} type={"email"} Icon={FaEnvelope} placeholder={"E.g. example@canachurch.com"} value={formData.email} onChange={handleInputChange} />
-                    <TextInput label={"Password"} name={"password"} type={"password"} Icon={FaLock} placeholder={"**********"} value={formData.password} onChange={handleInputChange} />
+                    <TextInput
+                        label={"Email Address"}
+                        name={"email"}
+                        type={"email"}
+                        Icon={FaEnvelope}
+                        placeholder={"E.g. example@canachurch.com"}
+                        value={formData.email}
+                        onChange={handleInputChange}
+                    />
+
+                    <TextInput
+                        label={"Password"}
+                        name={"password"}
+                        type={"password"}
+                        Icon={FaLock}
+                        placeholder={"**********"}
+                        value={formData.password}
+                        onChange={handleInputChange}
+                    />
 
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <Checkbox label={"Remember Me"} name={"rememberMe"} checked={formData.rememberMe} onChange={handleInputChange} />
@@ -63,7 +93,13 @@ export default function LoginForm({ onForgot }) {
                     </div>
 
                     <div className="!mt-8">
-                        <Button label={"Log In"} type={"submit"} Icon={FaRightToBracket} />
+                        <Button
+                            label={loading ? "Logging in..." : "Log In"}
+                            type={"submit"}
+                            Icon={loading ? FaSpinner : FaRightToBracket}
+                            iconClassName={loading ? "animate-spin" : ""}
+                            disabled={loading}
+                        />
                     </div>
                 </form>
             </div>

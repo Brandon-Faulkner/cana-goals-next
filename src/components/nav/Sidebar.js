@@ -1,12 +1,18 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/contexts/AuthProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "../actions/Button";
-import { FaBars, FaXmark, FaRightToBracket, FaSun, FaMoon, FaGear, FaPenToSquare, FaGlobe, FaCalendarPlus } from "react-icons/fa6";
+import { FaBars, FaXmark, FaRightFromBracket, FaSun, FaMoon, FaGear, FaPenToSquare, FaGlobe, FaCalendarPlus } from "react-icons/fa6";
+
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function Sidebar() {
+    const router = useRouter();
     const { user, loading } = useAuth();
     const { theme, setTheme } = useTheme();
     const [menuOpened, setMenuOpened] = useState(false);
@@ -14,6 +20,14 @@ export default function Sidebar() {
     const toggleTheme = () => {
         setTheme(theme === 'dark' ? 'light' : 'dark');
     };
+
+    const signOutUser = () => {
+        signOut(auth).then(() => {
+            router.replace('/login');
+        }).catch((error) => {
+            toast.error("Error signing out: " + error.message);
+        })
+    }
 
     return (
         <div>
@@ -44,7 +58,7 @@ export default function Sidebar() {
                             transition={{ type: 'spring', stiffness: 280, damping: 30 }}
                         >
                             <nav className="flex-grow flex flex-col space-y-2 p-2.5">
-                                {user && <Button label={"Log In"} type={"button"} Icon={FaRightToBracket} />}
+                                {user && <Button label={"Sign Out"} type={"button"} Icon={FaRightFromBracket} variant="red" onClick={signOutUser}/>}
                                 <Button
                                     label={theme === 'dark' ? "Light Mode" : "Dark Mode"}
                                     type={"button"}

@@ -1,11 +1,16 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import LoginForm from "@/components/forms/LoginForm";
 import ForgotPassForm from "@/components/forms/ForgotPassForm";
+import { withPublicRoute } from "@/components/auth/ProtectedRoute";
 
-export default function Login() {
+function Login() {
     const [showForgot, setShowForgot] = useState(false);
+
+    useEffect(() => {
+        document.title = "Cana Goals | Login";
+    }, []);
 
     return (
         <div className="flex flex-col flex-grow h-full bg-white-light dark:bg-black-dark overflow-auto">
@@ -41,3 +46,5 @@ export default function Login() {
         </div>
     );
 }
+
+export default withPublicRoute(Login);
