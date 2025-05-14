@@ -3,7 +3,6 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import localFont from 'next/font/local';
-import Header from '@/components/nav/Header';
 
 const futura = localFont({
   src: [
@@ -76,7 +75,6 @@ export default function RootLayout({ children }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <div className='flex flex-col h-screen'>
-              <Header />
               <main className='flex-grow overflow-auto'>
                 {children}
               </main>
