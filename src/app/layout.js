@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthProvider";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "@/components/ui/sonner";
 import localFont from 'next/font/local';
 
 const futura = localFont({
@@ -80,7 +80,7 @@ export default function RootLayout({ children }) {
               </main>
             </div>
 
-            <ToastContainer position="top-right" limit={4} theme="colored" className={"font-medium"}/>
+            <Toaster position="top-right" richColors closeButton/>
           </AuthProvider>
         </ThemeProvider>
       </body>
