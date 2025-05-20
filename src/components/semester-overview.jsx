@@ -14,15 +14,7 @@ import {
 } from "@/components/ui/chart";
 import { CircleX, BriefcaseBusiness, CheckCheck, Hourglass, TriangleAlert } from "lucide-react";
 
-const semesterData = [
-    { status: "notWorkingOn", total: 14, fill: "var(--color-notWorkingOn)" },
-    { status: "workingOn", total: 28, fill: "var(--color-workingOn)" },
-    { status: "completed", total: 30, fill: "var(--color-completed)" },
-    { status: "waiting", total: 3, fill: "var(--color-waiting)" },
-    { status: "stuck", total: 1, fill: "var(--color-stuck)" },
-]
-
-const chartConfig = {
+export const chartConfig = {
     total: {
         label: "Total"
     },
@@ -53,7 +45,7 @@ const chartConfig = {
     },
 }
 
-export function SemesterOverview() {
+export function SemesterOverview({ semesterData }) {
     return (
         <Card>
             <CardHeader>
@@ -71,7 +63,7 @@ export function SemesterOverview() {
                             right: 10
                         }}
                     >
-                        <CartesianGrid horizontal vertical strokeDasharray="3 3"/>
+                        <CartesianGrid horizontal vertical strokeDasharray="3 3" />
                         <XAxis type="number" dataKey="total" />
                         <YAxis
                             dataKey="status"

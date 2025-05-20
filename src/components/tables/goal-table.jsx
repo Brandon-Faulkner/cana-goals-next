@@ -29,9 +29,9 @@ export const formatDateForInput = date => {
     return format(date, "yyyy-MM-dd")
 }
 
-export function GoalTable({ goals }) {
+export function GoalTable({ goals:initialGoals }) {
     // Initial sample data
-    const [goalss, setGoals] = useState([])
+    const [goals, setGoals] = useState(initialGoals || [])
 
     const [expandedGoals, setExpandedGoals] = useState({})
 
@@ -45,9 +45,9 @@ export function GoalTable({ goals }) {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[50%]">Goals</TableHead>
-                            <TableHead className="w-[25%]">Due Date</TableHead>
-                            <TableHead className="w-[25%]">Status</TableHead>
+                            <TableHead className="w-[50%] text-base">Goals</TableHead>
+                            <TableHead className="w-[25%] text-base">Due Date</TableHead>
+                            <TableHead className="w-[25%] text-base">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

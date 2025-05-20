@@ -24,7 +24,7 @@ export function CommentRow({
                             value={comment.text}
                             onChange={updateCommentText}
                             placeholder="Enter comment"
-                            className="w-full h-9 min-h-9"
+                            className="w-full"
                         />
 
                         <DropdownActions actions={[

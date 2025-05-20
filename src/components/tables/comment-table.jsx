@@ -19,7 +19,7 @@ export function CommentTable({ goals, goal, setGoals, expanded, toggleGoalExpand
             <Table>
                 <TableHeader>
                     <TableRow className="bg-muted/70">
-                        <TableHead colSpan={3} className="font-medium">
+                        <TableHead colSpan={3} className="font-medium text-base">
                             Comments
                         </TableHead>
                     </TableRow>

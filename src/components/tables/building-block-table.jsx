@@ -25,13 +25,13 @@ export function BuildingBlockTable({ goals, goal, setGoals, expanded, toggleGoal
             <Table>
                 <TableHeader>
                     <TableRow className="bg-muted/70">
-                        <TableHead className="w-[50%] font-medium">
+                        <TableHead className="w-[50%] font-medium text-base">
                             Building Blocks
                         </TableHead>
-                        <TableHead className="w-[25%] font-medium">
+                        <TableHead className="w-[25%] font-medium text-base">
                             Due Date
                         </TableHead>
-                        <TableHead className="w-[25%] font-medium">
+                        <TableHead className="w-[25%] font-medium text-base">
                             Status
                         </TableHead>
                     </TableRow>

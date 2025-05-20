@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import RouteGuard from "@/components/auth/RouteGuard";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger, } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronsRight, CircleCheck } from "lucide-react";
-import { SemesterOverview } from "@/components/semester-overview";
+import { SemesterOverview, chartConfig } from "@/components/semester-overview";
 import { GoalFocus } from "@/components/goal-focus";
 import { GoalTable } from "@/components/tables/goal-table";
 import { useSemesters } from "@/hooks/use-semesters";
@@ -39,6 +39,15 @@ export default function Page() {
 
         return () => unsubscribe();
     }, [currentSemester?.id]);
+
+    const semesterStatuses = useMemo(() => {
+        const statuses = ["notWorkingOn", "workingOn", "completed", "waiting", "stuck"];
+        return statuses.map((status) => ({
+            status,
+            total: goals.filter((g) => g.status === status).length,
+            fill: chartConfig[status].color
+        }));
+    }, [goals]);
 
     return (
         <RouteGuard>
@@ -79,17 +88,17 @@ export default function Page() {
                         </div>
                     </header>
                     <div className="flex flex-1 flex-col gap-4 p-4">
-                        <SemesterOverview />
+                        <SemesterOverview semesterData={semesterStatuses} />
                         <GoalFocus />
                         {goals.length === 0 && !loading ? (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>{userDoc.name}</CardTitle>
+                                    <CardTitle className="text-lg">{userDoc?.name || "User"}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <GoalTable
-                                        userID={userDoc.id}
-                                        userName={userDoc.name}
+                                        userID={userDoc?.id}
+                                        userName={userDoc?.name}
                                         goals={[]}
                                     />
                                 </CardContent>
@@ -104,7 +113,7 @@ export default function Page() {
                             ).map(([userId, userGoals]) => (
                                 <Card key={userId}>
                                     <CardHeader>
-                                        <CardTitle>{userGoals[0].userName}</CardTitle>
+                                        <CardTitle className="text-lg">{userGoals[0].userName}</CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <GoalTable
