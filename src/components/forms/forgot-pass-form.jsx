@@ -67,7 +67,7 @@ export function ForgotPassForm({ className }) {
                             Send Reset Link
                         </Button>
                         <Link href={"./login"}
-                            className="m-auto text-sm underline-offset-4 hover:underline">
+                            className="m-auto text-base underline-offset-4 hover:underline">
                             Back to Login
                         </Link>
                     </form>

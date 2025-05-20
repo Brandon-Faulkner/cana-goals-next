@@ -74,12 +74,7 @@ export default function RootLayout({ children }) {
       <body className={`${futura.variable} font-default antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            <div className='flex flex-col h-screen'>
-              <main className='flex-grow overflow-auto'>
-                {children}
-              </main>
-            </div>
-
+            {children}
             <Toaster position="top-right" richColors closeButton/>
           </AuthProvider>
         </ThemeProvider>

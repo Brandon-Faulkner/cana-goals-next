@@ -1,14 +1,18 @@
-import * as React from "react"
-import { ChevronRight } from "lucide-react"
+"use client"
+import { ChevronRight, LogOut, Sun, Moon, Settings, SquarePen, Globe } from "lucide-react"
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import Image from "next/image"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -16,144 +20,38 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+
+import { useAuth } from "@/contexts/AuthProvider";
+import { signOut } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
-      title: "Getting Started",
+      title: "Goal Semesters",
       url: "#",
       items: [
         {
-          title: "Installation",
+          title: "2025 Spring 100",
           url: "#",
         },
         {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Building Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
+          title: "2024 Fall 100",
           url: "#",
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
+          title: "2024 Spring 100",
           url: "#",
         },
         {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
+          title: "2023 Fall 100",
           url: "#",
         },
       ],
@@ -161,24 +59,55 @@ const data = {
   ],
 }
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const signOutUser = () => {
+    signOut(auth).then(() => {
+      router.replace('/login');
+    }).catch((error) => {
+      toast.error("Error signing out: " + error.message);
+    })
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <div>
-                <Image src="/android-chrome-192x192.png" alt="Cana Goals main logo" width={32} height={32} />
-                <span className="text-base font-semibold">Cana Goals</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-1">
+          <Image src="/android-chrome-192x192.png" alt="Cana Goals main logo" width={32} height={32} />
+          <span className="text-xl font-semibold">Cana Goals</span>
+        </div>
       </SidebarHeader>
+      <Separator />
       <SidebarContent className="gap-0">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={toggleTheme} size="lg">
+                  {theme === "dark" ? <Sun /> : <Moon />}
+                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton size="lg">
+                  <SquarePen /> What&apos;s New
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton size="lg">
+                  <Globe /> Goal Language
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         {/* We create a collapsible SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <Collapsible
@@ -189,7 +118,7 @@ export function AppSidebar({
             <SidebarGroup>
               <SidebarGroupLabel
                 asChild
-                className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm">
+                className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-lg">
                 <CollapsibleTrigger>
                   {item.title}{" "}
                   <ChevronRight
@@ -198,21 +127,29 @@ export function AppSidebar({
               </SidebarGroupLabel>
               <CollapsibleContent>
                 <SidebarGroupContent>
-                  <SidebarMenu>
+                  <SidebarMenuSub>
                     {item.items.map((item) => (
-                      <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton asChild isActive={item.isActive}>
+                      <SidebarMenuSubItem key={item.title}>
+                        <SidebarMenuSubButton asChild isActive={item.isActive} size="lg">
                           <a href={item.url}>{item.title}</a>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                     ))}
-                  </SidebarMenu>
+                  </SidebarMenuSub>
                 </SidebarGroupContent>
               </CollapsibleContent>
             </SidebarGroup>
           </Collapsible>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <Button type="button" variant="ghost" className="justify-start mb-2">
+          <Settings /> Settings
+        </Button>
+        <Button type="button" variant="destructive" onClick={signOutUser}>
+          <LogOut /> Sign Out
+        </Button>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +25,6 @@ import {
 import { auth } from "@/lib/firebase";
 
 export function LoginForm({ className, ...props }) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -37,7 +35,6 @@ export function LoginForm({ className, ...props }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Validate email and password
     if (!formData.email || !formData.password) {
       toast.error("Missing email and/or password.");
       return;
@@ -45,22 +42,18 @@ export function LoginForm({ className, ...props }) {
 
     setLoading(true);
 
-    try {
-      const loginPromise = setPersistence(
-        auth,
-        formData.rememberMe ? browserLocalPersistence : browserSessionPersistence
-      ).then(() =>
-        signInWithEmailAndPassword(auth, formData.email, formData.password)
-      );
-
-      await toast.promise(loginPromise, {
-        error: "Error logging in. Please try again."
-      });
-
-      router.replace("/main");
-    } finally {
-      setLoading(false);
-    }
+    await toast.promise(
+      (async () => {
+        await setPersistence(auth, formData.rememberMe ? browserLocalPersistence : browserSessionPersistence);
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      })(),
+      {
+        error: () => {
+          setLoading(false);
+          return "Invalid email or password.";
+        },
+      }
+    );
   };
 
   return (
@@ -118,7 +111,7 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? <LoaderCircle className="animate-spin" /> : <LogIn />}
-                  {loading ? "Logging in..." : "Login"}
+                  <span>{loading ? "Logging in..." : "Login"}</span>
                 </Button>
               </div>
             </div>
