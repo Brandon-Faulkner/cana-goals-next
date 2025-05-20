@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table";
-import { addComment, updateCommentText, deleteComment } from "@/hooks/comment-handlers";
+import { addComment, updateCommentText, deleteComment } from "@/lib/comment-handlers";
 
 export function CommentTable({ goals, goal, setGoals, expanded, toggleGoalExpanded }) {
     return (

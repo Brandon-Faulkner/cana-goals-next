@@ -14,7 +14,7 @@ import {
     updateBuildingBlockDueDate,
     updateBuildingBlockStatus,
     deleteBuildingBlock
-} from "@/hooks/building-block-handlers";
+} from "@/lib/building-block-handlers";
 
 export function BuildingBlockTable({ goals, goal, setGoals, expanded, toggleGoalExpanded }) {
     return (

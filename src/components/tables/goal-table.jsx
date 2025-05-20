@@ -20,18 +20,18 @@ import {
     updateGoalStatus,
     deleteGoal,
     toggleGoalExpanded
-} from "@/hooks/goal-handlers";
-import { addBuildingBlock } from "@/hooks/building-block-handlers";
-import { addComment } from "@/hooks/comment-handlers";
+} from "@/lib/goal-handlers";
+import { addBuildingBlock } from "@/lib/building-block-handlers";
+import { addComment } from "@/lib/comment-handlers";
 
 export const formatDateForInput = date => {
     if (!date) return ""
     return format(date, "yyyy-MM-dd")
 }
 
-export function GoalTable({ initialGoals }) {
+export function GoalTable({ goals }) {
     // Initial sample data
-    const [goals, setGoals] = useState(initialGoals || [])
+    const [goalss, setGoals] = useState([])
 
     const [expandedGoals, setExpandedGoals] = useState({})
 

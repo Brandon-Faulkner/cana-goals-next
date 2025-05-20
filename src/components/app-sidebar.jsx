@@ -26,40 +26,17 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-
 import { useAuth } from "@/contexts/AuthProvider";
-import { signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Goal Semesters",
-      url: "#",
-      items: [
-        {
-          title: "2025 Spring 100",
-          url: "#",
-        },
-        {
-          title: "2024 Fall 100",
-          url: "#",
-        },
-        {
-          title: "2024 Spring 100",
-          url: "#",
-        },
-        {
-          title: "2023 Fall 100",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
-
-export function AppSidebar({ ...props }) {
+export function AppSidebar({
+  semesters = [],
+  loadingSemesters = false,
+  currentSemester,
+  onSelectSemester,
+  ...props
+}) {
   const router = useRouter();
   const { user, loading } = useAuth();
   const { theme, setTheme } = useTheme();
@@ -108,39 +85,44 @@ export function AppSidebar({ ...props }) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* We create a collapsible SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
-          <Collapsible
-            key={item.title}
-            title={item.title}
-            defaultOpen
-            className="group/collapsible">
-            <SidebarGroup>
-              <SidebarGroupLabel
-                asChild
-                className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-lg">
-                <CollapsibleTrigger>
-                  {item.title}{" "}
-                  <ChevronRight
-                    className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenuSub>
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive} size="lg">
-                          <a href={item.url}>{item.title}</a>
+        <Collapsible defaultOpen className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel
+              asChild
+              className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-lg">
+              <CollapsibleTrigger>
+                Goal Semesters
+                <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenuSub>
+                  {loadingSemesters
+                    ? [...Array(3)].map((_, i) => (
+                      <SidebarMenuSubItem key={i}>
+                        <SidebarMenuSubButton disabled className="animate-pulse opacity-50">
+                          Loading...
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))
+                    : semesters.map(semester => (
+                      <SidebarMenuSubItem key={semester.id}>
+                        <SidebarMenuSubButton
+                          isActive={currentSemester?.id === semester.id}
+                          size="lg"
+                          onClick={() => onSelectSemester(semester)}
+                          className={"cursor-pointer"}
+                        >
+                            {semester.semester}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
-                  </SidebarMenuSub>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </SidebarGroup>
-          </Collapsible>
-        ))}
+                </SidebarMenuSub>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
       </SidebarContent>
       <SidebarFooter>
         <Button type="button" variant="ghost" className="justify-start mb-2">
