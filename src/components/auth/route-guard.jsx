@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "@/contexts/auth-provider";
 import Spinner from "@/components/ui/spinner";
 
 export default function RouteGuard({ children, mode = "protected" }) {

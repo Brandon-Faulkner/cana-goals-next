@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { LoginForm } from "@/components/forms/login-form";
-import RouteGuard from "@/components/auth/RouteGuard";
+import RouteGuard from "@/components/auth/route-guard";
 
 export const metadata = {
   title: "Cana Goals | Login"

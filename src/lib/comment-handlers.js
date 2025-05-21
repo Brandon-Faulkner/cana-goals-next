@@ -1,32 +1,49 @@
-export function addComment(goalId, goals, setGoals) {
-  const newComment = {
-    id: `comment-${goalId}-${Date.now()}`,
-    text: ""
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { setSavingState } from '@/lib/saving-state-controller';
+
+export const addComment = async (semesterId, goalId, userId, userName) => {
+  setSavingState({ isSaving: true, hasError: false });
+  try {
+    const ref = collection(db, 'semesters', semesterId, 'goals', goalId, 'comments');
+    return await addDoc(ref, {
+      text: '',
+      createdAt: serverTimestamp(),
+      userId,
+      userName,
+      semesterId,
+      goalId,
+    });
+  } catch (error) {
+    setSavingState({ isSaving: false, hasError: true });
+    throw error;
+  } finally {
+    setSavingState({ isSaving: false, hasError: false });
   }
-  setGoals(goals.map(goal =>
-    goal.id === goalId ? {
-      ...goal,
-      comments: [...goal.comments, newComment]
-    } : goal
-  ))
-}
+};
 
-export function updateCommentText(goalId, commentId, text, goals, setGoals) {
-  setGoals(goals.map(goal =>
-    goal.id === goalId ? {
-      ...goal,
-      comments: goal.comments.map(comment =>
-        comment.id === commentId ? { ...comment, text } : comment
-      )
-    } : goal
-  ))
-} 
+export const updateCommentText = async (semesterId, goalId, commentId, text) => {
+  setSavingState({ isSaving: true, hasError: false });
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'comments', commentId);
+  try {
+    await updateDoc(ref, { text });
+  } catch (error) {
+    setSavingState({ isSaving: false, hasError: true });
+    throw error;
+  } finally {
+    setSavingState({ isSaving: false, hasError: false });
+  }
+};
 
-export function deleteComment(goalId, commentId, goals, setGoals) {
-  setGoals(goals.map(goal =>
-    goal.id === goalId ? {
-      ...goal,
-      comments: goal.comments.filter(comment => comment.id !== commentId)
-    } : goal
-  ))
-}
+export const deleteComment = async (semesterId, goalId, commentId) => {
+  setSavingState({ isSaving: true, hasError: false });
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'comments', commentId);
+  try {
+    await deleteDoc(ref);
+  } catch (error) {
+    setSavingState({ isSaving: false, hasError: true });
+    throw error;
+  } finally {
+    setSavingState({ isSaving: false, hasError: false });
+  }
+};

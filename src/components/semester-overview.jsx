@@ -18,12 +18,12 @@ export const chartConfig = {
     total: {
         label: "Total"
     },
-    notWorkingOn: {
+    notworkingon: {
         label: "Not Working On",
         color: "var(--chart-1)",
         icon: <CircleX size={20} />
     },
-    workingOn: {
+    workingon: {
         label: "Working On",
         color: "var(--chart-2)",
         icon: <BriefcaseBusiness size={20} />

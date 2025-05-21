@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ContextActions } from "@/components/tables/context-actions";
 import { Textarea } from "@/components/ui/textarea";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -10,6 +11,10 @@ export function CommentRow({
     updateCommentText,
     deleteComment
 }) {
+    const [text, setText] = useState(comment.text || '');
+    useEffect(() => setText(comment.text || ''), [comment.text]);
+    const onChange = e => setText(e.target.value);
+    const onBlur = () => updateCommentText(text);
 
     return (
         <ContextActions actions={[
@@ -21,8 +26,9 @@ export function CommentRow({
                 <TableCell colSpan={3}>
                     <div className="flex items-start gap-2">
                         <Textarea
-                            value={comment.text}
-                            onChange={updateCommentText}
+                            value={text}
+                            onChange={onChange}
+                            onBlur={onBlur}
                             placeholder="Enter comment"
                             className="w-full"
                         />

@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "@/contexts/AuthProvider";
+import { AuthProvider } from "@/contexts/auth-provider";
+import { SavingStateProvider } from "@/contexts/saving-state-context";
 import { Toaster } from "@/components/ui/sonner";
 import localFont from 'next/font/local';
 
@@ -74,8 +75,10 @@ export default function RootLayout({ children }) {
       <body className={`${futura.variable} font-default antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            {children}
-            <Toaster position="top-right" richColors closeButton/>
+            <SavingStateProvider>
+              {children}
+              <Toaster position="top-right" richColors closeButton />
+            </SavingStateProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

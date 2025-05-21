@@ -1,57 +1,77 @@
-export function addBuildingBlock(goalId, goals, setGoals) {
-    const newBlock = {
-        id: `bb-${goalId}-${Date.now()}`,
-        text: "",
-        dueDate: null,
-        status: "Not Started"
+import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { setSavingState } from '@/lib/saving-state-controller';
+
+export const addBuildingBlock = async (semesterId, goalId, initialDueDate) => {
+    setSavingState({ isSaving: true, hasError: false });
+    try {
+        const ref = collection(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks');
+        return await addDoc(ref, {
+            text: '',
+            dueDate: initialDueDate,
+            status: 'Not Working On',
+            createdAt: serverTimestamp(),
+            semesterId,
+            goalId,
+        });
+    } catch (error) {
+        setSavingState({ isSaving: false, hasError: true });
+        throw error;
+    } finally {
+        setSavingState({ isSaving: false, hasError: false });
     }
-    setGoals(goals.map(goal =>
-        goal.id === goalId ? {
-            ...goal,
-            buildingBlocks: [...goal.buildingBlocks, newBlock]
-        } : goal
-    ))
-}
+};
 
-export function updateBuildingBlockText(goalId, blockId, text, goals, setGoals) {
-    setGoals(goals.map(goal =>
-        goal.id === goalId ? {
-            ...goal,
-            buildingBlocks: goal.buildingBlocks.map(block =>
-                block.id === blockId ? { ...block, text } : block
-            )
-        } : goal
-    ))
-}
+export const updateBuildingBlockText = async (semesterId, goalId, blockId, text) => {
+    setSavingState({ isSaving: true, hasError: false });
+    const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
+    try {
+        await updateDoc(ref, { text });
+    } catch (error) {
+        setSavingState({ isSaving: false, hasError: true });
+        throw error;
+    } finally {
+        setSavingState({ isSaving: false, hasError: false });
+    }
+};
 
-export function updateBuildingBlockDueDate(goalId, blockId, dateStr, goals, setGoals) {
-    const dueDate = dateStr ? new Date(dateStr) : null
-    setGoals(goals.map(goal =>
-        goal.id === goalId ? {
-            ...goal,
-            buildingBlocks: goal.buildingBlocks.map(block =>
-                block.id === blockId ? { ...block, dueDate } : block
-            )
-        } : goal
-    ))
-}
+export const updateBuildingBlockDueDate = async (semesterId, goalId, blockId, dueDate) => {
+    setSavingState({ isSaving: true, hasError: false });
+    const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
+    try {
+        const date = dueDate?.target?.value || dueDate;
+        const dateObj = new Date(date);
+        await updateDoc(ref, { dueDate: Timestamp.fromDate(dateObj) });
+    } catch (error) {
+        setSavingState({ isSaving: false, hasError: true });
+        throw error;
+    } finally {
+        setSavingState({ isSaving: false, hasError: false });
+    }
+};
 
-export function updateBuildingBlockStatus(goalId, blockId, status, goals, setGoals) {
-    setGoals(goals.map(goal =>
-        goal.id === goalId ? {
-            ...goal,
-            buildingBlocks: goal.buildingBlocks.map(block =>
-                block.id === blockId ? { ...block, status } : block
-            )
-        } : goal
-    ))
-}
+export const updateBuildingBlockStatus = async (semesterId, goalId, blockId, status) => {
+    setSavingState({ isSaving: true, hasError: false });
+    const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
+    try {
+        await updateDoc(ref, { status });
+    } catch (error) {
+        setSavingState({ isSaving: false, hasError: true });
+        throw error;
+    } finally {
+        setSavingState({ isSaving: false, hasError: false });
+    }
+};
 
-export function deleteBuildingBlock(goalId, blockId, goals, setGoals) {
-    setGoals(goals.map(goal =>
-        goal.id === goalId ? {
-            ...goal,
-            buildingBlocks: goal.buildingBlocks.filter(block => block.id !== blockId)
-        } : goal
-    ))
-}
+export const deleteBuildingBlock = async (semesterId, goalId, blockId) => {
+    setSavingState({ isSaving: true, hasError: false });
+    const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
+    try {
+        await deleteDoc(ref);
+    } catch (error) {
+        setSavingState({ isSaving: false, hasError: true });
+        throw error;
+    } finally {
+        setSavingState({ isSaving: false, hasError: false });
+    }
+};

@@ -1,10 +1,10 @@
+import { useState, useEffect } from 'react';
 import { ContextActions } from "@/components/tables/context-actions";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { formatDateForInput } from "../goal-table";
 import { StatusSelect } from "@/components/tables/status-select";
 import { DropdownActions } from "@/components/tables/dropdown-actions";
 
@@ -20,6 +20,12 @@ export function GoalRow({
     addComment,
     deleteGoal
 }) {
+    const [text, setText] = useState(goal.text || '');
+    useEffect(() => setText(goal.text || ''), [goal.text]);
+
+    const onChange = e => setText(e.target.value);
+    const onBlur = () => updateGoalText(text);
+
     return (
         <ContextActions actions={[
             { text: expanded ? "Collapse" : "Expand", action: toggleGoalExpanded },
@@ -46,8 +52,9 @@ export function GoalRow({
                         </Button>
                         <div className="w-full max-w-[800px]">
                             <Textarea
-                                value={goal.text}
-                                onChange={updateGoalText}
+                                value={text}
+                                onChange={onChange}
+                                onBlur={onBlur}
                                 placeholder="Enter goal"
                                 className="min-w-[200px] h-9 min-h-9"
                             />
@@ -57,7 +64,7 @@ export function GoalRow({
                 <TableCell className="align-top">
                     <Input
                         type="date"
-                        value={formatDateForInput(goal.dueDate)}
+                        value={goal.dueDate ? goal.dueDate.toISOString().slice(0,10) : ''}
                         onChange={updateGoalDueDate}
                     />
                 </TableCell>

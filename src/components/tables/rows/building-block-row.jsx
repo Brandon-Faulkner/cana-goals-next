@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ContextActions } from "@/components/tables/context-actions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +16,15 @@ export function BuildingBlockRow({
     updateBuildingBlockStatus,
     deleteBuildingBlock
 }) {
+    const [text, setText] = useState(buildingBlock.text || '');
+    useEffect(() => setText(buildingBlock.text || ''), [buildingBlock.text]);
+    
+    const onTextChange = e => {
+        const v = e.target.value;
+        setText(v);
+        updateBuildingBlockText(v);
+    };
+
     return (
         <ContextActions actions={[
             { text: expanded ? "Collapse" : "Expand", action: toggleGoalExpanded },
@@ -26,8 +36,8 @@ export function BuildingBlockRow({
                     <div className="flex items-start gap-2">
                         <div className="w-full max-w-[800px]">
                             <Textarea
-                                value={buildingBlock.text}
-                                onChange={updateBuildingBlockText}
+                                value={text}
+                                onChange={onTextChange}
                                 placeholder="Enter building block"
                                 className="min-w-[200px] h-9 min-h-9"
                             />
@@ -37,7 +47,7 @@ export function BuildingBlockRow({
                 <TableCell className="align-top">
                     <Input
                         type="date"
-                        value={formatDateForInput(buildingBlock.dueDate)}
+                        value={buildingBlock.dueDate ? buildingBlock.dueDate.toISOString().slice(0,10) : ''}
                         onChange={updateBuildingBlockDueDate}
                     />
                 </TableCell>

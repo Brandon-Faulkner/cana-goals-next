@@ -26,7 +26,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/contexts/AuthProvider";
+import { useAuth } from "@/contexts/auth-provider";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -114,7 +114,7 @@ export function AppSidebar({
                           onClick={() => onSelectSemester(semester)}
                           className={"cursor-pointer"}
                         >
-                            {semester.semester}
+                          {semester.semester}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
