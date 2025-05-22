@@ -20,9 +20,9 @@ export function BuildingBlockRow({
   useEffect(() => setText(buildingBlock.text || ''), [buildingBlock.text]);
 
   const onTextChange = (e) => {
-    const v = e.target.value;
-    setText(v);
-    updateBuildingBlockText(v);
+    const text = e.target.value;
+    setText(text);
+    updateBuildingBlockText(text);
   };
 
   return (

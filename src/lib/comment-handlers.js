@@ -2,12 +2,13 @@ import { collection, addDoc, doc, updateDoc, deleteDoc, serverTimestamp } from '
 import { db } from '@/lib/firebase';
 import { setSavingState } from '@/lib/saving-state-controller';
 
-export const addComment = async (semesterId, goalId, userId, userName) => {
+export const addComment = async (semesterId, goalId, userId, userName, text) => {
   setSavingState({ isSaving: true, hasError: false });
+  console.log(text);
   try {
     const ref = collection(db, 'semesters', semesterId, 'goals', goalId, 'comments');
     return await addDoc(ref, {
-      text: '',
+      text: text,
       createdAt: serverTimestamp(),
       userId,
       userName,

@@ -23,9 +23,9 @@ const useDebouncedTextUpdater = (semesterId, goalId) => {
   return useCallback(
     debounce((id, text) => {
       toast.promise(updateBuildingBlockText(semesterId, goalId, id, text), {
-        loading: 'Saving changes...',
-        success: 'Changes saved',
-        error: 'Failed to save changes',
+        loading: 'Saving building block changes...',
+        success: 'Building block changes saved',
+        error: 'Failed to save building block changes',
       });
     }, 1000),
     [semesterId],
@@ -50,9 +50,9 @@ export function BuildingBlockTable({
           text: 'Add Building Block',
           action: () =>
             handleAction(addBuildingBlock(semesterId, goal.id, initialDueDate), {
-              loading: 'Adding building block...',
-              success: 'Building block added',
-              error: 'Failed to add building block',
+              loading: 'Adding new building block...',
+              success: 'New building block added',
+              error: 'Failed to add new building block',
             }),
         },
       ]}
@@ -76,23 +76,23 @@ export function BuildingBlockTable({
                 updateBuildingBlockText={(text) => debouncedUpdate(block.id, text)}
                 updateBuildingBlockDueDate={(date) =>
                   handleAction(updateBuildingBlockDueDate(semesterId, goal.id, block.id, date), {
-                    loading: 'Saving date…',
-                    success: 'Saved ✓',
-                    error: 'Failed',
+                    loading: 'Saving building block due date...',
+                    success: 'Building block due date saved',
+                    error: 'Failed to save building block due date',
                   })
                 }
                 updateBuildingBlockStatus={(status) =>
                   handleAction(updateBuildingBlockStatus(semesterId, goal.id, block.id, status), {
-                    loading: 'Saving status…',
-                    success: 'Saved ✓',
-                    error: 'Failed',
+                    loading: 'Saving building block status...',
+                    success: 'Building block status saved',
+                    error: 'Failed to save building block status',
                   })
                 }
                 deleteBuildingBlock={() =>
                   handleAction(deleteBuildingBlock(semesterId, goal.id, block.id), {
-                    loading: 'Deleting…',
-                    success: 'Deleted ✓',
-                    error: 'Failed',
+                    loading: 'Deleting building block...',
+                    success: 'Building block deleted',
+                    error: 'Failed to delete building block',
                   })
                 }
               />

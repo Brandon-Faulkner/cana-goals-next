@@ -8,6 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ContextActions } from '@/components/tables/context-actions';
+import { CommentDialog } from '@/components/dialogs/comment-dialog';
 import { CommentRow } from '@/components/tables/rows/comment-row';
 import { addComment, updateCommentText, deleteComment } from '@/lib/comment-handlers';
 
@@ -20,12 +21,25 @@ export function CommentTable({ goal, semesterId, userId, userName, expanded, tog
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
         {
           text: 'Add Comment',
-          action: () =>
-            handleAction(addComment(semesterId, goal.id, userId, userName), {
-              loading: 'Adding…',
-              success: 'Added ✓',
-              error: 'Failed',
-            }),
+          dialog: true,
+          dialogContent: (props) => (
+            <CommentDialog
+              addComment={(text) => {
+                return handleAction(addComment(semesterId, goal.id, userId, userName, text), {
+                  loading: 'Adding new comment...',
+                  success: () => {
+                    props.onSuccess?.(true);
+                    return 'New comment added';
+                  },
+                  error: () => {
+                    props.onSuccess?.(false);
+                    return 'Failed to add new comment';
+                  },
+                });
+              }}
+              {...props}
+            />
+          ),
         },
       ]}
     >
@@ -50,9 +64,9 @@ export function CommentTable({ goal, semesterId, userId, userName, expanded, tog
                 }
                 deleteComment={() =>
                   handleAction(deleteComment(semesterId, goal.id, comment.id), {
-                    loading: 'Deleting…',
-                    success: 'Deleted ✓',
-                    error: 'Failed',
+                    loading: 'Deleting comment...',
+                    success: 'Comment deleted',
+                    error: 'Failed to delete comment',
                   })
                 }
               />

@@ -23,13 +23,17 @@ export function GoalRow({
   const [text, setText] = useState(goal.text || '');
   useEffect(() => setText(goal.text || ''), [goal.text]);
 
-  const onChange = (e) => setText(e.target.value);
-  const onBlur = () => updateGoalText(text);
+  const onTextChange = (e) => {
+    const text = e.target.value;
+    setText(text);
+    updateGoalText(text);
+  };
 
   return (
     <ContextActions
       actions={[
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+        'seperator',
         { text: 'Add Goal', action: addGoal },
         { text: 'Add Building Block', action: addBuildingBlock },
         { text: 'Add Comment', action: addComment },
@@ -55,8 +59,7 @@ export function GoalRow({
             <div className='w-full max-w-[800px]'>
               <Textarea
                 value={text}
-                onChange={onChange}
-                onBlur={onBlur}
+                onChange={onTextChange}
                 placeholder='Enter goal'
                 className='h-9 min-h-9 min-w-[200px]'
               />

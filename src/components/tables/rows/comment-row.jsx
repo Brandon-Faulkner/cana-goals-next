@@ -13,9 +13,13 @@ export function CommentRow({
 }) {
   const [text, setText] = useState(comment.text || '');
   useEffect(() => setText(comment.text || ''), [comment.text]);
-  const onChange = (e) => setText(e.target.value);
-  const onBlur = () => updateCommentText(text);
 
+  const onTextChange = (e) => {
+    const text = e.target.value;
+    setText(text);
+    updateCommentText(text);
+  };
+  
   return (
     <ContextActions
       actions={[
@@ -29,8 +33,7 @@ export function CommentRow({
           <div className='flex items-start gap-2'>
             <Textarea
               value={text}
-              onChange={onChange}
-              onBlur={onBlur}
+              onChange={onTextChange}
               placeholder='Enter comment'
               className='w-full'
             />

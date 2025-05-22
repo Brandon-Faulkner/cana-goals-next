@@ -30,7 +30,6 @@ export default function Page() {
   useEffect(() => {
     if (loadingAuth || !user || !currentSemester?.id) return;
     const semId = currentSemester.id;
-    console.log(user);
 
     // Listen for goal collection changes
     const unsubGoals = onSnapshot(collection(db, 'semesters', semId, 'goals'), (snap) => {
@@ -42,7 +41,7 @@ export default function Page() {
           return {
             id: d.id,
             ...data,
-            text: data.text || '', // Ensure text is never undefined
+            text: data.text || '',
             createdAt: data.createdAt?.toDate() || new Date(),
             dueDate: data.dueDate?.toDate() || new Date(),
             buildingBlocks: existingGoal?.buildingBlocks || [],
@@ -148,7 +147,7 @@ export default function Page() {
                     <h1 className='text-base font-medium'>{currentSemester.semester}</h1>
                     <ChevronsRight className='mx-2 hidden size-4 sm:block' />
                     <p className='text-xs italic sm:text-sm'>
-                      {currentSemester.start.toDate().toLocaleDateString()} –{' '}
+                      {currentSemester.start.toDate().toLocaleDateString()} -{' '}
                       {currentSemester.end.toDate().toLocaleDateString()}
                     </p>
                   </>
