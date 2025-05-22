@@ -1,9 +1,9 @@
-"use client";
-import { createContext, useContext, useEffect, useState, memo } from "react";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+'use client';
+import { createContext, useContext, useEffect, useState, memo } from 'react';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 // Define the context shape
 const AuthContext = createContext({
@@ -28,17 +28,17 @@ export const AuthProvider = memo(function AuthProvider({ children }) {
 
         if (user) {
           try {
-            const docRef = doc(db, "users", user.uid);
+            const docRef = doc(db, 'users', user.uid);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
               setUserDoc({ id: docSnap.id, ...docSnap.data() });
             } else {
-              console.warn("No user profile found in Firestore.");
+              console.warn('No user profile found in Firestore.');
               setUserDoc(null);
             }
           } catch (err) {
-            console.error("Error fetching user doc:", err);
+            console.error('Error fetching user doc:', err);
             setError(err.message);
             setUserDoc(null);
           }
@@ -49,12 +49,12 @@ export const AuthProvider = memo(function AuthProvider({ children }) {
         setLoading(false);
       },
       (error) => {
-        console.error("Auth state change error:", error);
+        console.error('Auth state change error:', error);
         setError(error.message);
         setUser(null);
         setUserDoc(null);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
@@ -70,7 +70,7 @@ export const AuthProvider = memo(function AuthProvider({ children }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

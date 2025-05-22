@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { toast } from "sonner";
-import debounce from "lodash/debounce";
+import { useCallback } from 'react';
+import { toast } from 'sonner';
+import debounce from 'lodash/debounce';
 import {
   Table,
   TableBody,
@@ -8,27 +8,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ContextActions } from "@/components/tables/context-actions";
-import { BuildingBlockRow } from "@/components/tables/rows/building-block-row";
+} from '@/components/ui/table';
+import { ContextActions } from '@/components/tables/context-actions';
+import { BuildingBlockRow } from '@/components/tables/rows/building-block-row';
 import {
   addBuildingBlock,
   updateBuildingBlockText,
   updateBuildingBlockDueDate,
   updateBuildingBlockStatus,
   deleteBuildingBlock,
-} from "@/lib/building-block-handlers";
+} from '@/lib/building-block-handlers';
 
 const useDebouncedTextUpdater = (semesterId, goalId) => {
   return useCallback(
     debounce((id, text) => {
       toast.promise(updateBuildingBlockText(semesterId, goalId, id, text), {
-        loading: "Saving changes...",
-        success: "Changes saved",
-        error: "Failed to save changes",
+        loading: 'Saving changes...',
+        success: 'Changes saved',
+        error: 'Failed to save changes',
       });
     }, 1000),
-    [semesterId]
+    [semesterId],
   );
 };
 
@@ -45,33 +45,24 @@ export function BuildingBlockTable({
   return (
     <ContextActions
       actions={[
-        { text: expanded ? "Collapse" : "Expand", action: toggleGoalExpanded },
+        { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
         {
-          text: "Add Building Block",
+          text: 'Add Building Block',
           action: () =>
-            handleAction(
-              addBuildingBlock(semesterId, goal.id, initialDueDate),
-              {
-                loading: "Adding building block...",
-                success: "Building block added",
-                error: "Failed to add building block",
-              }
-            ),
+            handleAction(addBuildingBlock(semesterId, goal.id, initialDueDate), {
+              loading: 'Adding building block...',
+              success: 'Building block added',
+              error: 'Failed to add building block',
+            }),
         },
       ]}
     >
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/70">
-            <TableHead className="w-1/2 font-medium text-base">
-              Building Blocks
-            </TableHead>
-            <TableHead className="w-1/4 font-medium text-base">
-              Due Date
-            </TableHead>
-            <TableHead className="w-1/4 font-medium text-base">
-              Status
-            </TableHead>
+          <TableRow className='bg-muted/70'>
+            <TableHead className='w-1/2 text-base font-medium'>Building Blocks</TableHead>
+            <TableHead className='w-1/4 text-base font-medium'>Due Date</TableHead>
+            <TableHead className='w-1/4 text-base font-medium'>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -82,57 +73,33 @@ export function BuildingBlockTable({
                 buildingBlock={block}
                 expanded={expanded}
                 toggleGoalExpanded={toggleGoalExpanded}
-                updateBuildingBlockText={(text) =>
-                  debouncedUpdate(block.id, text)
-                }
+                updateBuildingBlockText={(text) => debouncedUpdate(block.id, text)}
                 updateBuildingBlockDueDate={(date) =>
-                  handleAction(
-                    updateBuildingBlockDueDate(
-                      semesterId,
-                      goal.id,
-                      block.id,
-                      date
-                    ),
-                    {
-                      loading: "Saving date…",
-                      success: "Saved ✓",
-                      error: "Failed",
-                    }
-                  )
+                  handleAction(updateBuildingBlockDueDate(semesterId, goal.id, block.id, date), {
+                    loading: 'Saving date…',
+                    success: 'Saved ✓',
+                    error: 'Failed',
+                  })
                 }
                 updateBuildingBlockStatus={(status) =>
-                  handleAction(
-                    updateBuildingBlockStatus(
-                      semesterId,
-                      goal.id,
-                      block.id,
-                      status
-                    ),
-                    {
-                      loading: "Saving status…",
-                      success: "Saved ✓",
-                      error: "Failed",
-                    }
-                  )
+                  handleAction(updateBuildingBlockStatus(semesterId, goal.id, block.id, status), {
+                    loading: 'Saving status…',
+                    success: 'Saved ✓',
+                    error: 'Failed',
+                  })
                 }
                 deleteBuildingBlock={() =>
-                  handleAction(
-                    deleteBuildingBlock(semesterId, goal.id, block.id),
-                    {
-                      loading: "Deleting…",
-                      success: "Deleted ✓",
-                      error: "Failed",
-                    }
-                  )
+                  handleAction(deleteBuildingBlock(semesterId, goal.id, block.id), {
+                    loading: 'Deleting…',
+                    success: 'Deleted ✓',
+                    error: 'Failed',
+                  })
                 }
               />
             ))
           ) : (
-            <TableRow className="bg-muted/50">
-              <TableCell
-                colSpan={3}
-                className="text-center text-muted-foreground py-4"
-              >
+            <TableRow className='bg-muted/50'>
+              <TableCell colSpan={3} className='text-muted-foreground py-4 text-center'>
                 No building blocks yet. Right-click to add one.
               </TableCell>
             </TableRow>

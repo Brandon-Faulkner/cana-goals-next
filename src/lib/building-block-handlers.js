@@ -6,25 +6,18 @@ import {
   deleteDoc,
   serverTimestamp,
   Timestamp,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { setSavingState } from "@/lib/saving-state-controller";
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { setSavingState } from '@/lib/saving-state-controller';
 
 export const addBuildingBlock = async (semesterId, goalId, initialDueDate) => {
   setSavingState({ isSaving: true, hasError: false });
   try {
-    const ref = collection(
-      db,
-      "semesters",
-      semesterId,
-      "goals",
-      goalId,
-      "buildingBlocks"
-    );
+    const ref = collection(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks');
     return await addDoc(ref, {
-      text: "",
+      text: '',
       dueDate: initialDueDate,
-      status: "Not Working On",
+      status: 'Not Working On',
       createdAt: serverTimestamp(),
       semesterId,
       goalId,
@@ -37,22 +30,9 @@ export const addBuildingBlock = async (semesterId, goalId, initialDueDate) => {
   }
 };
 
-export const updateBuildingBlockText = async (
-  semesterId,
-  goalId,
-  blockId,
-  text
-) => {
+export const updateBuildingBlockText = async (semesterId, goalId, blockId, text) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(
-    db,
-    "semesters",
-    semesterId,
-    "goals",
-    goalId,
-    "buildingBlocks",
-    blockId
-  );
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     await updateDoc(ref, { text });
   } catch (error) {
@@ -63,22 +43,9 @@ export const updateBuildingBlockText = async (
   }
 };
 
-export const updateBuildingBlockDueDate = async (
-  semesterId,
-  goalId,
-  blockId,
-  dueDate
-) => {
+export const updateBuildingBlockDueDate = async (semesterId, goalId, blockId, dueDate) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(
-    db,
-    "semesters",
-    semesterId,
-    "goals",
-    goalId,
-    "buildingBlocks",
-    blockId
-  );
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     const date = dueDate?.target?.value || dueDate;
     const dateObj = new Date(date);
@@ -91,22 +58,9 @@ export const updateBuildingBlockDueDate = async (
   }
 };
 
-export const updateBuildingBlockStatus = async (
-  semesterId,
-  goalId,
-  blockId,
-  status
-) => {
+export const updateBuildingBlockStatus = async (semesterId, goalId, blockId, status) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(
-    db,
-    "semesters",
-    semesterId,
-    "goals",
-    goalId,
-    "buildingBlocks",
-    blockId
-  );
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     await updateDoc(ref, { status });
   } catch (error) {
@@ -119,15 +73,7 @@ export const updateBuildingBlockStatus = async (
 
 export const deleteBuildingBlock = async (semesterId, goalId, blockId) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(
-    db,
-    "semesters",
-    semesterId,
-    "goals",
-    goalId,
-    "buildingBlocks",
-    blockId
-  );
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     await deleteDoc(ref);
   } catch (error) {

@@ -1,8 +1,8 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-provider";
-import { useEffect } from "react";
-import Spinner from "@/components/ui/spinner";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-provider';
+import { useEffect } from 'react';
+import Spinner from '@/components/ui/spinner';
 
 export default function Home() {
   const router = useRouter();
@@ -12,9 +12,9 @@ export default function Home() {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        router.replace("/main");
+        router.replace('/main');
       } else {
-        router.replace("/login");
+        router.replace('/login');
       }
     }
   }, [user, loading, router]);

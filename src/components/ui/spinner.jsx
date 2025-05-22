@@ -1,8 +1,8 @@
 export default function Spinner() {
   return (
-    <div className="flex flex-col flex-grow h-screen bg-background items-center justify-center">
-      <div className="animate-spin inline-block size-12 border-3 border-primary border-t-transparent rounded-full">
-        <span className="sr-only">Loading...</span>
+    <div className='bg-background flex h-screen flex-grow flex-col items-center justify-center'>
+      <div className='border-primary inline-block size-12 animate-spin rounded-full border-3 border-t-transparent'>
+        <span className='sr-only'>Loading...</span>
       </div>
     </div>
   );

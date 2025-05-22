@@ -6,18 +6,18 @@ import {
   deleteDoc,
   serverTimestamp,
   Timestamp,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { setSavingState } from "@/lib/saving-state-controller";
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { setSavingState } from '@/lib/saving-state-controller';
 
 export const addGoal = async (semesterId, userId, userName, initialDueDate) => {
   setSavingState({ isSaving: true, hasError: false });
   try {
-    const ref = collection(db, "semesters", semesterId, "goals");
+    const ref = collection(db, 'semesters', semesterId, 'goals');
     return await addDoc(ref, {
-      text: "",
+      text: '',
       dueDate: initialDueDate,
-      status: "Not Working On",
+      status: 'Not Working On',
       createdAt: serverTimestamp(),
       userId,
       userName,
@@ -33,7 +33,7 @@ export const addGoal = async (semesterId, userId, userName, initialDueDate) => {
 
 export const updateGoalText = async (semesterId, goalId, text) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(db, "semesters", semesterId, "goals", goalId);
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     await updateDoc(ref, { text });
   } catch (error) {
@@ -46,7 +46,7 @@ export const updateGoalText = async (semesterId, goalId, text) => {
 
 export const updateGoalDueDate = async (semesterId, goalId, dueDate) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(db, "semesters", semesterId, "goals", goalId);
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     const date = dueDate?.target?.value || dueDate;
     const dateObj = new Date(date);
@@ -61,7 +61,7 @@ export const updateGoalDueDate = async (semesterId, goalId, dueDate) => {
 
 export const updateGoalStatus = async (semesterId, goalId, status) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(db, "semesters", semesterId, "goals", goalId);
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     await updateDoc(ref, { status });
   } catch (error) {
@@ -74,7 +74,7 @@ export const updateGoalStatus = async (semesterId, goalId, status) => {
 
 export const deleteGoal = async (semesterId, goalId) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(db, "semesters", semesterId, "goals", goalId);
+  const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     await deleteDoc(ref);
   } catch (error) {

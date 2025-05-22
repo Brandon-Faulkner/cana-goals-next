@@ -4,25 +4,25 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
   ContextMenuSeparator,
-} from "@/components/ui/context-menu";
+} from '@/components/ui/context-menu';
 
 export function ContextActions({ children, actions = [] }) {
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-48">
+      <ContextMenuContent className='w-48'>
         {actions.map((action, i) =>
-          action === "seperator" ? (
+          action === 'seperator' ? (
             <ContextMenuSeparator key={i} />
           ) : (
             <ContextMenuItem
               key={action.text}
               onClick={action.action}
-              className={action.destructive ? "text-destructive" : ""}
+              className={action.destructive ? 'text-destructive' : ''}
             >
               {action.text}
             </ContextMenuItem>
-          )
+          ),
         )}
       </ContextMenuContent>
     </ContextMenu>
