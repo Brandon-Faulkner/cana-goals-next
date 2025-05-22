@@ -11,14 +11,14 @@ export function useSemesters() {
   useEffect(() => {
     const fetchSemesters = async () => {
       const snapshot = await getDocs(collection(db, "semesters"));
-      const docs = snapshot.docs.map(doc => ({
+      const docs = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       const now = new Date();
-      const current = docs.find(s =>
-        now >= s.start.toDate() && now <= s.end.toDate()
+      const current = docs.find(
+        (s) => now >= s.start.toDate() && now <= s.end.toDate()
       );
 
       setSemesters(docs);

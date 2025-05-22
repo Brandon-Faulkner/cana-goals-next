@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { ContextActions } from "@/components/tables/context-actions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,61 +8,76 @@ import { StatusSelect } from "@/components/tables/status-select";
 import { DropdownActions } from "@/components/tables/dropdown-actions";
 
 export function BuildingBlockRow({
-    buildingBlock,
-    expanded,
-    toggleGoalExpanded,
-    updateBuildingBlockText,
-    updateBuildingBlockDueDate,
-    updateBuildingBlockStatus,
-    deleteBuildingBlock
+  buildingBlock,
+  expanded,
+  toggleGoalExpanded,
+  updateBuildingBlockText,
+  updateBuildingBlockDueDate,
+  updateBuildingBlockStatus,
+  deleteBuildingBlock,
 }) {
-    const [text, setText] = useState(buildingBlock.text || '');
-    useEffect(() => setText(buildingBlock.text || ''), [buildingBlock.text]);
-    
-    const onTextChange = e => {
-        const v = e.target.value;
-        setText(v);
-        updateBuildingBlockText(v);
-    };
+  const [text, setText] = useState(buildingBlock.text || "");
+  useEffect(() => setText(buildingBlock.text || ""), [buildingBlock.text]);
 
-    return (
-        <ContextActions actions={[
-            { text: expanded ? "Collapse" : "Expand", action: toggleGoalExpanded },
-            "seperator",
-            { text: "Delete Building Block", action: deleteBuildingBlock, destructive: true }
-        ]}>
-            <TableRow className="group bg-muted/50" >
-                <TableCell>
-                    <div className="flex items-start gap-2">
-                        <div className="w-full max-w-[800px]">
-                            <Textarea
-                                value={text}
-                                onChange={onTextChange}
-                                placeholder="Enter building block"
-                                className="min-w-[200px] h-9 min-h-9"
-                            />
-                        </div>
-                    </div>
-                </TableCell>
-                <TableCell className="align-top">
-                    <Input
-                        type="date"
-                        value={buildingBlock.dueDate ? buildingBlock.dueDate.toISOString().slice(0,10) : ''}
-                        onChange={updateBuildingBlockDueDate}
-                    />
-                </TableCell>
-                <TableCell className="align-top flex items-start justify-between">
-                    <StatusSelect
-                        value={buildingBlock.status}
-                        onValueChange={updateBuildingBlockStatus}
-                    />
+  const onTextChange = (e) => {
+    const v = e.target.value;
+    setText(v);
+    updateBuildingBlockText(v);
+  };
 
-                    <DropdownActions actions={[
-                        { text: "Delete Building Block", onClick: deleteBuildingBlock, destructive: true }
-                    ]}
-                    />
-                </TableCell>
-            </TableRow>
-        </ContextActions>
-    )
+  return (
+    <ContextActions
+      actions={[
+        { text: expanded ? "Collapse" : "Expand", action: toggleGoalExpanded },
+        "seperator",
+        {
+          text: "Delete Building Block",
+          action: deleteBuildingBlock,
+          destructive: true,
+        },
+      ]}
+    >
+      <TableRow className="group bg-muted/50">
+        <TableCell>
+          <div className="flex items-start gap-2">
+            <div className="w-full max-w-[800px]">
+              <Textarea
+                value={text}
+                onChange={onTextChange}
+                placeholder="Enter building block"
+                className="min-w-[200px] h-9 min-h-9"
+              />
+            </div>
+          </div>
+        </TableCell>
+        <TableCell className="align-top">
+          <Input
+            type="date"
+            value={
+              buildingBlock.dueDate
+                ? buildingBlock.dueDate.toISOString().slice(0, 10)
+                : ""
+            }
+            onChange={updateBuildingBlockDueDate}
+          />
+        </TableCell>
+        <TableCell className="align-top flex items-start justify-between">
+          <StatusSelect
+            value={buildingBlock.status}
+            onValueChange={updateBuildingBlockStatus}
+          />
+
+          <DropdownActions
+            actions={[
+              {
+                text: "Delete Building Block",
+                onClick: deleteBuildingBlock,
+                destructive: true,
+              },
+            ]}
+          />
+        </TableCell>
+      </TableRow>
+    </ContextActions>
+  );
 }

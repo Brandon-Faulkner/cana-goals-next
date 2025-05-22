@@ -1,33 +1,29 @@
 {
-    "name": "Cana Goals",
-    "short_name": "Cana Goals",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        }
-    ],
-    "theme_color": "#00aa63",
-    "background_color": "#2d2d2d",
-    "orientation": "any",
-    "display": "standalone",
-    "dir": "auto",
-    "lang": "en-US",
-    "scope": "https://goals.canachurch.com/",
-    "start_url": "https://goals.canachurch.com/",
-    "description": "A web app used to add, monitor and complete goals during 100 day or 300 day goal periods for Cana Church staff members.",
-    "id": "https://goals.canachurch.com/",
-    "display_override": [
-        "window-controls-overlay",
-        "standalone",
-        "browser"
-    ]
+  "name": "Cana Goals",
+  "short_name": "Cana Goals",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#00aa63",
+  "background_color": "#2d2d2d",
+  "orientation": "any",
+  "display": "standalone",
+  "dir": "auto",
+  "lang": "en-US",
+  "scope": "https://goals.canachurch.com/",
+  "start_url": "https://goals.canachurch.com/",
+  "description": "A web app used to add, monitor and complete goals during 100 day or 300 day goal periods for Cana Church staff members.",
+  "id": "https://goals.canachurch.com/",
+  "display_override": ["window-controls-overlay", "standalone", "browser"]
 }

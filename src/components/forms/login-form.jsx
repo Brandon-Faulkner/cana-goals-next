@@ -15,12 +15,11 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LogIn, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-
 import {
   signInWithEmailAndPassword,
   setPersistence,
   browserLocalPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -29,7 +28,7 @@ export function LoginForm({ className, ...props }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberMe: false
+    rememberMe: false,
   });
 
   const handleLogin = async (e) => {
@@ -44,8 +43,17 @@ export function LoginForm({ className, ...props }) {
 
     await toast.promise(
       (async () => {
-        await setPersistence(auth, formData.rememberMe ? browserLocalPersistence : browserSessionPersistence);
-        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        await setPersistence(
+          auth,
+          formData.rememberMe
+            ? browserLocalPersistence
+            : browserSessionPersistence
+        );
+        await signInWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
       })(),
       {
         error: () => {
@@ -76,7 +84,12 @@ export function LoginForm({ className, ...props }) {
                     type="email"
                     placeholder="email@canachurch.com"
                     value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
                     required
                   />
                 </div>
@@ -87,7 +100,12 @@ export function LoginForm({ className, ...props }) {
                     type="password"
                     placeholder="*********"
                     value={formData.password}
-                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }))
+                    }
                     required
                   />
                 </div>
@@ -96,21 +114,33 @@ export function LoginForm({ className, ...props }) {
                     <Checkbox
                       id="rememberMe"
                       checked={formData.rememberMe}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, rememberMe: checked }))}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          rememberMe: checked,
+                        }))
+                      }
                     />
-                    <label htmlFor="rememberMe"
+                    <label
+                      htmlFor="rememberMe"
                       className="cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                       Remember me
                     </label>
                   </div>
-                  <Link href={"./forgot-pass"}
-                    className="ml-auto text-sm underline-offset-4 hover:underline">
+                  <Link
+                    href={"./forgot-pass"}
+                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                  >
                     Forgot your password?
                   </Link>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? <LoaderCircle className="animate-spin" /> : <LogIn />}
+                  {loading ? (
+                    <LoaderCircle className="animate-spin" />
+                  ) : (
+                    <LogIn />
+                  )}
                   <span>{loading ? "Logging in..." : "Login"}</span>
                 </Button>
               </div>

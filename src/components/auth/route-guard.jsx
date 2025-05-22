@@ -19,7 +19,11 @@ export default function RouteGuard({ children, mode = "protected" }) {
     }
   }, [user, loading, mode, router]);
 
-  if (loading || (mode === "protected" && !user) || (mode === "public" && user)) {
+  if (
+    loading ||
+    (mode === "protected" && !user) ||
+    (mode === "public" && user)
+  ) {
     return <Spinner />;
   }
 

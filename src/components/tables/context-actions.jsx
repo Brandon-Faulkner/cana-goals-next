@@ -3,7 +3,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-  ContextMenuSeparator
+  ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 
 export function ContextActions({ children, actions = [] }) {
