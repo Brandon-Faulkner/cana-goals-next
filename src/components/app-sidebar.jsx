@@ -54,7 +54,7 @@ export function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className='flex items-center gap-1'>
+        <div className='flex items-center gap-1 h-[47px]'>
           <Image
             src='/android-chrome-192x192.png'
             alt='Cana Goals main logo'

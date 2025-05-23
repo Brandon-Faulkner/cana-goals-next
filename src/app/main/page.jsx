@@ -13,11 +13,12 @@ import { useSemesters } from '@/hooks/use-semesters';
 import { useSavingState } from '@/contexts/saving-state-context';
 import { useAuth } from '@/contexts/auth-provider';
 import { db } from '@/lib/firebase';
-import { collection, collectionGroup, onSnapshot, query, where } from 'firebase/firestore';
+import { doc, collection, collectionGroup, onSnapshot, query, where } from 'firebase/firestore';
 
 export default function Page() {
   const { user, userDoc, loading: loadingAuth } = useAuth();
   const { semesters, loading, currentSemester, setCurrentSemester } = useSemesters();
+  const [semesterFocus, setSemesterFocus] = useState('');
   const [goals, setGoals] = useState([]);
   const {
     savingState: { isSaving, hasError },
@@ -28,14 +29,24 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
+    if (!currentSemester?.id) return;
+    const semRef = doc(db, 'semesters', currentSemester.id);
+
+    const unsub = onSnapshot(semRef, (snap) => {
+      setSemesterFocus(snap.data()?.focus || '');
+    });
+
+    return () => unsub();
+  }, [currentSemester?.id]);
+
+  useEffect(() => {
     if (loadingAuth || !user || !currentSemester?.id) return;
     const semId = currentSemester.id;
 
     // Listen for goal collection changes
     const unsubGoals = onSnapshot(collection(db, 'semesters', semId, 'goals'), (snap) => {
-      setGoals((prev) => {
-        const newGoals = snap.docs.map((d) => {
-          // Find existing goal and preserve its buildingBlocks and comments
+      setGoals((prev = []) =>
+        snap.docs.map((d) => {
           const existingGoal = prev.find((g) => g.id === d.id);
           const data = d.data();
           return {
@@ -47,13 +58,8 @@ export default function Page() {
             buildingBlocks: existingGoal?.buildingBlocks || [],
             comments: existingGoal?.comments || [],
           };
-        });
-
-        // Preserve goals that might not be in the new snapshot
-        const preserveGoals = prev.filter((p) => !newGoals.some((n) => n.id === p.id));
-
-        return [...newGoals, ...preserveGoals];
-      });
+        }),
+      );
     });
 
     // Listen for building block collection changes
@@ -62,7 +68,7 @@ export default function Page() {
       where('semesterId', '==', semId),
     );
     const unsubBlocks = onSnapshot(blocksQuery, (snap) => {
-      setGoals((prev) =>
+      setGoals((prev = []) =>
         prev.map((goal) => ({
           ...goal,
           buildingBlocks: snap.docs
@@ -80,7 +86,7 @@ export default function Page() {
     // Listen for comment collection changes
     const commentsQuery = query(collectionGroup(db, 'comments'), where('semesterId', '==', semId));
     const unsubComments = onSnapshot(commentsQuery, (snap) => {
-      setGoals((prev) =>
+      setGoals((prev = []) =>
         prev.map((goal) => ({
           ...goal,
           comments: snap.docs
@@ -179,7 +185,7 @@ export default function Page() {
           </header>
           <div className='flex flex-1 flex-col gap-4 p-4'>
             <SemesterOverview semesterData={semesterStatuses} />
-            <GoalFocus />
+            <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
             {goals.length
               ? Object.entries(
                   goals.reduce((acc, goal) => {

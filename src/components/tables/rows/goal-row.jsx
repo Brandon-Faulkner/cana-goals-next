@@ -36,7 +36,7 @@ export function GoalRow({
         'seperator',
         { text: 'Add Goal', action: addGoal },
         { text: 'Add Building Block', action: addBuildingBlock },
-        { text: 'Add Comment', action: addComment },
+        { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
         'seperator',
         { text: 'Delete Goal', action: deleteGoal, destructive: true },
       ]}
@@ -61,7 +61,7 @@ export function GoalRow({
                 value={text}
                 onChange={onTextChange}
                 placeholder='Enter goal'
-                className='h-9 min-h-9 min-w-[200px]'
+                className='min-h-9 min-w-[200px]'
               />
             </div>
           </div>
@@ -78,14 +78,13 @@ export function GoalRow({
 
           <DropdownActions
             actions={[
-              {
-                text: expanded ? 'Collapse' : 'Expand',
-                onClick: toggleGoalExpanded,
-              },
-              { text: 'Add Building Block', onClick: addBuildingBlock },
-              { text: 'Add Comment', onClick: addComment },
+              { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
               'seperator',
-              { text: 'Delete Goal', onClick: deleteGoal, destructive: true },
+              { text: 'Add Goal', action: addGoal },
+              { text: 'Add Building Block', action: addBuildingBlock },
+              { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+              'seperator',
+              { text: 'Delete Goal', action: deleteGoal, destructive: true },
             ]}
           />
         </TableCell>

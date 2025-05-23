@@ -1,4 +1,6 @@
+import { useCallback } from 'react';
 import { toast } from 'sonner';
+import debounce from 'lodash/debounce';
 import {
   Table,
   TableBody,
@@ -8,73 +10,88 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ContextActions } from '@/components/tables/context-actions';
-import { CommentDialog } from '@/components/dialogs/comment-dialog';
+import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentRow } from '@/components/tables/rows/comment-row';
-import { addComment, updateCommentText, deleteComment } from '@/lib/comment-handlers';
+import { updateCommentText, deleteComment } from '@/lib/comment-handlers';
 
-export function CommentTable({ goal, semesterId, userId, userName, expanded, toggleGoalExpanded }) {
-  const handleAction = (promise, msgs) => toast.promise(promise, msgs);
+const useDebouncedCommentText = (semesterId, goalId) => {
+  return useCallback(
+    debounce((id, text) => {
+      toast.promise(updateCommentText(semesterId, goalId, id, text), {
+        loading: 'Saving comment changes...',
+        success: 'Comment changes saved',
+        error: 'Failed to save comment changes',
+      });
+    }, 1000),
+    [semesterId, goalId],
+  );
+};
+
+export function CommentTable({ goal, semesterId, expanded, toggleGoalExpanded, addComment }) {
+  const debouncedCommentText = useDebouncedCommentText(semesterId, goal.id);
+
+  const handleDeleteComment = (commentId) => {
+    toast.promise(deleteComment(semesterId, goal.id, commentId), {
+      loading: 'Deleting comment...',
+      success: 'Comment deleted',
+      error: 'Failed to delete comment',
+    });
+  };
 
   return (
     <ContextActions
       actions={[
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+        'seperator',
         {
           text: 'Add Comment',
           dialog: true,
-          dialogContent: (props) => (
-            <CommentDialog
-              addComment={(text) => {
-                return handleAction(addComment(semesterId, goal.id, userId, userName, text), {
-                  loading: 'Adding new comment...',
-                  success: () => {
-                    props.onSuccess?.(true);
-                    return 'New comment added';
-                  },
-                  error: () => {
-                    props.onSuccess?.(false);
-                    return 'Failed to add new comment';
-                  },
-                });
-              }}
-              {...props}
-            />
-          ),
+          dialogContent: (props) => addComment(props),
         },
       ]}
     >
       <Table>
         <TableHeader>
           <TableRow className='bg-muted/70'>
-            <TableHead colSpan={3} className='text-base font-medium'>
-              Comments
+            <TableHead
+              colSpan={3}
+              className='flex w-auto items-center justify-between text-base font-medium'
+            >
+              <span>Comments</span>
+              <DropdownActions
+                actions={[
+                  { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+                  'seperator',
+                  {
+                    text: 'Add Comment',
+                    dialog: true,
+                    dialogContent: (props) => addComment(props),
+                  },
+                ]}
+              />
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {goal.comments.length > 0 ? (
-            goal.comments.map((comment) => (
-              <CommentRow
-                key={comment.id}
-                comment={comment}
-                expanded={expanded}
-                toggleGoalExpanded={toggleGoalExpanded}
-                updateCommentText={(text) =>
-                  updateCommentText(semesterId, goal.id, comment.id, text)
-                }
-                deleteComment={() =>
-                  handleAction(deleteComment(semesterId, goal.id, comment.id), {
-                    loading: 'Deleting comment...',
-                    success: 'Comment deleted',
-                    error: 'Failed to delete comment',
-                  })
-                }
-              />
-            ))
+            goal.comments
+              .slice()
+              .sort((a, b) => a.createdAt - b.createdAt)
+              .map((comment) => (
+                <CommentRow
+                  key={comment.id}
+                  comment={comment}
+                  expanded={expanded}
+                  toggleGoalExpanded={toggleGoalExpanded}
+                  addComment={addComment}
+                  updateCommentText={(text) => debouncedCommentText(comment.id, text)}
+                  deleteComment={() => handleDeleteComment(comment.id)}
+                />
+              ))
           ) : (
             <TableRow className='bg-muted/50'>
-              <TableCell colSpan={3} className='text-muted-foreground py-4 text-center'>
-                No comments yet. Right-click to add one.
+              <TableCell colSpan={3} className='text-muted-foreground text-center'>
+                Right-click or use the 3-dot menu to add a comment.
               </TableCell>
             </TableRow>
           )}

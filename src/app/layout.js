@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <SavingStateProvider>
               {children}
-              <Toaster position='top-right' richColors closeButton />
+              <Toaster position='top-right' richColors />
             </SavingStateProvider>
           </AuthProvider>
         </ThemeProvider>

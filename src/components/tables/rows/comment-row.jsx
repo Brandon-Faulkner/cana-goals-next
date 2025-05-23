@@ -8,6 +8,7 @@ export function CommentRow({
   comment,
   expanded,
   toggleGoalExpanded,
+  addComment,
   updateCommentText,
   deleteComment,
 }) {
@@ -19,11 +20,13 @@ export function CommentRow({
     setText(text);
     updateCommentText(text);
   };
-  
+
   return (
     <ContextActions
       actions={[
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+        'seperator',
+        { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
         'seperator',
         { text: 'Delete Comment', action: deleteComment, destructive: true },
       ]}
@@ -40,11 +43,11 @@ export function CommentRow({
 
             <DropdownActions
               actions={[
-                {
-                  text: 'Delete Comment',
-                  onClick: deleteComment,
-                  destructive: true,
-                },
+                { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+                'seperator',
+                { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+                'seperator',
+                { text: 'Delete Comment', action: deleteComment, destructive: true },
               ]}
             />
           </div>

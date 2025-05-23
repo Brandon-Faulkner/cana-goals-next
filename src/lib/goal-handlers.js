@@ -10,6 +10,19 @@ import {
 import { db } from '@/lib/firebase';
 import { setSavingState } from '@/lib/saving-state-controller';
 
+export const updateSemesterFocus = async (semesterId, focus) => {
+  setSavingState({ isSaving: true, hasError: false });
+  try {
+    const ref = doc(db, 'semesters', semesterId);
+    return await updateDoc(ref, { focus });
+  } catch (error) {
+    setSavingState({ isSaving: false, hasError: true });
+    throw error;
+  } finally {
+    setSavingState({ isSaving: false, hasError: false });
+  }
+};
+
 export const addGoal = async (semesterId, userId, userName, initialDueDate) => {
   setSavingState({ isSaving: true, hasError: false });
   try {
@@ -87,4 +100,8 @@ export const deleteGoal = async (semesterId, goalId) => {
 
 export function toggleGoalExpanded(goalId, setExpandedGoals) {
   setExpandedGoals((prev) => ({ ...prev, [goalId]: !prev[goalId] }));
+}
+
+export function toggleAllGoalsExpanded(goals, setExpandedGoals, expand) {
+  setExpandedGoals(goals.reduce((acc, g) => ({ ...acc, [g.id]: expand }), {}));
 }

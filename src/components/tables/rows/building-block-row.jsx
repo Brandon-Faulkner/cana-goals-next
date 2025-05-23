@@ -3,7 +3,6 @@ import { ContextActions } from '@/components/tables/context-actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { formatDateForInput } from '../goal-table';
 import { StatusSelect } from '@/components/tables/status-select';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 
@@ -11,6 +10,7 @@ export function BuildingBlockRow({
   buildingBlock,
   expanded,
   toggleGoalExpanded,
+  addBuildingBlock,
   updateBuildingBlockText,
   updateBuildingBlockDueDate,
   updateBuildingBlockStatus,
@@ -30,11 +30,9 @@ export function BuildingBlockRow({
       actions={[
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
         'seperator',
-        {
-          text: 'Delete Building Block',
-          action: deleteBuildingBlock,
-          destructive: true,
-        },
+        { text: 'Add Building Block', action: addBuildingBlock },
+        'seperator',
+        { text: 'Delete Building Block', action: deleteBuildingBlock, destructive: true },
       ]}
     >
       <TableRow className='group bg-muted/50'>
@@ -45,7 +43,7 @@ export function BuildingBlockRow({
                 value={text}
                 onChange={onTextChange}
                 placeholder='Enter building block'
-                className='h-9 min-h-9 min-w-[200px]'
+                className='min-h-9 min-w-[200px]'
               />
             </div>
           </div>
@@ -62,11 +60,11 @@ export function BuildingBlockRow({
 
           <DropdownActions
             actions={[
-              {
-                text: 'Delete Building Block',
-                onClick: deleteBuildingBlock,
-                destructive: true,
-              },
+              { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+              'seperator',
+              { text: 'Add Building Block', action: addBuildingBlock },
+              'seperator',
+              { text: 'Delete Building Block', action: deleteBuildingBlock, destructive: true },
             ]}
           />
         </TableCell>

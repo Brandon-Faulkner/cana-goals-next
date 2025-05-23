@@ -1,3 +1,4 @@
+import { useState, Fragment } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,30 +8,58 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreVertical } from 'lucide-react';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 export function DropdownActions({ actions = [] }) {
+  const [openDialogKey, setOpenDialogKey] = useState(null);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant='ghost' size='icon' className='ml-2'>
-          <MoreVertical className='h-4 w-4' />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        {actions.map((action, i) =>
-          action === 'seperator' ? (
-            <DropdownMenuSeparator key={i} />
-          ) : (
-            <DropdownMenuItem
-              key={action.text}
-              onClick={action.onClick}
-              className={action.destructive ? 'text-destructive' : ''}
-            >
-              {action.text}
-            </DropdownMenuItem>
-          ),
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant='ghost' size='icon' className='ml-2'>
+            <MoreVertical className='h-4 w-4' />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end'>
+          {actions.map((action, i) =>
+            action === 'seperator' ? (
+              <DropdownMenuSeparator key={i} />
+            ) : action.dialog ? (
+              <DialogTrigger
+                asChild
+                key={action.text}
+                onClick={() => setOpenDialogKey(action.text)}
+                className={action.destructive ? 'text-destructive' : ''}
+              >
+                <DropdownMenuItem>{action.text}</DropdownMenuItem>
+              </DialogTrigger>
+            ) : (
+              <DropdownMenuItem
+                key={action.text}
+                onClick={action.action}
+                className={action.destructive ? 'text-destructive' : ''}
+              >
+                {action.text}
+              </DropdownMenuItem>
+            ),
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {actions.map((action) =>
+        action.dialog && action.text === openDialogKey ? (
+          <Fragment key={action.text}>
+            {action.dialogContent({
+              onSuccess: (success) => {
+                if (success) {
+                  setOpenDialogKey(null);
+                }
+              },
+            })}
+          </Fragment>
+        ) : null,
+      )}
+    </Dialog>
   );
 }

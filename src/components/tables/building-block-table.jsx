@@ -10,16 +10,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ContextActions } from '@/components/tables/context-actions';
+import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { BuildingBlockRow } from '@/components/tables/rows/building-block-row';
 import {
-  addBuildingBlock,
   updateBuildingBlockText,
   updateBuildingBlockDueDate,
   updateBuildingBlockStatus,
   deleteBuildingBlock,
 } from '@/lib/building-block-handlers';
 
-const useDebouncedTextUpdater = (semesterId, goalId) => {
+const useDebouncedBlockText = (semesterId, goalId) => {
   return useCallback(
     debounce((id, text) => {
       toast.promise(updateBuildingBlockText(semesterId, goalId, id, text), {
@@ -28,7 +28,7 @@ const useDebouncedTextUpdater = (semesterId, goalId) => {
         error: 'Failed to save building block changes',
       });
     }, 1000),
-    [semesterId],
+    [semesterId, goalId],
   );
 };
 
@@ -37,24 +37,40 @@ export function BuildingBlockTable({
   semesterId,
   expanded,
   toggleGoalExpanded,
-  initialDueDate,
+  addBuildingBlock,
 }) {
-  const debouncedUpdate = useDebouncedTextUpdater(semesterId, goal.id);
-  const handleAction = (promise, msgs) => toast.promise(promise, msgs);
+  const debouncedBlockText = useDebouncedBlockText(semesterId, goal.id);
+
+  const handleUpdateBuildingBlockDate = (blockId, date) => {
+    toast.promise(updateBuildingBlockDueDate(semesterId, goal.id, blockId, date), {
+      loading: 'Saving building block due date...',
+      success: 'Building block due date saved',
+      error: 'Failed to save building block due date',
+    });
+  };
+
+  const handleUpdateBuildingBlockStatus = (blockId, status) => {
+    toast.promise(updateBuildingBlockStatus(semesterId, goal.id, blockId, status), {
+      loading: 'Saving building block status...',
+      success: 'Building block status saved',
+      error: 'Failed to save building block status',
+    });
+  };
+
+  const handleDeleteBuildingBlock = (blockId) => {
+    toast.promise(deleteBuildingBlock(semesterId, goal.id, blockId), {
+      loading: 'Deleting building block...',
+      success: 'Building block deleted',
+      error: 'Failed to delete building block',
+    });
+  };
 
   return (
     <ContextActions
       actions={[
         { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-        {
-          text: 'Add Building Block',
-          action: () =>
-            handleAction(addBuildingBlock(semesterId, goal.id, initialDueDate), {
-              loading: 'Adding new building block...',
-              success: 'New building block added',
-              error: 'Failed to add new building block',
-            }),
-        },
+        'seperator',
+        { text: 'Add Building Block', action: addBuildingBlock },
       ]}
     >
       <Table>
@@ -62,45 +78,44 @@ export function BuildingBlockTable({
           <TableRow className='bg-muted/70'>
             <TableHead className='w-1/2 text-base font-medium'>Building Blocks</TableHead>
             <TableHead className='w-1/4 text-base font-medium'>Due Date</TableHead>
-            <TableHead className='w-1/4 text-base font-medium'>Status</TableHead>
+            <TableHead className='flex w-auto items-center justify-between text-base font-medium'>
+              <span>Status</span>
+              <DropdownActions
+                actions={[
+                  { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+                  'seperator',
+                  { text: 'Add Building Block', action: addBuildingBlock },
+                ]}
+              />
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {goal.buildingBlocks.length > 0 ? (
-            goal.buildingBlocks.map((block) => (
-              <BuildingBlockRow
-                key={block.id}
-                buildingBlock={block}
-                expanded={expanded}
-                toggleGoalExpanded={toggleGoalExpanded}
-                updateBuildingBlockText={(text) => debouncedUpdate(block.id, text)}
-                updateBuildingBlockDueDate={(date) =>
-                  handleAction(updateBuildingBlockDueDate(semesterId, goal.id, block.id, date), {
-                    loading: 'Saving building block due date...',
-                    success: 'Building block due date saved',
-                    error: 'Failed to save building block due date',
-                  })
-                }
-                updateBuildingBlockStatus={(status) =>
-                  handleAction(updateBuildingBlockStatus(semesterId, goal.id, block.id, status), {
-                    loading: 'Saving building block status...',
-                    success: 'Building block status saved',
-                    error: 'Failed to save building block status',
-                  })
-                }
-                deleteBuildingBlock={() =>
-                  handleAction(deleteBuildingBlock(semesterId, goal.id, block.id), {
-                    loading: 'Deleting building block...',
-                    success: 'Building block deleted',
-                    error: 'Failed to delete building block',
-                  })
-                }
-              />
-            ))
+            goal.buildingBlocks
+              .slice()
+              .sort((a, b) => a.createdAt - b.createdAt)
+              .map((block) => (
+                <BuildingBlockRow
+                  key={block.id}
+                  buildingBlock={block}
+                  expanded={expanded}
+                  toggleGoalExpanded={toggleGoalExpanded}
+                  addBuildingBlock={addBuildingBlock}
+                  updateBuildingBlockText={(text) => debouncedBlockText(block.id, text)}
+                  updateBuildingBlockDueDate={(date) =>
+                    handleUpdateBuildingBlockDate(block.id, date)
+                  }
+                  updateBuildingBlockStatus={(status) =>
+                    handleUpdateBuildingBlockStatus(block.id, status)
+                  }
+                  deleteBuildingBlock={() => handleDeleteBuildingBlock(block.id)}
+                />
+              ))
           ) : (
             <TableRow className='bg-muted/50'>
-              <TableCell colSpan={3} className='text-muted-foreground py-4 text-center'>
-                No building blocks yet. Right-click to add one.
+              <TableCell colSpan={3} className='text-muted-foreground text-center'>
+                Right-click or use the 3-dot menu to add a building block.
               </TableCell>
             </TableRow>
           )}
