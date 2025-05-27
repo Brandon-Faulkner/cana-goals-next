@@ -32,7 +32,12 @@ export function BuildingBlockRow({
         'seperator',
         { text: 'Add Building Block', action: addBuildingBlock },
         'seperator',
-        { text: 'Delete Building Block', action: deleteBuildingBlock, destructive: true },
+        {
+          text: 'Delete Building Block',
+          dialog: true,
+          dialogContent: (props) => deleteBuildingBlock(props),
+          destructive: true,
+        },
       ]}
     >
       <TableRow className='group bg-muted/50'>
@@ -64,7 +69,12 @@ export function BuildingBlockRow({
               'seperator',
               { text: 'Add Building Block', action: addBuildingBlock },
               'seperator',
-              { text: 'Delete Building Block', action: deleteBuildingBlock, destructive: true },
+              {
+                text: 'Delete Building Block',
+                dialog: true,
+                dialogContent: (props) => deleteBuildingBlock(props),
+                destructive: true,
+              },
             ]}
           />
         </TableCell>

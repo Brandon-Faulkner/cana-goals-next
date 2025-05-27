@@ -12,6 +12,7 @@ import {
 import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { BuildingBlockRow } from '@/components/tables/rows/building-block-row';
+import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import {
   updateBuildingBlockText,
   updateBuildingBlockDueDate,
@@ -57,12 +58,26 @@ export function BuildingBlockTable({
     });
   };
 
-  const handleDeleteBuildingBlock = (blockId) => {
-    toast.promise(deleteBuildingBlock(semesterId, goal.id, blockId), {
-      loading: 'Deleting building block...',
-      success: 'Building block deleted',
-      error: 'Failed to delete building block',
-    });
+  const handleDeleteBuildingBlock = (props, blockId) => {
+    return (
+      <DeleteDialog
+        triggerText='Delete Building Block'
+        deleteAction={() => {
+          return toast.promise(deleteBuildingBlock(semesterId, goal.id, blockId), {
+            loading: 'Deleting building block...',
+            success: () => {
+              props.onSuccess?.(true);
+              return 'Building block deleted';
+            },
+            error: () => {
+              props.onSuccess?.(false);
+              return 'Failed to delete building block';
+            },
+          });
+        }}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -109,7 +124,7 @@ export function BuildingBlockTable({
                   updateBuildingBlockStatus={(status) =>
                     handleUpdateBuildingBlockStatus(block.id, status)
                   }
-                  deleteBuildingBlock={() => handleDeleteBuildingBlock(block.id)}
+                  deleteBuildingBlock={(props) => handleDeleteBuildingBlock(props, block.id)}
                 />
               ))
           ) : (

@@ -28,7 +28,12 @@ export function CommentRow({
         'seperator',
         { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
         'seperator',
-        { text: 'Delete Comment', action: deleteComment, destructive: true },
+        {
+          text: 'Delete Comment',
+          dialog: true,
+          dialogContent: (props) => deleteComment(props),
+          destructive: true,
+        },
       ]}
     >
       <TableRow className='group bg-muted/50'>
@@ -47,7 +52,12 @@ export function CommentRow({
                 'seperator',
                 { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
                 'seperator',
-                { text: 'Delete Comment', action: deleteComment, destructive: true },
+                {
+                  text: 'Delete Comment',
+                  dialog: true,
+                  dialogContent: (props) => deleteComment(props),
+                  destructive: true,
+                },
               ]}
             />
           </div>

@@ -22,7 +22,6 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/auth-provider';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -34,7 +33,6 @@ export function AppSidebar({
   ...props
 }) {
   const router = useRouter();
-  const { user, loading } = useAuth();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {

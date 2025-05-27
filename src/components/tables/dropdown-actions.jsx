@@ -9,9 +9,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { MoreVertical } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { useBlockContextMenu } from '@/hooks/use-block-context-menu';
 
 export function DropdownActions({ actions = [] }) {
   const [openDialogKey, setOpenDialogKey] = useState(null);
+  useBlockContextMenu(!!openDialogKey);
 
   return (
     <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>

@@ -27,6 +27,7 @@ import { addComment } from '@/lib/comment-handlers';
 import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentDialog } from '@/components/dialogs/comment-dialog';
+import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 
 const useDebouncedGoalText = (semesterId) => {
   return useCallback(
@@ -99,12 +100,26 @@ export function GoalTable({ goals, userId, userName, currentSemester }) {
     );
   };
 
-  const handleDeleteGoal = (goalId) => {
-    toast.promise(deleteGoal(currentSemester.id, goalId), {
-      loading: 'Deleting goal...',
-      success: 'Goal deleted',
-      error: 'Failed to delete goal',
-    });
+  const handleDeleteGoal = (props, goalId) => {
+    return (
+      <DeleteDialog
+        triggerText='Delete Goal'
+        deleteAction={() => {
+          return toast.promise(deleteGoal(currentSemester.id, goalId), {
+            loading: 'Deleting goal...',
+            success: () => {
+              props.onSuccess?.(true);
+              return 'Goal deleted';
+            },
+            error: () => {
+              props.onSuccess?.(false);
+              return 'Failed to delete goal';
+            },
+          });
+        }}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -155,7 +170,7 @@ export function GoalTable({ goals, userId, userName, currentSemester }) {
                     updateGoalStatus={(status) => handleUpdateGoalStatus(goal.id, status)}
                     addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
                     addComment={(props) => handleAddComment(props, goal.id)}
-                    deleteGoal={() => handleDeleteGoal(goal.id)}
+                    deleteGoal={(props) => handleDeleteGoal(props, goal.id)}
                   />
 
                   {expandedGoals[goal.id] && (

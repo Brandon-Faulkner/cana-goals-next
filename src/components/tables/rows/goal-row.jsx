@@ -38,7 +38,12 @@ export function GoalRow({
         { text: 'Add Building Block', action: addBuildingBlock },
         { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
         'seperator',
-        { text: 'Delete Goal', action: deleteGoal, destructive: true },
+        {
+          text: 'Delete Goal',
+          dialog: true,
+          dialogContent: (props) => deleteGoal(props),
+          destructive: true,
+        },
       ]}
     >
       <TableRow className='group'>
@@ -84,7 +89,12 @@ export function GoalRow({
               { text: 'Add Building Block', action: addBuildingBlock },
               { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
               'seperator',
-              { text: 'Delete Goal', action: deleteGoal, destructive: true },
+              {
+                text: 'Delete Goal',
+                dialog: true,
+                dialogContent: (props) => deleteGoal(props),
+                destructive: true,
+              },
             ]}
           />
         </TableCell>

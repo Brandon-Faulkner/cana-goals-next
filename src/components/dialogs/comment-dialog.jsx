@@ -12,7 +12,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 
-export function CommentDialog({ forContextMenu = true, addComment, onSuccess }) {
+export function CommentDialog({ forContextMenu = true, addComment }) {
   const [text, setText] = useState('');
 
   const dialogContent = (

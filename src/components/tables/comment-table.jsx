@@ -12,6 +12,7 @@ import {
 import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentRow } from '@/components/tables/rows/comment-row';
+import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { updateCommentText, deleteComment } from '@/lib/comment-handlers';
 
 const useDebouncedCommentText = (semesterId, goalId) => {
@@ -30,12 +31,26 @@ const useDebouncedCommentText = (semesterId, goalId) => {
 export function CommentTable({ goal, semesterId, expanded, toggleGoalExpanded, addComment }) {
   const debouncedCommentText = useDebouncedCommentText(semesterId, goal.id);
 
-  const handleDeleteComment = (commentId) => {
-    toast.promise(deleteComment(semesterId, goal.id, commentId), {
-      loading: 'Deleting comment...',
-      success: 'Comment deleted',
-      error: 'Failed to delete comment',
-    });
+  const handleDeleteComment = (props, commentId) => {
+    return (
+      <DeleteDialog
+        triggerText='Delete Comment'
+        deleteAction={() => {
+          return toast.promise(deleteComment(semesterId, goal.id, commentId), {
+            loading: 'Deleting comment...',
+            success: () => {
+              props.onSuccess?.(true);
+              return 'Comment deleted';
+            },
+            error: () => {
+              props.onSuccess?.(false);
+              return 'Failed to delete comment';
+            },
+          });
+        }}
+        {...props}
+      />
+    );
   };
 
   return (
@@ -85,7 +100,7 @@ export function CommentTable({ goal, semesterId, expanded, toggleGoalExpanded, a
                   toggleGoalExpanded={toggleGoalExpanded}
                   addComment={addComment}
                   updateCommentText={(text) => debouncedCommentText(comment.id, text)}
-                  deleteComment={() => handleDeleteComment(comment.id)}
+                  deleteComment={(props) => handleDeleteComment(props, comment.id)}
                 />
               ))
           ) : (
