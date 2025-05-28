@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { toast } from 'sonner';
 import debounce from 'lodash/debounce';
 import {
@@ -33,7 +33,7 @@ const useDebouncedBlockText = (semesterId, goalId) => {
   );
 };
 
-export function BuildingBlockTable({
+export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   goal,
   semesterId,
   expanded,
@@ -138,4 +138,4 @@ export function BuildingBlockTable({
       </Table>
     </ContextActions>
   );
-}
+});

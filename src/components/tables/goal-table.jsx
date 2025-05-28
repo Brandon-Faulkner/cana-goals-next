@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, Fragment } from 'react';
+import React, { useState, useCallback, Fragment } from 'react';
 import { toast } from 'sonner';
 import debounce from 'lodash/debounce';
 import {
@@ -42,7 +42,12 @@ const useDebouncedGoalText = (semesterId) => {
   );
 };
 
-export function GoalTable({ goals, userId, userName, currentSemester }) {
+export const GoalTable = React.memo(function GoalTable({
+  goals,
+  userId,
+  userName,
+  currentSemester,
+}) {
   const [expandedGoals, setExpandedGoals] = useState({});
   const allExpanded = goals.length > 0 && goals.every((g) => expandedGoals[g.id]);
   const debouncedGoalText = useDebouncedGoalText(currentSemester.id);
@@ -209,4 +214,4 @@ export function GoalTable({ goals, userId, userName, currentSemester }) {
       </div>
     </ContextActions>
   );
-}
+});

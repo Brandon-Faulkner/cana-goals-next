@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { toast } from 'sonner';
 import debounce from 'lodash/debounce';
 import {
@@ -28,7 +28,13 @@ const useDebouncedCommentText = (semesterId, goalId) => {
   );
 };
 
-export function CommentTable({ goal, semesterId, expanded, toggleGoalExpanded, addComment }) {
+export const CommentTable = React.memo(function CommentTable({
+  goal,
+  semesterId,
+  expanded,
+  toggleGoalExpanded,
+  addComment,
+}) {
   const debouncedCommentText = useDebouncedCommentText(semesterId, goal.id);
 
   const handleDeleteComment = (props, commentId) => {
@@ -114,4 +120,4 @@ export function CommentTable({ goal, semesterId, expanded, toggleGoalExpanded, a
       </Table>
     </ContextActions>
   );
-}
+});

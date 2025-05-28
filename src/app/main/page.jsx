@@ -4,108 +4,43 @@ import RouteGuard from '@/components/auth/route-guard';
 import { AppSidebar } from '@/components/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronsRight, CircleCheck, Loader2, XCircle } from 'lucide-react';
 import { SemesterOverview, chartConfig } from '@/components/semester-overview';
 import { GoalFocus } from '@/components/goal-focus';
-import { GoalTable } from '@/components/tables/goal-table';
+import { GoalsCard } from '@/components/goals-card';
 import { useSemesters } from '@/hooks/use-semesters';
+import { useGoalsListener } from '@/hooks/use-goals-listener';
 import { useSavingState } from '@/contexts/saving-state-context';
 import { useAuth } from '@/contexts/auth-provider';
 import { db } from '@/lib/firebase';
-import { doc, collection, collectionGroup, onSnapshot, query, where } from 'firebase/firestore';
+import {
+  doc,
+  onSnapshot,
+} from 'firebase/firestore';
 
 export default function Page() {
   const { user, userDoc, loading: loadingAuth } = useAuth();
   const { semesters, loading, currentSemester, setCurrentSemester } = useSemesters();
   const [semesterFocus, setSemesterFocus] = useState('');
-  const [goals, setGoals] = useState([]);
+  const { goals, loading: goalsLoading } = useGoalsListener(currentSemester?.id, user, loadingAuth);
   const {
     savingState: { isSaving, hasError },
-  } = useSavingState();
+  } = useSavingState();  
 
   useEffect(() => {
     document.title = 'Cana Goals | Dashboard';
   }, []);
 
   useEffect(() => {
-    if (!currentSemester?.id) return;
-    const semRef = doc(db, 'semesters', currentSemester.id);
-
-    const unsub = onSnapshot(semRef, (snap) => {
-      setSemesterFocus(snap.data()?.focus || '');
-    });
-
-    return () => unsub();
+    // Fetch semester focus
+    if (currentSemester?.id) {
+      const focusRef = doc(db, 'semesters', currentSemester.id);
+      const unsubFocus = onSnapshot(focusRef, (snap) => {
+        setSemesterFocus(snap.data()?.focus || '');
+      });
+      return () => unsubFocus();
+    }
   }, [currentSemester?.id]);
-
-  useEffect(() => {
-    if (loadingAuth || !user || !currentSemester?.id) return;
-    const semId = currentSemester.id;
-
-    // Listen for goal collection changes
-    const unsubGoals = onSnapshot(collection(db, 'semesters', semId, 'goals'), (snap) => {
-      setGoals((prev = []) =>
-        snap.docs.map((d) => {
-          const existingGoal = prev.find((g) => g.id === d.id);
-          const data = d.data();
-          return {
-            id: d.id,
-            ...data,
-            text: data.text || '',
-            createdAt: data.createdAt?.toDate() || new Date(),
-            dueDate: data.dueDate?.toDate() || new Date(),
-            buildingBlocks: existingGoal?.buildingBlocks || [],
-            comments: existingGoal?.comments || [],
-          };
-        }),
-      );
-    });
-
-    // Listen for building block collection changes
-    const blocksQuery = query(
-      collectionGroup(db, 'buildingBlocks'),
-      where('semesterId', '==', semId),
-    );
-    const unsubBlocks = onSnapshot(blocksQuery, (snap) => {
-      setGoals((prev = []) =>
-        prev.map((goal) => ({
-          ...goal,
-          buildingBlocks: snap.docs
-            .filter((b) => b.data().goalId === goal.id)
-            .map((b) => ({
-              id: b.id,
-              ...b.data(),
-              createdAt: b.data().createdAt?.toDate(),
-              dueDate: b.data().dueDate?.toDate(),
-            })),
-        })),
-      );
-    });
-
-    // Listen for comment collection changes
-    const commentsQuery = query(collectionGroup(db, 'comments'), where('semesterId', '==', semId));
-    const unsubComments = onSnapshot(commentsQuery, (snap) => {
-      setGoals((prev = []) =>
-        prev.map((goal) => ({
-          ...goal,
-          comments: snap.docs
-            .filter((c) => c.data().goalId === goal.id)
-            .map((c) => ({
-              id: c.id,
-              ...c.data(),
-              createdAt: c.data().createdAt?.toDate(),
-            })),
-        })),
-      );
-    });
-
-    return () => {
-      unsubGoals();
-      unsubBlocks();
-      unsubComments();
-    };
-  }, [currentSemester?.id, user, loadingAuth]);
 
   const semesterStatuses = useMemo(() => {
     const statuses = ['Not Working On', 'Working On', 'Completed', 'Waiting', 'Stuck'];
@@ -186,42 +121,42 @@ export default function Page() {
           <div className='flex flex-1 flex-col gap-4 p-4'>
             <SemesterOverview semesterData={semesterStatuses} />
             <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
-            {goals.length
-              ? Object.entries(
-                  goals.reduce((acc, goal) => {
-                    (acc[goal.userId] ||= []).push(goal);
-                    return acc;
-                  }, {}),
-                ).map(([userId, userGoals]) => (
-                  <Card key={userId}>
-                    <CardHeader>
-                      <CardTitle className='text-lg'>{userGoals[0].userName}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <GoalTable
-                        userId={userId}
-                        userName={userGoals[0].userName}
-                        goals={userGoals}
-                        currentSemester={currentSemester}
-                      />
-                    </CardContent>
-                  </Card>
-                ))
-              : !loading && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className='text-lg'>{userDoc?.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <GoalTable
-                        userId={userDoc?.id}
-                        userName={userDoc?.name}
-                        goals={[]}
-                        currentSemester={currentSemester}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
+
+            {/* Always render the current user\'s table first */}
+            {userDoc && currentSemester && (
+              <GoalsCard
+                key={userDoc.id}
+                userId={userDoc.id}
+                userName={userDoc.name}
+                goals={goals.filter((g) => g.userId === userDoc.id)}
+                currentSemester={currentSemester}
+              />
+            )}
+
+            {/* Render other users tables if they have goals */}
+            {Object.entries(
+              goals.reduce((acc, goal) => {
+                if (!acc[goal.userId]) {
+                  acc[goal.userId] = {
+                    userId: goal.userId,
+                    userName: goal.userName,
+                    goals: [],
+                  };
+                }
+                acc[goal.userId].goals.push(goal);
+                return acc;
+              }, {})
+            )
+              .filter(([_, v]) => v.goals.length > 0)
+              .map(([userId, { userName, goals }]) => (
+                <GoalsCard
+                  key={userId}
+                  userId={userId}
+                  userName={userName}
+                  goals={goals}
+                  currentSemester={currentSemester}
+                />
+              ))}
           </div>
         </SidebarInset>
       </SidebarProvider>

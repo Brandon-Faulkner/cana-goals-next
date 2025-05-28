@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ContextActions } from '@/components/tables/context-actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,7 +6,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 
-export function BuildingBlockRow({
+export const BuildingBlockRow = React.memo(function BuildingBlockRow({
   buildingBlock,
   expanded,
   toggleGoalExpanded,
@@ -81,4 +81,4 @@ export function BuildingBlockRow({
       </TableRow>
     </ContextActions>
   );
-}
+});

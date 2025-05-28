@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ContextActions } from '@/components/tables/context-actions';
 import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { DropdownActions } from '../dropdown-actions';
 
-export function CommentRow({
+export const CommentRow = React.memo(function CommentRow({
   comment,
   expanded,
   toggleGoalExpanded,
@@ -65,4 +65,4 @@ export function CommentRow({
       </TableRow>
     </ContextActions>
   );
-}
+});

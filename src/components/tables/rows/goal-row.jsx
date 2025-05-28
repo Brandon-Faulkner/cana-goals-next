@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ContextActions } from '@/components/tables/context-actions';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 
-export function GoalRow({
+export const GoalRow = React.memo(function GoalRow({
   goal,
   expanded,
   toggleGoalExpanded,
@@ -101,4 +101,4 @@ export function GoalRow({
       </TableRow>
     </ContextActions>
   );
-}
+});
