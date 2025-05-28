@@ -33,6 +33,7 @@ export function DropdownActions({ actions = [] }) {
                 key={action.text}
                 onClick={() => setOpenDialogKey(action.text)}
                 className={action.destructive ? 'text-destructive' : ''}
+                disabled={action.disabled}
               >
                 <DropdownMenuItem>{action.text}</DropdownMenuItem>
               </DialogTrigger>
@@ -41,6 +42,7 @@ export function DropdownActions({ actions = [] }) {
                 key={action.text}
                 onClick={action.action}
                 className={action.destructive ? 'text-destructive' : ''}
+                disabled={action.disabled}
               >
                 {action.text}
               </DropdownMenuItem>

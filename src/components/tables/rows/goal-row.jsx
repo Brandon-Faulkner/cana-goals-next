@@ -10,6 +10,7 @@ import { DropdownActions } from '@/components/tables/dropdown-actions';
 
 export const GoalRow = React.memo(function GoalRow({
   goal,
+  isOwner,
   expanded,
   toggleGoalExpanded,
   addGoal,
@@ -24,28 +25,30 @@ export const GoalRow = React.memo(function GoalRow({
   useEffect(() => setText(goal.text || ''), [goal.text]);
 
   const onTextChange = (e) => {
+    if (!isOwner) return;
     const text = e.target.value;
     setText(text);
     updateGoalText(text);
   };
 
+  const contextActions = [
+    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    'seperator',
+    { text: 'Add Goal', action: addGoal, disabled: !isOwner },
+    { text: 'Add Building Block', action: addBuildingBlock, disabled: !isOwner },
+    { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+    'seperator',
+    {
+      text: 'Delete Goal',
+      dialog: true,
+      dialogContent: (props) => deleteGoal(props),
+      destructive: true,
+      disabled: !isOwner,
+    },
+  ];
+
   return (
-    <ContextActions
-      actions={[
-        { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-        'seperator',
-        { text: 'Add Goal', action: addGoal },
-        { text: 'Add Building Block', action: addBuildingBlock },
-        { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
-        'seperator',
-        {
-          text: 'Delete Goal',
-          dialog: true,
-          dialogContent: (props) => deleteGoal(props),
-          destructive: true,
-        },
-      ]}
-    >
+    <ContextActions actions={contextActions}>
       <TableRow className='group animate-in fade-in-0 zoom-in-95'>
         <TableCell>
           <div className='flex items-start gap-2'>
@@ -67,6 +70,7 @@ export const GoalRow = React.memo(function GoalRow({
                 onChange={onTextChange}
                 placeholder='Enter goal'
                 className='min-h-9 min-w-52'
+                readOnly={!isOwner}
               />
             </div>
           </div>
@@ -76,27 +80,13 @@ export const GoalRow = React.memo(function GoalRow({
             type='date'
             value={goal.dueDate ? goal.dueDate.toISOString().slice(0, 10) : ''}
             onChange={updateGoalDueDate}
+            disabled={!isOwner}
           />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
-          <StatusSelect value={goal.status} onValueChange={updateGoalStatus} />
+          <StatusSelect value={goal.status} onValueChange={updateGoalStatus} disabled={!isOwner}/>
 
-          <DropdownActions
-            actions={[
-              { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-              'seperator',
-              { text: 'Add Goal', action: addGoal },
-              { text: 'Add Building Block', action: addBuildingBlock },
-              { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
-              'seperator',
-              {
-                text: 'Delete Goal',
-                dialog: true,
-                dialogContent: (props) => deleteGoal(props),
-                destructive: true,
-              },
-            ]}
-          />
+          <DropdownActions actions={contextActions} />
         </TableCell>
       </TableRow>
     </ContextActions>

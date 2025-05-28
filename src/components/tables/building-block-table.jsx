@@ -36,6 +36,8 @@ const useDebouncedBlockText = (semesterId, goalId) => {
 export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   goal,
   semesterId,
+  isOwner,
+  userName,
   expanded,
   toggleGoalExpanded,
   addBuildingBlock,
@@ -43,6 +45,10 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   const debouncedBlockText = useDebouncedBlockText(semesterId, goal.id);
 
   const handleUpdateBuildingBlockDate = (blockId, date) => {
+    if (!isOwner) {
+      toast.error('You can only update building blocks on your own goals.');
+      return;
+    }
     toast.promise(updateBuildingBlockDueDate(semesterId, goal.id, blockId, date), {
       loading: 'Saving building block due date...',
       success: 'Building block due date saved',
@@ -51,6 +57,10 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   };
 
   const handleUpdateBuildingBlockStatus = (blockId, status) => {
+    if (!isOwner) {
+      toast.error('You can only update building blocks on your own goals.');
+      return;
+    }
     toast.promise(updateBuildingBlockStatus(semesterId, goal.id, blockId, status), {
       loading: 'Saving building block status...',
       success: 'Building block status saved',
@@ -63,6 +73,11 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
       <DeleteDialog
         triggerText='Delete Building Block'
         deleteAction={() => {
+          if (!isOwner) {
+            toast.error('You can only delete your own building blocks.');
+            props.onSuccess?.(false);
+            return null;
+          }
           return toast.promise(deleteBuildingBlock(semesterId, goal.id, blockId), {
             loading: 'Deleting building block...',
             success: () => {
@@ -80,14 +95,14 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
     );
   };
 
+  const contextActions = [
+    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    'seperator',
+    { text: 'Add Building Block', action: addBuildingBlock, disabled: !isOwner },
+  ];
+
   return (
-    <ContextActions
-      actions={[
-        { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-        'seperator',
-        { text: 'Add Building Block', action: addBuildingBlock },
-      ]}
-    >
+    <ContextActions actions={contextActions}>
       <Table>
         <TableHeader>
           <TableRow className='bg-muted/70'>
@@ -95,13 +110,7 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
             <TableHead className='w-1/4 text-base font-medium'>Due Date</TableHead>
             <TableHead className='flex w-auto items-center justify-between text-base font-medium'>
               <span>Status</span>
-              <DropdownActions
-                actions={[
-                  { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-                  'seperator',
-                  { text: 'Add Building Block', action: addBuildingBlock },
-                ]}
-              />
+              <DropdownActions actions={contextActions} />
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -114,6 +123,7 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
                 <BuildingBlockRow
                   key={block.id}
                   buildingBlock={block}
+                  isOwner={isOwner}
                   expanded={expanded}
                   toggleGoalExpanded={toggleGoalExpanded}
                   addBuildingBlock={addBuildingBlock}
@@ -130,7 +140,11 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
           ) : (
             <TableRow className='bg-muted/50'>
               <TableCell colSpan={3} className='text-muted-foreground text-center'>
-                Right-click or use the 3-dot menu to add a building block.
+                {isOwner ? (
+                  <>Right-click or use the 3-dot menu to add a building block.</>
+                ) : (
+                  <>{userName} hasn't added any building blocks yet.</>
+                )}
               </TableCell>
             </TableRow>
           )}

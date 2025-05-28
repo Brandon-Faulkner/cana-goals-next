@@ -49,12 +49,17 @@ export const GoalTable = React.memo(function GoalTable({
   userName,
   currentSemester,
 }) {
-  const [expandedGoals, setExpandedGoals] = useState({});
   const { userDoc } = useAuth();
+  const isOwner = userDoc?.id === userId;
+  const [expandedGoals, setExpandedGoals] = useState({});
   const allExpanded = goals.length > 0 && goals.every((g) => expandedGoals[g.id]);
   const debouncedGoalText = useDebouncedGoalText(currentSemester.id);
 
   const handleAddGoal = () => {
+    if (!isOwner) {
+      toast.error('You can only add goals to your own table.');
+      return;
+    }
     toast.promise(addGoal(currentSemester.id, userId, userName, currentSemester.end), {
       loading: 'Adding new goal...',
       success: 'New goal added',
@@ -63,6 +68,10 @@ export const GoalTable = React.memo(function GoalTable({
   };
 
   const handleUpdateGoalDate = (goalId, date) => {
+    if (!isOwner) {
+      toast.error('You can only update goals on your own table.');
+      return;
+    }
     toast.promise(updateGoalDueDate(currentSemester.id, goalId, date), {
       loading: 'Saving goal due date...',
       success: 'Goal due date saved',
@@ -71,6 +80,10 @@ export const GoalTable = React.memo(function GoalTable({
   };
 
   const handleUpdateGoalStatus = (goalId, status) => {
+    if (!isOwner) {
+      toast.error('You can only update goals on your own table.');
+      return;
+    }
     toast.promise(updateGoalStatus(currentSemester.id, goalId, status), {
       loading: 'Saving goal status...',
       success: 'Goal status saved',
@@ -79,6 +92,10 @@ export const GoalTable = React.memo(function GoalTable({
   };
 
   const handleAddBuildingBlock = (goalId) => {
+    if (!isOwner) {
+      toast.error('You can only add building blocks to your own goals.');
+      return;
+    }
     toast.promise(addBuildingBlock(currentSemester.id, goalId, currentSemester.end), {
       loading: 'Adding new building block...',
       success: 'New building block added',
@@ -93,7 +110,7 @@ export const GoalTable = React.memo(function GoalTable({
           if (!userDoc) {
             toast.error('You must be logged in to add a comment.');
             props.onSuccess?.(false);
-            return Promise.reject('User not authenticated');
+            return null;
           }
           return toast.promise(
             addComment(currentSemester.id, goalId, userDoc.id, userDoc.name, text),
@@ -120,6 +137,11 @@ export const GoalTable = React.memo(function GoalTable({
       <DeleteDialog
         triggerText='Delete Goal'
         deleteAction={() => {
+          if (!isOwner) {
+            toast.error('You can only delete your own goals.');
+            props.onSuccess?.(false);
+            return null;
+          }
           return toast.promise(deleteGoal(currentSemester.id, goalId), {
             loading: 'Deleting goal...',
             success: () => {
@@ -137,17 +159,17 @@ export const GoalTable = React.memo(function GoalTable({
     );
   };
 
+  const contextActions = [
+    {
+      text: allExpanded ? 'Collapse All' : 'Expand All',
+      action: () => toggleAllGoalsExpanded(goals, setExpandedGoals, !allExpanded),
+    },
+    'seperator',
+    { text: 'Add Goal', action: handleAddGoal , disabled: !isOwner},
+  ];
+
   return (
-    <ContextActions
-      actions={[
-        {
-          text: allExpanded ? 'Collapse All' : 'Expand All',
-          action: () => toggleAllGoalsExpanded(goals, setExpandedGoals, !allExpanded),
-        },
-        'seperator',
-        { text: 'Add Goal', action: handleAddGoal },
-      ]}
-    >
+    <ContextActions actions={contextActions}>
       <div className='w-full'>
         <Table>
           <TableHeader>
@@ -156,16 +178,7 @@ export const GoalTable = React.memo(function GoalTable({
               <TableHead className='w-1/4 text-base'>Due Date</TableHead>
               <TableHead className='flex w-auto items-center justify-between text-base'>
                 <span>Status</span>
-                <DropdownActions
-                  actions={[
-                    {
-                      text: allExpanded ? 'Collapse All' : 'Expand All',
-                      action: () => toggleAllGoalsExpanded(goals, setExpandedGoals, !allExpanded),
-                    },
-                    'seperator',
-                    { text: 'Add Goal', action: handleAddGoal },
-                  ]}
-                />
+                <DropdownActions actions={contextActions} />
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -177,6 +190,7 @@ export const GoalTable = React.memo(function GoalTable({
                 <Fragment key={goal.id}>
                   <GoalRow
                     goal={goal}
+                    isOwner={isOwner}
                     expanded={!!expandedGoals[goal.id]}
                     toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
                     addGoal={() => handleAddGoal()}
@@ -195,6 +209,8 @@ export const GoalTable = React.memo(function GoalTable({
                           <BuildingBlockTable
                             goal={goal}
                             semesterId={currentSemester.id}
+                            isOwner={isOwner}
+                            userName={userName}
                             expanded={expandedGoals[goal.id]}
                             toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
                             addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
@@ -218,7 +234,11 @@ export const GoalTable = React.memo(function GoalTable({
 
         {goals.length === 0 && (
           <div className='text-muted-foreground py-4 text-center'>
-            <p>Right-click or use the 3-dot menu to add a goal.</p>
+            {isOwner ? (
+              <>Right-click or use the 3-dot menu to add a goal.</>
+            ) : (
+              <>{userName} hasn't added any goals yet.</>
+            )}
           </div>
         )}
       </div>

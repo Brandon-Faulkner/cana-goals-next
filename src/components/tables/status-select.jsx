@@ -28,13 +28,13 @@ const statuses = [
   { value: 'Stuck', icon: TriangleAlert, color: 'border-chart-5 text-chart-5' },
 ];
 
-export function StatusSelect({ value, onValueChange }) {
+export function StatusSelect({ value, onValueChange, disabled = false }) {
   const selected = statuses.find((s) => s.value === value);
   const StatusIcon = selected?.icon;
   const bgColor = selected?.color ?? 'bg-white';
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className={cn('w-full border-2', bgColor)}>
         <SelectValue>
           <div className='flex items-center gap-2'>

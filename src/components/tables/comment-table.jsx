@@ -40,15 +40,15 @@ export const CommentTable = React.memo(function CommentTable({
   const debouncedCommentText = useDebouncedCommentText(semesterId, goal.id);
 
   const handleDeleteComment = (props, commentId, commentUserId) => {
-    if (userDoc?.id !== commentUserId) {
-      toast.error('You can only delete your own comments.');
-      props.onSuccess?.(false);
-      return null;
-    }
     return (
       <DeleteDialog
         triggerText='Delete Comment'
         deleteAction={() => {
+          if (userDoc?.id !== commentUserId) {
+            toast.error('You can only delete your own comments.');
+            props.onSuccess?.(false);
+            return null;
+          }
           return toast.promise(deleteComment(semesterId, goal.id, commentId), {
             loading: 'Deleting comment...',
             success: () => {
@@ -66,35 +66,25 @@ export const CommentTable = React.memo(function CommentTable({
     );
   };
 
+  const contextActions = [
+    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    'seperator',
+    {
+      text: 'Add Comment',
+      dialog: true,
+      dialogContent: (props) => addComment(props),
+    },
+  ];
+
   return (
-    <ContextActions
-      actions={[
-        { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-        'seperator',
-        {
-          text: 'Add Comment',
-          dialog: true,
-          dialogContent: (props) => addComment(props),
-        },
-      ]}
-    >
+    <ContextActions actions={contextActions}>
       <Table>
         <TableHeader>
           <TableRow className='bg-muted/70'>
             <TableHead className='w-3/4 text-base font-medium'>Comments</TableHead>
             <TableHead className='flex w-auto items-center justify-between text-base font-medium'>
               <span>Made By</span>
-              <DropdownActions
-                actions={[
-                  { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-                  'seperator',
-                  {
-                    text: 'Add Comment',
-                    dialog: true,
-                    dialogContent: (props) => addComment(props),
-                  },
-                ]}
-              />
+              <DropdownActions actions={contextActions} />
             </TableHead>
           </TableRow>
         </TableHeader>

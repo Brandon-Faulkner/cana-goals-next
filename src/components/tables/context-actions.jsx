@@ -27,6 +27,7 @@ export function ContextActions({ children, actions = [] }) {
                 key={action.text}
                 onClick={() => setOpenDialogKey(action.text)}
                 className={action.destructive ? 'text-destructive' : ''}
+                disabled={action.disabled}
               >
                 <ContextMenuItem>{action.text}</ContextMenuItem>
               </DialogTrigger>
@@ -35,6 +36,7 @@ export function ContextActions({ children, actions = [] }) {
                 key={action.text}
                 onClick={action.action}
                 className={action.destructive ? 'text-destructive' : ''}
+                disabled={action.disabled}
               >
                 {action.text}
               </ContextMenuItem>

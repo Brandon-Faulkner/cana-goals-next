@@ -28,16 +28,15 @@ export const CommentRow = React.memo(function CommentRow({
     { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
     'seperator',
     { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
-  ];
-
-  if (isOwner) {
-    contextActions.push('seperator', {
+    'seperator',
+    {
       text: 'Delete Comment',
       dialog: true,
       dialogContent: (props) => deleteComment(props),
       destructive: true,
-    });
-  }
+      disabled: !isOwner,
+    },
+  ];
 
   return (
     <ContextActions actions={contextActions}>
@@ -50,7 +49,6 @@ export const CommentRow = React.memo(function CommentRow({
                 onChange={onTextChange}
                 placeholder={isOwner ? 'Enter comment' : 'View comment'}
                 readOnly={!isOwner}
-                disabled={!isOwner}
               />
             </div>
           </div>
