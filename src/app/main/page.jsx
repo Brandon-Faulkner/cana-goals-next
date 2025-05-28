@@ -13,10 +13,7 @@ import { useGoalsListener } from '@/hooks/use-goals-listener';
 import { useSavingState } from '@/contexts/saving-state-context';
 import { useAuth } from '@/contexts/auth-provider';
 import { db } from '@/lib/firebase';
-import {
-  doc,
-  onSnapshot,
-} from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 export default function Page() {
   const { user, userDoc, loading: loadingAuth } = useAuth();
@@ -25,7 +22,7 @@ export default function Page() {
   const { goals, loading: goalsLoading } = useGoalsListener(currentSemester?.id, user, loadingAuth);
   const {
     savingState: { isSaving, hasError },
-  } = useSavingState();  
+  } = useSavingState();
 
   useEffect(() => {
     document.title = 'Cana Goals | Dashboard';
@@ -122,7 +119,7 @@ export default function Page() {
             <SemesterOverview semesterData={semesterStatuses} />
             <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
 
-            {/* Always render the current user\'s table first */}
+            {/* Always render the current user's table first */}
             {userDoc && currentSemester && (
               <GoalsCard
                 key={userDoc.id}
@@ -133,27 +130,29 @@ export default function Page() {
               />
             )}
 
-            {/* Render other users tables if they have goals */}
+            {/* Render other users tables if they have goals, EXCLUDING the current user */}
             {Object.entries(
               goals.reduce((acc, goal) => {
                 if (!acc[goal.userId]) {
                   acc[goal.userId] = {
-                    userId: goal.userId,
                     userName: goal.userName,
                     goals: [],
                   };
                 }
                 acc[goal.userId].goals.push(goal);
                 return acc;
-              }, {})
+              }, {}),
             )
-              .filter(([_, v]) => v.goals.length > 0)
-              .map(([userId, { userName, goals }]) => (
+              .filter(
+                ([otherUserId, userData]) =>
+                  userDoc && otherUserId !== userDoc.id && userData.goals.length > 0,
+              )
+              .map(([otherUserId, { userName: otherUserName, goals: otherUserGoals }]) => (
                 <GoalsCard
-                  key={userId}
-                  userId={userId}
-                  userName={userName}
-                  goals={goals}
+                  key={otherUserId}
+                  userId={otherUserId}
+                  userName={otherUserName}
+                  goals={otherUserGoals}
                   currentSemester={currentSemester}
                 />
               ))}

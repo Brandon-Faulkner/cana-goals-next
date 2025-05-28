@@ -5,12 +5,16 @@ import { collection, collectionGroup, onSnapshot, query, where, orderBy } from '
 
 export function useGoalsListener(currentSemesterId, user, loadingAuth) {
   const [goals, setGoals] = useState([]);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(true);
 
   useEffect(() => {
     if (!currentSemesterId || !user || loadingAuth) {
       setGoals([]);
+      setIsLoadingGoals(true);
       return;
     }
+
+    setIsLoadingGoals(true);
 
     // --- GOALS LISTENER ---
     const goalsQueryDef = query(
@@ -74,6 +78,7 @@ export function useGoalsListener(currentSemesterId, user, loadingAuth) {
         }
         return prevGoals;
       });
+      setIsLoadingGoals(false);
     });
 
     // --- BUILDING BLOCKS LISTENER ---
@@ -248,8 +253,9 @@ export function useGoalsListener(currentSemesterId, user, loadingAuth) {
       unsubGoals();
       unsubBlocks();
       unsubComments();
+      setIsLoadingGoals(true);
     };
   }, [currentSemesterId, user, loadingAuth]);
 
-  return goals;
+  return { goals, loading: isLoadingGoals };
 }
