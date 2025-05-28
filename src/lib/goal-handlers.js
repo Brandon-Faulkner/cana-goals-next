@@ -6,6 +6,8 @@ import {
   deleteDoc,
   serverTimestamp,
   Timestamp,
+  getDocs,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { setSavingState } from '@/lib/saving-state-controller';
@@ -87,9 +89,26 @@ export const updateGoalStatus = async (semesterId, goalId, status) => {
 
 export const deleteGoal = async (semesterId, goalId) => {
   setSavingState({ isSaving: true, hasError: false });
-  const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
+  const goalRef = doc(db, 'semesters', semesterId, 'goals', goalId);
+  const buildingBlocksRef = collection(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks');
+  const commentsRef = collection(db, 'semesters', semesterId, 'goals', goalId, 'comments');
+
   try {
-    await deleteDoc(ref);
+    const batch = writeBatch(db);
+
+    const buildingBlocksSnapshot = await getDocs(buildingBlocksRef);
+    buildingBlocksSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    const commentsSnapshot = await getDocs(commentsRef);
+    commentsSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    batch.delete(goalRef);
+
+    await batch.commit();
   } catch (error) {
     setSavingState({ isSaving: false, hasError: true });
     throw error;
