@@ -40,15 +40,15 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
         },
       ]}
     >
-      <TableRow className='group bg-muted/50'>
+      <TableRow className='group bg-muted/50 animate-in fade-in-0 zoom-in-95'>
         <TableCell>
           <div className='flex items-start gap-2'>
-            <div className='w-full max-w-[800px]'>
+            <div className='w-full'>
               <Textarea
                 value={text}
                 onChange={onTextChange}
                 placeholder='Enter building block'
-                className='min-h-9 min-w-[200px]'
+                className='min-h-9 min-w-52'
               />
             </div>
           </div>

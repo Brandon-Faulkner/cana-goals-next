@@ -1,4 +1,3 @@
-'use client';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -39,7 +38,7 @@ export function SemesterOverview({ semesterData }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Semester Overview</CardTitle>
+        <CardTitle className="text-lg">Semester Overview</CardTitle>
         <CardDescription>
           These values come from the statuses of goals and building blocks that are not empty for
           this semester.

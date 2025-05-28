@@ -46,7 +46,7 @@ export const GoalRow = React.memo(function GoalRow({
         },
       ]}
     >
-      <TableRow className='group'>
+      <TableRow className='group animate-in fade-in-0 zoom-in-95'>
         <TableCell>
           <div className='flex items-start gap-2'>
             <Button
@@ -61,12 +61,12 @@ export const GoalRow = React.memo(function GoalRow({
                 <ChevronRight className='h-4 w-4' />
               )}
             </Button>
-            <div className='w-full max-w-[800px]'>
+            <div className='w-full'>
               <Textarea
                 value={text}
                 onChange={onTextChange}
                 placeholder='Enter goal'
-                className='min-h-9 min-w-[200px]'
+                className='min-h-9 min-w-52'
               />
             </div>
           </div>

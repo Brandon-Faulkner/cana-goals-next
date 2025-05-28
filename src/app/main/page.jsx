@@ -8,6 +8,9 @@ import { ChevronsRight, CircleCheck, Loader2, XCircle } from 'lucide-react';
 import { SemesterOverview, chartConfig } from '@/components/semester-overview';
 import { GoalFocus } from '@/components/goal-focus';
 import { GoalsCard } from '@/components/goals-card';
+import { SemesterOverviewSkeleton } from '@/components/skeletons/semester-overview-skeleton';
+import { GoalFocusSkeleton } from '@/components/skeletons/goal-focus-skeleton';
+import { GoalsCardSkeleton } from '@/components/skeletons/goals-card-skeleton';
 import { useSemesters } from '@/hooks/use-semesters';
 import { useGoalsListener } from '@/hooks/use-goals-listener';
 import { useSavingState } from '@/contexts/saving-state-context';
@@ -116,46 +119,61 @@ export default function Page() {
             </div>
           </header>
           <div className='flex flex-1 flex-col gap-4 p-4'>
-            <SemesterOverview semesterData={semesterStatuses} />
-            <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
+            {loading || goalsLoading ? (
+              <SemesterOverviewSkeleton />
+            ) : (
+              <SemesterOverview semesterData={semesterStatuses} />
+            )}
+            {loading || goalsLoading ? (
+              <GoalFocusSkeleton />
+            ) : (
+              <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
+            )}
 
             {/* Always render the current user's table first */}
-            {userDoc && currentSemester && (
-              <GoalsCard
-                key={userDoc.id}
-                userId={userDoc.id}
-                userName={userDoc.name}
-                goals={goals.filter((g) => g.userId === userDoc.id)}
-                currentSemester={currentSemester}
-              />
+            {loadingAuth || goalsLoading ? (
+              <GoalsCardSkeleton />
+            ) : (
+              userDoc &&
+              currentSemester && (
+                <GoalsCard
+                  key={userDoc.id}
+                  userId={userDoc.id}
+                  userName={userDoc.name}
+                  goals={goals.filter((g) => g.userId === userDoc.id)}
+                  currentSemester={currentSemester}
+                />
+              )
             )}
 
             {/* Render other users tables if they have goals, EXCLUDING the current user */}
-            {Object.entries(
-              goals.reduce((acc, goal) => {
-                if (!acc[goal.userId]) {
-                  acc[goal.userId] = {
-                    userName: goal.userName,
-                    goals: [],
-                  };
-                }
-                acc[goal.userId].goals.push(goal);
-                return acc;
-              }, {}),
-            )
-              .filter(
-                ([otherUserId, userData]) =>
-                  userDoc && otherUserId !== userDoc.id && userData.goals.length > 0,
-              )
-              .map(([otherUserId, { userName: otherUserName, goals: otherUserGoals }]) => (
-                <GoalsCard
-                  key={otherUserId}
-                  userId={otherUserId}
-                  userName={otherUserName}
-                  goals={otherUserGoals}
-                  currentSemester={currentSemester}
-                />
-              ))}
+            {goalsLoading
+              ? Array.from({ length: 2 }).map((_, index) => <GoalsCardSkeleton key={`other-skeleton-${index}`} />)
+              : Object.entries(
+                  goals.reduce((acc, goal) => {
+                    if (!acc[goal.userId]) {
+                      acc[goal.userId] = {
+                        userName: goal.userName,
+                        goals: [],
+                      };
+                    }
+                    acc[goal.userId].goals.push(goal);
+                    return acc;
+                  }, {}),
+                )
+                  .filter(
+                    ([otherUserId, userData]) =>
+                      userDoc && otherUserId !== userDoc.id && userData.goals.length > 0,
+                  )
+                  .map(([otherUserId, { userName: otherUserName, goals: otherUserGoals }]) => (
+                    <GoalsCard
+                      key={otherUserId}
+                      userId={otherUserId}
+                      userName={otherUserName}
+                      goals={otherUserGoals}
+                      currentSemester={currentSemester}
+                    />
+                  ))}
           </div>
         </SidebarInset>
       </SidebarProvider>

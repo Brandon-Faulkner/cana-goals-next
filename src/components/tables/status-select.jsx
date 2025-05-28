@@ -35,7 +35,7 @@ export function StatusSelect({ value, onValueChange }) {
 
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className={cn('w-[180px] border-2', bgColor)}>
+      <SelectTrigger className={cn('w-full border-2', bgColor)}>
         <SelectValue>
           <div className='flex items-center gap-2'>
             {StatusIcon && <StatusIcon className={cn('h-4 w-4', bgColor)} />}

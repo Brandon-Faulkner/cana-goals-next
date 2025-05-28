@@ -36,7 +36,7 @@ export const CommentRow = React.memo(function CommentRow({
         },
       ]}
     >
-      <TableRow className='group bg-muted/50'>
+      <TableRow className='group bg-muted/50 animate-in fade-in-0 zoom-in-95'>
         <TableCell colSpan={3}>
           <div className='flex items-start gap-2'>
             <Textarea
