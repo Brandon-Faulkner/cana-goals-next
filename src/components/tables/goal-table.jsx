@@ -28,6 +28,7 @@ import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentDialog } from '@/components/dialogs/comment-dialog';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
+import { useAuth } from '@/contexts/auth-provider';
 
 const useDebouncedGoalText = (semesterId) => {
   return useCallback(
@@ -49,6 +50,7 @@ export const GoalTable = React.memo(function GoalTable({
   currentSemester,
 }) {
   const [expandedGoals, setExpandedGoals] = useState({});
+  const { userDoc } = useAuth();
   const allExpanded = goals.length > 0 && goals.every((g) => expandedGoals[g.id]);
   const debouncedGoalText = useDebouncedGoalText(currentSemester.id);
 
@@ -88,17 +90,25 @@ export const GoalTable = React.memo(function GoalTable({
     return (
       <CommentDialog
         addComment={(text) => {
-          return toast.promise(addComment(currentSemester.id, goalId, userId, userName, text), {
-            loading: 'Adding new comment...',
-            success: () => {
-              props.onSuccess?.(true);
-              return 'New comment added';
+          if (!userDoc) {
+            toast.error('You must be logged in to add a comment.');
+            props.onSuccess?.(false);
+            return Promise.reject('User not authenticated');
+          }
+          return toast.promise(
+            addComment(currentSemester.id, goalId, userDoc.id, userDoc.name, text),
+            {
+              loading: 'Adding new comment...',
+              success: () => {
+                props.onSuccess?.(true);
+                return 'New comment added';
+              },
+              error: () => {
+                props.onSuccess?.(false);
+                return 'Failed to add new comment';
+              },
             },
-            error: () => {
-              props.onSuccess?.(false);
-              return 'Failed to add new comment';
-            },
-          });
+          );
         }}
         {...props}
       />

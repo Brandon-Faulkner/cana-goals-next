@@ -6,61 +6,59 @@ import { DropdownActions } from '../dropdown-actions';
 
 export const CommentRow = React.memo(function CommentRow({
   comment,
+  currentUser,
   expanded,
   toggleGoalExpanded,
   addComment,
   updateCommentText,
   deleteComment,
 }) {
+  const isOwner = currentUser?.id === comment.userId;
   const [text, setText] = useState(comment.text || '');
   useEffect(() => setText(comment.text || ''), [comment.text]);
 
   const onTextChange = (e) => {
+    if (!isOwner) return;
     const text = e.target.value;
     setText(text);
     updateCommentText(text);
   };
 
-  return (
-    <ContextActions
-      actions={[
-        { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-        'seperator',
-        { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
-        'seperator',
-        {
-          text: 'Delete Comment',
-          dialog: true,
-          dialogContent: (props) => deleteComment(props),
-          destructive: true,
-        },
-      ]}
-    >
-      <TableRow className='group bg-muted/50 animate-in fade-in-0 zoom-in-95'>
-        <TableCell colSpan={3}>
-          <div className='flex items-start gap-2'>
-            <Textarea
-              value={text}
-              onChange={onTextChange}
-              placeholder='Enter comment'
-              className='w-full'
-            />
+  const contextActions = [
+    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    'seperator',
+    { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+  ];
 
-            <DropdownActions
-              actions={[
-                { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
-                'seperator',
-                { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
-                'seperator',
-                {
-                  text: 'Delete Comment',
-                  dialog: true,
-                  dialogContent: (props) => deleteComment(props),
-                  destructive: true,
-                },
-              ]}
-            />
+  if (isOwner) {
+    contextActions.push('seperator', {
+      text: 'Delete Comment',
+      dialog: true,
+      dialogContent: (props) => deleteComment(props),
+      destructive: true,
+    });
+  }
+
+  return (
+    <ContextActions actions={contextActions}>
+      <TableRow className='group bg-muted/50 animate-in fade-in-0 zoom-in-95'>
+        <TableCell>
+          <div className='flex items-start gap-2'>
+            <div className='w-full'>
+              <Textarea
+                value={text}
+                onChange={onTextChange}
+                placeholder={isOwner ? 'Enter comment' : 'View comment'}
+                readOnly={!isOwner}
+                disabled={!isOwner}
+              />
+            </div>
           </div>
+        </TableCell>
+        <TableCell className='flex items-start justify-between align-top'>
+          {comment.userName || 'User'}
+
+          <DropdownActions actions={contextActions} />
         </TableCell>
       </TableRow>
     </ContextActions>

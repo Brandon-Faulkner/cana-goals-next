@@ -14,6 +14,7 @@ import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentRow } from '@/components/tables/rows/comment-row';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { updateCommentText, deleteComment } from '@/lib/comment-handlers';
+import { useAuth } from '@/contexts/auth-provider';
 
 const useDebouncedCommentText = (semesterId, goalId) => {
   return useCallback(
@@ -35,9 +36,15 @@ export const CommentTable = React.memo(function CommentTable({
   toggleGoalExpanded,
   addComment,
 }) {
+  const { userDoc } = useAuth();
   const debouncedCommentText = useDebouncedCommentText(semesterId, goal.id);
 
-  const handleDeleteComment = (props, commentId) => {
+  const handleDeleteComment = (props, commentId, commentUserId) => {
+    if (userDoc?.id !== commentUserId) {
+      toast.error('You can only delete your own comments.');
+      props.onSuccess?.(false);
+      return null;
+    }
     return (
       <DeleteDialog
         triggerText='Delete Comment'
@@ -74,11 +81,9 @@ export const CommentTable = React.memo(function CommentTable({
       <Table>
         <TableHeader>
           <TableRow className='bg-muted/70'>
-            <TableHead
-              colSpan={3}
-              className='flex w-auto items-center justify-between text-base font-medium'
-            >
-              <span>Comments</span>
+            <TableHead className='w-3/4 text-base font-medium'>Comments</TableHead>
+            <TableHead className='flex w-auto items-center justify-between text-base font-medium'>
+              <span>Made By</span>
               <DropdownActions
                 actions={[
                   { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
@@ -102,11 +107,12 @@ export const CommentTable = React.memo(function CommentTable({
                 <CommentRow
                   key={comment.id}
                   comment={comment}
+                  currentUser={userDoc}
                   expanded={expanded}
                   toggleGoalExpanded={toggleGoalExpanded}
                   addComment={addComment}
                   updateCommentText={(text) => debouncedCommentText(comment.id, text)}
-                  deleteComment={(props) => handleDeleteComment(props, comment.id)}
+                  deleteComment={(props) => handleDeleteComment(props, comment.id, comment.userId)}
                 />
               ))
           ) : (
