@@ -80,7 +80,7 @@ export default function Page() {
             <SidebarTrigger className='-ml-1' />
             <Separator orientation='vertical' className='mr-2 h-4' />
             <div className='mx-auto flex w-full items-center justify-between'>
-              <div className='flex flex-col items-center sm:flex-row'>
+              <div className='flex flex-col items-start sm:flex-row sm:items-center'>
                 {loading ? (
                   <div className='bg-muted h-5 w-40 animate-pulse rounded' />
                 ) : currentSemester ? (

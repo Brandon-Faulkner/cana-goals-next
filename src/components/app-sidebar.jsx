@@ -1,6 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { ChevronRight, LogOut, Sun, Moon, MonitorCog, Settings, SquarePen, Globe } from 'lucide-react';
+import {
+  ChevronRight,
+  LogOut,
+  Sun,
+  Moon,
+  MonitorCog,
+  Settings,
+  SquarePen,
+  Globe,
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
@@ -81,29 +90,39 @@ export function AppSidebar({
             <SidebarMenu>
               <SidebarMenuItem>
                 <Select value={theme} onValueChange={handleThemeChange}>
-                  <SelectTrigger className="w-full text-lg px-2" size='lg' aria-label="Change theme">
+                  <SelectTrigger
+                    className='w-full px-2 text-lg'
+                    size='lg'
+                    aria-label='Change theme'
+                  >
                     <SelectValue>
-                      <div className="flex items-center gap-2">
+                      <div className='flex items-center gap-2'>
                         {theme === 'light' ? <Sun /> : theme === 'dark' ? <Moon /> : <MonitorCog />}
-                        <span>{theme === 'light' ? 'Light Mode' : theme === 'dark' ? 'Dark Mode' : 'System Theme'}</span>
+                        <span>
+                          {theme === 'light'
+                            ? 'Light Mode'
+                            : theme === 'dark'
+                              ? 'Dark Mode'
+                              : 'System Theme'}
+                        </span>
                       </div>
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent align="start">
-                    <SelectItem value="light">
-                      <div className="flex items-center gap-2">
+                  <SelectContent align='start'>
+                    <SelectItem value='light'>
+                      <div className='flex items-center gap-2'>
                         <Sun className='mr-2 h-4 w-4' />
                         <span>Light</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="dark">
-                      <div className="flex items-center gap-2">
+                    <SelectItem value='dark'>
+                      <div className='flex items-center gap-2'>
                         <Moon className='mr-2 h-4 w-4' />
                         <span>Dark</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="system">
-                      <div className="flex items-center gap-2">
+                    <SelectItem value='system'>
+                      <div className='flex items-center gap-2'>
                         <MonitorCog className='mr-2 h-4 w-4' />
                         <span>System</span>
                       </div>
@@ -124,6 +143,7 @@ export function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <Separator />
         <Collapsible defaultOpen className='group/collapsible'>
           <SidebarGroup>
             <SidebarGroupLabel
@@ -166,10 +186,11 @@ export function AppSidebar({
       </SidebarContent>
       <GoalLanguageDialog open={showGoalLanguage} onOpenChange={setShowGoalLanguage} />
       <VersionNotesDialog open={showVersionNotes} onOpenChange={setShowVersionNotes} />
+      <Separator />
       <SidebarFooter>
-        <Button type='button' variant='ghost' className='mb-2 justify-start'>
+        <SidebarMenuButton size='lg' className='mb-2' onClick={() => setShowVersionNotes(true)}>
           <Settings /> Settings
-        </Button>
+        </SidebarMenuButton>
         <Button type='button' variant='destructive' onClick={signOutUser}>
           <LogOut /> Sign Out
         </Button>

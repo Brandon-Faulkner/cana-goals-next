@@ -169,9 +169,9 @@ export const GoalTable = React.memo(function GoalTable({
   ];
 
   return (
-    <ContextActions actions={contextActions}>
-      <div className='w-full'>
-        <Table>
+    <div className='w-full'>
+      <Table>
+        <ContextActions actions={contextActions}>
           <TableHeader>
             <TableRow>
               <TableHead className='w-1/2 text-base'>Goals</TableHead>
@@ -182,57 +182,59 @@ export const GoalTable = React.memo(function GoalTable({
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {goals
-              .slice()
-              .sort((a, b) => a.createdAt - b.createdAt)
-              .map((goal) => (
-                <Fragment key={goal.id}>
-                  <GoalRow
-                    goal={goal}
-                    isOwner={isOwner}
-                    expanded={!!expandedGoals[goal.id]}
-                    toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
-                    addGoal={() => handleAddGoal()}
-                    updateGoalText={(text) => debouncedGoalText(goal.id, text)}
-                    updateGoalDueDate={(date) => handleUpdateGoalDate(goal.id, date)}
-                    updateGoalStatus={(status) => handleUpdateGoalStatus(goal.id, status)}
-                    addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
-                    addComment={(props) => handleAddComment(props, goal.id)}
-                    deleteGoal={(props) => handleDeleteGoal(props, goal.id)}
-                  />
+        </ContextActions>
+        <TableBody>
+          {goals
+            .slice()
+            .sort((a, b) => a.createdAt - b.createdAt)
+            .map((goal) => (
+              <Fragment key={goal.id}>
+                <GoalRow
+                  goal={goal}
+                  isOwner={isOwner}
+                  expanded={!!expandedGoals[goal.id]}
+                  toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
+                  addGoal={() => handleAddGoal()}
+                  updateGoalText={(text) => debouncedGoalText(goal.id, text)}
+                  updateGoalDueDate={(date) => handleUpdateGoalDate(goal.id, date)}
+                  updateGoalStatus={(status) => handleUpdateGoalStatus(goal.id, status)}
+                  addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
+                  addComment={(props) => handleAddComment(props, goal.id)}
+                  deleteGoal={(props) => handleDeleteGoal(props, goal.id)}
+                />
 
-                  {expandedGoals[goal.id] && (
-                    <TableRow>
-                      <TableCell colSpan={3} className='p-0'>
-                        <div className='border-muted my-4 ml-6 border-l-4 pl-4'>
-                          <BuildingBlockTable
-                            goal={goal}
-                            semesterId={currentSemester.id}
-                            isOwner={isOwner}
-                            userName={userName}
-                            expanded={expandedGoals[goal.id]}
-                            toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
-                            addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
-                          />
-                          <div className='mt-6' />
-                          <CommentTable
-                            goal={goal}
-                            semesterId={currentSemester.id}
-                            expanded={expandedGoals[goal.id]}
-                            toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
-                            addComment={(props) => handleAddComment(props, goal.id)}
-                          />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </Fragment>
-              ))}
-          </TableBody>
-        </Table>
+                {expandedGoals[goal.id] && (
+                  <TableRow>
+                    <TableCell colSpan={3} className='p-0'>
+                      <div className='border-muted my-4 ml-6 border-l-4 pl-4'>
+                        <BuildingBlockTable
+                          goal={goal}
+                          semesterId={currentSemester.id}
+                          isOwner={isOwner}
+                          userName={userName}
+                          expanded={expandedGoals[goal.id]}
+                          toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
+                          addBuildingBlock={() => handleAddBuildingBlock(goal.id)}
+                        />
+                        <div className='mt-6' />
+                        <CommentTable
+                          goal={goal}
+                          semesterId={currentSemester.id}
+                          expanded={expandedGoals[goal.id]}
+                          toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
+                          addComment={(props) => handleAddComment(props, goal.id)}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </Fragment>
+            ))}
+        </TableBody>
+      </Table>
 
-        {goals.length === 0 && (
+      {goals.length === 0 && (
+        <ContextActions actions={contextActions}>
           <div className='text-muted-foreground py-4 text-center'>
             {isOwner ? (
               <>Right-click or use the 3-dot menu to add a goal.</>
@@ -240,8 +242,8 @@ export const GoalTable = React.memo(function GoalTable({
               <>{userName} hasn't added any goals yet.</>
             )}
           </div>
-        )}
-      </div>
-    </ContextActions>
+        </ContextActions>
+      )}
+    </div>
   );
 });

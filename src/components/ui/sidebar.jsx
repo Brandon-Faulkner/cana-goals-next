@@ -482,7 +482,7 @@ function SidebarMenuButton({
       <TooltipContent
         side='right'
         align='center'
-        hidden={state !== 'collapsed' || isMobile}
+        hidden={state !== 'expanded' || isMobile}
         {...tooltip}
       />
     </Tooltip>
