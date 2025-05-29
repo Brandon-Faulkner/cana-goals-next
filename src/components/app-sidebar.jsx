@@ -1,11 +1,18 @@
 'use client';
 import { useState } from 'react';
-import { ChevronRight, LogOut, Sun, Moon, Settings, SquarePen, Globe } from 'lucide-react';
+import { ChevronRight, LogOut, Sun, Moon, MonitorCog, Settings, SquarePen, Globe } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Sidebar,
   SidebarContent,
@@ -40,8 +47,8 @@ export function AppSidebar({
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
   };
 
   const signOutUser = () => {
@@ -73,10 +80,36 @@ export function AppSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={toggleTheme} size='lg'>
-                  {theme === 'dark' ? <Sun /> : <Moon />}
-                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                </SidebarMenuButton>
+                <Select value={theme} onValueChange={handleThemeChange}>
+                  <SelectTrigger className="w-full text-lg px-2" size='lg' aria-label="Change theme">
+                    <SelectValue>
+                      <div className="flex items-center gap-2">
+                        {theme === 'light' ? <Sun /> : theme === 'dark' ? <Moon /> : <MonitorCog />}
+                        <span>{theme === 'light' ? 'Light Mode' : theme === 'dark' ? 'Dark Mode' : 'System Theme'}</span>
+                      </div>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent align="start">
+                    <SelectItem value="light">
+                      <div className="flex items-center gap-2">
+                        <Sun className='mr-2 h-4 w-4' />
+                        <span>Light</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="dark">
+                      <div className="flex items-center gap-2">
+                        <Moon className='mr-2 h-4 w-4' />
+                        <span>Dark</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="system">
+                      <div className="flex items-center gap-2">
+                        <MonitorCog className='mr-2 h-4 w-4' />
+                        <span>System</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton size='lg' onClick={() => setShowVersionNotes(true)}>
