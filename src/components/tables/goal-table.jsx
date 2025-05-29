@@ -165,7 +165,7 @@ export const GoalTable = React.memo(function GoalTable({
       action: () => toggleAllGoalsExpanded(goals, setExpandedGoals, !allExpanded),
     },
     'seperator',
-    { text: 'Add Goal', action: handleAddGoal , disabled: !isOwner},
+    { text: 'Add Goal', action: handleAddGoal, disabled: !isOwner },
   ];
 
   return (

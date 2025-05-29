@@ -148,7 +148,9 @@ export default function Page() {
 
             {/* Render other users tables if they have goals, EXCLUDING the current user */}
             {goalsLoading
-              ? Array.from({ length: 2 }).map((_, index) => <GoalsCardSkeleton key={`other-skeleton-${index}`} />)
+              ? Array.from({ length: 2 }).map((_, index) => (
+                  <GoalsCardSkeleton key={`other-skeleton-${index}`} />
+                ))
               : Object.entries(
                   goals.reduce((acc, goal) => {
                     if (!acc[goal.userId]) {

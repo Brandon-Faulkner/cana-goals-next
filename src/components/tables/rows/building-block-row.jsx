@@ -66,7 +66,11 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
           />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
-          <StatusSelect value={buildingBlock.status} onValueChange={updateBuildingBlockStatus} disabled={!isOwner}/>
+          <StatusSelect
+            value={buildingBlock.status}
+            onValueChange={updateBuildingBlockStatus}
+            disabled={!isOwner}
+          />
 
           <DropdownActions actions={contextActions} />
         </TableCell>

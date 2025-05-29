@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-export function DeleteDialog({ forContextMenu = true, triggerText = "Delete", deleteAction }) {
+export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', deleteAction }) {
   const dialogContent = (
     <DialogContent className='sm:max-w-96'>
       <DialogHeader>

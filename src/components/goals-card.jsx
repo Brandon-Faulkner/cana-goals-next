@@ -9,7 +9,7 @@ export const GoalsCard = React.memo(function GoalsCard({
   currentSemester,
 }) {
   return (
-    <Card className="animate-in fade-in-0 zoom-in-95">
+    <Card className='animate-in fade-in-0 zoom-in-95'>
       <CardHeader>
         <CardTitle className='text-lg'>{userName}</CardTitle>
       </CardHeader>

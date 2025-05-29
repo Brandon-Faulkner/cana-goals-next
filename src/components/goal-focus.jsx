@@ -31,7 +31,7 @@ export function GoalFocus({ semesterId, focus }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Goal Focus</CardTitle>
+        <CardTitle className='text-lg'>Goal Focus</CardTitle>
         <CardDescription>The main focus of our goals for the current semester.</CardDescription>
       </CardHeader>
       <CardContent>

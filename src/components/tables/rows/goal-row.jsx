@@ -84,7 +84,7 @@ export const GoalRow = React.memo(function GoalRow({
           />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
-          <StatusSelect value={goal.status} onValueChange={updateGoalStatus} disabled={!isOwner}/>
+          <StatusSelect value={goal.status} onValueChange={updateGoalStatus} disabled={!isOwner} />
 
           <DropdownActions actions={contextActions} />
         </TableCell>

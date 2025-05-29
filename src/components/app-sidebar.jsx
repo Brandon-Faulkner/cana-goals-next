@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { ChevronRight, LogOut, Sun, Moon, Settings, SquarePen, Globe } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -24,6 +25,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
+import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
 
 export function AppSidebar({
   semesters = [],
@@ -34,6 +37,8 @@ export function AppSidebar({
 }) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const [showGoalLanguage, setShowGoalLanguage] = useState(false);
+  const [showVersionNotes, setShowVersionNotes] = useState(false);
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -52,7 +57,7 @@ export function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <div className='flex items-center gap-1 h-[47px]'>
+        <div className='flex h-[47px] items-center gap-1'>
           <Image
             src='/android-chrome-192x192.png'
             alt='Cana Goals main logo'
@@ -74,12 +79,12 @@ export function AppSidebar({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton size='lg'>
+                <SidebarMenuButton size='lg' onClick={() => setShowVersionNotes(true)}>
                   <SquarePen /> What&apos;s New
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton size='lg'>
+                <SidebarMenuButton size='lg' onClick={() => setShowGoalLanguage(true)}>
                   <Globe /> Goal Language
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -126,6 +131,8 @@ export function AppSidebar({
           </SidebarGroup>
         </Collapsible>
       </SidebarContent>
+      <GoalLanguageDialog open={showGoalLanguage} onOpenChange={setShowGoalLanguage} />
+      <VersionNotesDialog open={showVersionNotes} onOpenChange={setShowVersionNotes} />
       <SidebarFooter>
         <Button type='button' variant='ghost' className='mb-2 justify-start'>
           <Settings /> Settings

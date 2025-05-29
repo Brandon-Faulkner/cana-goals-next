@@ -38,7 +38,7 @@ export function SemesterOverview({ semesterData }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Semester Overview</CardTitle>
+        <CardTitle className='text-lg'>Semester Overview</CardTitle>
         <CardDescription>
           These values come from the statuses of goals and building blocks that are not empty for
           this semester.

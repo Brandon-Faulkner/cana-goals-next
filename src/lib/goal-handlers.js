@@ -89,7 +89,14 @@ export const updateGoalStatus = async (semesterId, goalId, status) => {
 export const deleteGoal = async (semesterId, goalId) => {
   setSavingState({ isSaving: true, hasError: false });
   const goalRef = doc(db, 'semesters', semesterId, 'goals', goalId);
-  const buildingBlocksRef = collection(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks');
+  const buildingBlocksRef = collection(
+    db,
+    'semesters',
+    semesterId,
+    'goals',
+    goalId,
+    'buildingBlocks',
+  );
   const commentsRef = collection(db, 'semesters', semesterId, 'goals', goalId, 'comments');
 
   try {
