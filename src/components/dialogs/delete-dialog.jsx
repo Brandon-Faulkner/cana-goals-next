@@ -12,7 +12,7 @@ import {
 
 export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', deleteAction }) {
   const dialogContent = (
-    <DialogContent className='sm:max-w-96'>
+    <DialogContent className='sm:max-w-xl'>
       <DialogHeader>
         <DialogTitle>Are you sure you want to delete?</DialogTitle>
         <DialogDescription>

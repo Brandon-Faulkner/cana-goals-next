@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 export function GoalLanguageDialog({ open, onOpenChange }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-h-[80vh] overflow-y-auto sm:max-w-xl'>
         <DialogHeader>
           <DialogTitle>Goal Language</DialogTitle>
           <DialogDescription>

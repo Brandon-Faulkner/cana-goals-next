@@ -16,7 +16,7 @@ export function CommentDialog({ forContextMenu = true, addComment }) {
   const [text, setText] = useState('');
 
   const dialogContent = (
-    <DialogContent className='sm:max-w-96'>
+    <DialogContent className='sm:max-w-xl'>
       <DialogHeader>
         <DialogTitle>Add A Comment</DialogTitle>
         <DialogDescription>

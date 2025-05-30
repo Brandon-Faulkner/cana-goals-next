@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState, memo } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 // Define the context shape
@@ -20,44 +20,61 @@ export const AuthProvider = memo(function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
+    let unsubscribeUserDoc = () => {};
+
+    const unsubscribeAuth = onAuthStateChanged(
       auth,
-      async (user) => {
-        setUser(user);
+      async (currentUser) => {
+        setUser(currentUser);
         setError(null);
 
-        if (user) {
-          try {
-            const docRef = doc(db, 'users', user.uid);
-            const docSnap = await getDoc(docRef);
+        unsubscribeUserDoc();
 
-            if (docSnap.exists()) {
-              setUserDoc({ id: docSnap.id, ...docSnap.data() });
-            } else {
-              console.warn('No user profile found in Firestore.');
-              setUserDoc(null);
-            }
+        if (currentUser) {
+          try {
+            const userDocRef = doc(db, 'users', currentUser.uid);
+            unsubscribeUserDoc = onSnapshot(
+              userDocRef,
+              (docSnap) => {
+                if (docSnap.exists()) {
+                  setUserDoc({ id: docSnap.id, ...docSnap.data() });
+                } else {
+                  console.warn('No user profile found in Firestore.');
+                  setUserDoc(null);
+                }
+                setLoading(false);
+              },
+              (err) => {
+                console.error('Error listening to user doc:', err);
+                setError(err.message);
+                setUserDoc(null);
+                setLoading(false);
+              },
+            );
           } catch (err) {
-            console.error('Error fetching user doc:', err);
+            console.error('Error setting up user doc listener:', err);
             setError(err.message);
             setUserDoc(null);
+            setLoading(false);
           }
         } else {
           setUserDoc(null);
+          setLoading(false);
         }
-
-        setLoading(false);
       },
-      (error) => {
-        console.error('Auth state change error:', error);
-        setError(error.message);
+      (authError) => {
+        console.error('Auth state change error:', authError);
+        setError(authError.message);
         setUser(null);
         setUserDoc(null);
         setLoading(false);
       },
     );
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      unsubscribeUserDoc();
+    };
   }, []);
 
   return (

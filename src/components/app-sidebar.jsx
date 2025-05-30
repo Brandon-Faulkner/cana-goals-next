@@ -43,6 +43,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
 import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
+import { SettingsDialog } from '@/components/dialogs/settings-dialog';
 
 export function AppSidebar({
   semesters = [],
@@ -55,6 +56,7 @@ export function AppSidebar({
   const { theme, setTheme } = useTheme();
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
@@ -186,9 +188,10 @@ export function AppSidebar({
       </SidebarContent>
       <GoalLanguageDialog open={showGoalLanguage} onOpenChange={setShowGoalLanguage} />
       <VersionNotesDialog open={showVersionNotes} onOpenChange={setShowVersionNotes} />
+      <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
       <Separator />
       <SidebarFooter>
-        <SidebarMenuButton size='lg' className='mb-2' onClick={() => setShowVersionNotes(true)}>
+        <SidebarMenuButton size='lg' className='mb-2' onClick={() => setShowSettings(true)}>
           <Settings /> Settings
         </SidebarMenuButton>
         <Button type='button' variant='destructive' onClick={signOutUser}>
