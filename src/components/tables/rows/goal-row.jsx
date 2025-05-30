@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
+import { ChevronsUpDown, ListChecks, Grid2X2Plus, MessageSquarePlus, Trash2 } from 'lucide-react';
 
 export const GoalRow = React.memo(function GoalRow({
   goal,
@@ -32,14 +33,20 @@ export const GoalRow = React.memo(function GoalRow({
   };
 
   const contextActions = [
-    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    { text: expanded ? 'Collapse' : 'Expand', icon: ChevronsUpDown, action: toggleGoalExpanded },
     'seperator',
-    { text: 'Add Goal', action: addGoal, disabled: !isOwner },
-    { text: 'Add Building Block', action: addBuildingBlock, disabled: !isOwner },
-    { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+    { text: 'Add Goal', icon: ListChecks, action: addGoal, disabled: !isOwner },
+    { text: 'Add Building Block', icon: Grid2X2Plus, action: addBuildingBlock, disabled: !isOwner },
+    {
+      text: 'Add Comment',
+      icon: MessageSquarePlus,
+      dialog: true,
+      dialogContent: (props) => addComment(props),
+    },
     'seperator',
     {
       text: 'Delete Goal',
+      icon: Trash2,
       dialog: true,
       dialogContent: (props) => deleteGoal(props),
       destructive: true,

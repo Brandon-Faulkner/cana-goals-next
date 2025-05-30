@@ -15,6 +15,7 @@ import { CommentRow } from '@/components/tables/rows/comment-row';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { updateCommentText, deleteComment } from '@/lib/comment-handlers';
 import { useAuth } from '@/contexts/auth-provider';
+import { ChevronsUpDown, MessageSquarePlus } from 'lucide-react';
 
 const useDebouncedCommentText = (semesterId, goalId) => {
   return useCallback(
@@ -67,10 +68,11 @@ export const CommentTable = React.memo(function CommentTable({
   };
 
   const contextActions = [
-    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    { text: expanded ? 'Collapse' : 'Expand', icon: ChevronsUpDown, action: toggleGoalExpanded },
     'seperator',
     {
       text: 'Add Comment',
+      icon: MessageSquarePlus,
       dialog: true,
       dialogContent: (props) => addComment(props),
     },

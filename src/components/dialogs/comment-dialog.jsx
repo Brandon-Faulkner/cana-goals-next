@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -35,7 +36,12 @@ export function CommentDialog({ forContextMenu = true, addComment }) {
         </div>
       </div>
       <DialogFooter>
-        <Button type='submit' onClick={() => addComment(text)}>
+        <DialogClose asChild>
+          <Button type='button' variant='secondary'>
+            Cancel
+          </Button>
+        </DialogClose>
+        <Button type='button' onClick={() => addComment(text)}>
           Save Comment
         </Button>
       </DialogFooter>

@@ -3,6 +3,7 @@ import { ContextActions } from '@/components/tables/context-actions';
 import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { DropdownActions } from '../dropdown-actions';
+import { ChevronsUpDown, MessageSquarePlus, Trash2 } from 'lucide-react';
 
 export const CommentRow = React.memo(function CommentRow({
   comment,
@@ -25,12 +26,18 @@ export const CommentRow = React.memo(function CommentRow({
   };
 
   const contextActions = [
-    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    { text: expanded ? 'Collapse' : 'Expand', icon: ChevronsUpDown, action: toggleGoalExpanded },
     'seperator',
-    { text: 'Add Comment', dialog: true, dialogContent: (props) => addComment(props) },
+    {
+      text: 'Add Comment',
+      icons: MessageSquarePlus,
+      dialog: true,
+      dialogContent: (props) => addComment(props),
+    },
     'seperator',
     {
       text: 'Delete Comment',
+      icon: Trash2,
       dialog: true,
       dialogContent: (props) => deleteComment(props),
       destructive: true,

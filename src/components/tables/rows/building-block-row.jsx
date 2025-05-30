@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
+import { ChevronsUpDown, Trash2, Grid2x2Plus } from 'lucide-react';
 
 export const BuildingBlockRow = React.memo(function BuildingBlockRow({
   buildingBlock,
@@ -28,12 +29,13 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
   };
 
   const contextActions = [
-    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    { text: expanded ? 'Collapse' : 'Expand', icon: ChevronsUpDown, action: toggleGoalExpanded },
     'seperator',
-    { text: 'Add Building Block', action: addBuildingBlock, disabled: !isOwner },
+    { text: 'Add Building Block', icon: Grid2x2Plus, action: addBuildingBlock, disabled: !isOwner },
     'seperator',
     {
       text: 'Delete Building Block',
+      icon: Trash2,
       dialog: true,
       dialogContent: (props) => deleteBuildingBlock(props),
       destructive: true,

@@ -29,7 +29,14 @@ export function ContextActions({ children, actions = [] }) {
                 className={action.destructive ? 'text-destructive' : ''}
                 disabled={action.disabled}
               >
-                <ContextMenuItem>{action.text}</ContextMenuItem>
+                <ContextMenuItem>
+                  <div className='flex items-center gap-2'>
+                    {action.icon && (
+                      <action.icon className={action.destructive ? 'text-destructive' : ''} />
+                    )}
+                    <span>{action.text}</span>
+                  </div>
+                </ContextMenuItem>
               </DialogTrigger>
             ) : (
               <ContextMenuItem
@@ -38,7 +45,12 @@ export function ContextActions({ children, actions = [] }) {
                 className={action.destructive ? 'text-destructive' : ''}
                 disabled={action.disabled}
               >
-                {action.text}
+                <div className='flex items-center gap-2'>
+                  {action.icon && (
+                    <action.icon className={action.destructive ? 'text-destructive' : ''} />
+                  )}
+                  <span>{action.text}</span>
+                </div>
               </ContextMenuItem>
             ),
           )}

@@ -29,6 +29,7 @@ import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentDialog } from '@/components/dialogs/comment-dialog';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { useAuth } from '@/contexts/auth-provider';
+import { ChevronsUpDown, ListChecks } from 'lucide-react';
 
 const useDebouncedGoalText = (semesterId) => {
   return useCallback(
@@ -162,10 +163,11 @@ export const GoalTable = React.memo(function GoalTable({
   const contextActions = [
     {
       text: allExpanded ? 'Collapse All' : 'Expand All',
+      icon: ChevronsUpDown,
       action: () => toggleAllGoalsExpanded(goals, setExpandedGoals, !allExpanded),
     },
     'seperator',
-    { text: 'Add Goal', action: handleAddGoal, disabled: !isOwner },
+    { text: 'Add Goal', icon: ListChecks, action: handleAddGoal, disabled: !isOwner },
   ];
 
   return (

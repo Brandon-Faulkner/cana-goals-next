@@ -19,6 +19,7 @@ import {
   updateBuildingBlockStatus,
   deleteBuildingBlock,
 } from '@/lib/building-block-handlers';
+import { ChevronsUpDown, Grid2x2Plus } from 'lucide-react';
 
 const useDebouncedBlockText = (semesterId, goalId) => {
   return useCallback(
@@ -96,9 +97,9 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   };
 
   const contextActions = [
-    { text: expanded ? 'Collapse' : 'Expand', action: toggleGoalExpanded },
+    { text: expanded ? 'Collapse' : 'Expand', icon: ChevronsUpDown, action: toggleGoalExpanded },
     'seperator',
-    { text: 'Add Building Block', action: addBuildingBlock, disabled: !isOwner },
+    { text: 'Add Building Block', icon: Grid2x2Plus, action: addBuildingBlock, disabled: !isOwner },
   ];
 
   return (

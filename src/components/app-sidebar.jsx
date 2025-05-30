@@ -44,6 +44,7 @@ import { auth } from '@/lib/firebase';
 import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
 import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
 import { SettingsDialog } from '@/components/dialogs/settings-dialog';
+import { SignOutDialog } from '@/components/dialogs/sign-out-dialog';
 
 export function AppSidebar({
   semesters = [],
@@ -57,12 +58,13 @@ export function AppSidebar({
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showSignOutDialog, setShowSignOutDialog] = useState(false);
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
   };
 
-  const signOutUser = () => {
+  const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         router.replace('/login');
@@ -189,12 +191,17 @@ export function AppSidebar({
       <GoalLanguageDialog open={showGoalLanguage} onOpenChange={setShowGoalLanguage} />
       <VersionNotesDialog open={showVersionNotes} onOpenChange={setShowVersionNotes} />
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
+      <SignOutDialog
+        open={showSignOutDialog}
+        onOpenChange={setShowSignOutDialog}
+        onConfirmSignOut={handleSignOut}
+      />
       <Separator />
       <SidebarFooter>
         <SidebarMenuButton size='lg' className='mb-2' onClick={() => setShowSettings(true)}>
           <Settings /> Settings
         </SidebarMenuButton>
-        <Button type='button' variant='destructive' onClick={signOutUser}>
+        <Button type='button' variant='destructive' onClick={() => setShowSignOutDialog(true)}>
           <LogOut /> Sign Out
         </Button>
       </SidebarFooter>

@@ -35,7 +35,14 @@ export function DropdownActions({ actions = [] }) {
                 className={action.destructive ? 'text-destructive' : ''}
                 disabled={action.disabled}
               >
-                <DropdownMenuItem>{action.text}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <div className='flex items-center gap-2'>
+                    {action.icon && (
+                      <action.icon className={action.destructive ? 'text-destructive' : ''} />
+                    )}
+                    <span>{action.text}</span>
+                  </div>
+                </DropdownMenuItem>
               </DialogTrigger>
             ) : (
               <DropdownMenuItem
@@ -44,7 +51,12 @@ export function DropdownActions({ actions = [] }) {
                 className={action.destructive ? 'text-destructive' : ''}
                 disabled={action.disabled}
               >
-                {action.text}
+                <div className='flex items-center gap-2'>
+                  {action.icon && (
+                    <action.icon className={action.destructive ? 'text-destructive' : ''} />
+                  )}
+                  <span>{action.text}</span>
+                </div>
               </DropdownMenuItem>
             ),
           )}

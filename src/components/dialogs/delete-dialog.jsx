@@ -12,7 +12,7 @@ import {
 
 export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', deleteAction }) {
   const dialogContent = (
-    <DialogContent className='sm:max-w-xl'>
+    <DialogContent className='sm:max-w-96'>
       <DialogHeader>
         <DialogTitle>Are you sure you want to delete?</DialogTitle>
         <DialogDescription>
@@ -25,7 +25,7 @@ export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', de
             Cancel
           </Button>
         </DialogClose>
-        <Button type='submit' variant='destructive' onClick={() => deleteAction()}>
+        <Button type='button' variant='destructive' onClick={() => deleteAction()}>
           Delete
         </Button>
       </DialogFooter>
