@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { LogOut, X } from 'lucide-react';
 
 export function SignOutDialog({ open, onOpenChange, onConfirmSignOut }) {
   return (
@@ -20,7 +21,7 @@ export function SignOutDialog({ open, onOpenChange, onConfirmSignOut }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button type='button' variant='secondary'>
-              Cancel
+              <X /> Cancel
             </Button>
           </DialogClose>
           <Button
@@ -35,7 +36,7 @@ export function SignOutDialog({ open, onOpenChange, onConfirmSignOut }) {
               }
             }}
           >
-            Sign Out
+            <LogOut /> Sign Out
           </Button>
         </DialogFooter>
       </DialogContent>

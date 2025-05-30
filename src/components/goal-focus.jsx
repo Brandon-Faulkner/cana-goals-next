@@ -22,7 +22,7 @@ export function GoalFocus({ semesterId, focus }) {
   useEffect(() => setText(focus || ''), [focus]);
   const debouncedFocustext = useDebouncedFocusText(semesterId);
 
-  const onTextChange = (e) => {
+  const handleTextChange = (e) => {
     const text = e.target.value;
     setText(text);
     debouncedFocustext(semesterId, text);
@@ -37,7 +37,7 @@ export function GoalFocus({ semesterId, focus }) {
       <CardContent>
         <Textarea
           value={text}
-          onChange={onTextChange}
+          onChange={handleTextChange}
           placeholder='Enter the current semesters goal focus.'
         ></Textarea>
       </CardContent>

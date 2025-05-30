@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Save, X } from 'lucide-react';
 
 export function CommentDialog({ forContextMenu = true, addComment }) {
   const [text, setText] = useState('');
@@ -38,11 +39,11 @@ export function CommentDialog({ forContextMenu = true, addComment }) {
       <DialogFooter>
         <DialogClose asChild>
           <Button type='button' variant='secondary'>
-            Cancel
+            <X /> Cancel
           </Button>
         </DialogClose>
         <Button type='button' onClick={() => addComment(text)}>
-          Save Comment
+          <Save /> Save Comment
         </Button>
       </DialogFooter>
     </DialogContent>

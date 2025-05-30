@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Trash2, X } from 'lucide-react';
 
 export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', deleteAction }) {
   const dialogContent = (
@@ -22,11 +23,11 @@ export function DeleteDialog({ forContextMenu = true, triggerText = 'Delete', de
       <DialogFooter>
         <DialogClose asChild>
           <Button type='button' variant='secondary'>
-            Cancel
+            <X /> Cancel
           </Button>
         </DialogClose>
         <Button type='button' variant='destructive' onClick={() => deleteAction()}>
-          Delete
+          <Trash2 /> Delete
         </Button>
       </DialogFooter>
     </DialogContent>

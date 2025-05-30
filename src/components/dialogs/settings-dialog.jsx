@@ -8,6 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Save, X } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -71,10 +73,11 @@ export function SettingsDialog({ open, onOpenChange }) {
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>Update your preferences and account settings.</DialogDescription>
         </DialogHeader>
+        <Separator />
         <div className='grid gap-6 py-4'>
           <div className='flex items-center justify-between space-x-2 p-1'>
             <div className='grid gap-1.5'>
-              <Label htmlFor='completion-confetti' className='font-semibold cursor-pointer'>
+              <Label htmlFor='completion-confetti' className='cursor-pointer font-semibold'>
                 Completion confetti
               </Label>
               <p className='text-muted-foreground text-sm'>
@@ -91,7 +94,7 @@ export function SettingsDialog({ open, onOpenChange }) {
 
           <div className='flex items-center justify-between space-x-2 p-1'>
             <div className='grid gap-1.5'>
-              <Label htmlFor='comment-emails' className='font-semibold cursor-pointer'>
+              <Label htmlFor='comment-emails' className='cursor-pointer font-semibold'>
                 Comment emails
               </Label>
               <p className='text-muted-foreground text-sm'>
@@ -109,11 +112,11 @@ export function SettingsDialog({ open, onOpenChange }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button type='button' variant='secondary'>
-              Close
+              <X/> Close
             </Button>
           </DialogClose>
           <Button type='submit' onClick={handleSave}>
-            Save Settings
+            <Save /> Save Settings
           </Button>
         </DialogFooter>
       </DialogContent>

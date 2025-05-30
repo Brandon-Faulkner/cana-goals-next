@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ContextActions } from '@/components/tables/context-actions';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
+import { DatePicker } from '@/components/tables/date-picker';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { ChevronsUpDown, ListChecks, Grid2X2Plus, MessageSquarePlus, Trash2 } from 'lucide-react';
 
@@ -23,13 +23,24 @@ export const GoalRow = React.memo(function GoalRow({
   deleteGoal,
 }) {
   const [text, setText] = useState(goal.text || '');
-  useEffect(() => setText(goal.text || ''), [goal.text]);
+  const [dueDate, setDueDate] = useState(goal.dueDate?.toDateString() || null);
 
-  const onTextChange = (e) => {
+  useEffect(() => setText(goal.text || ''), [goal.text]);
+  useEffect(() => {
+    setDueDate(goal.dueDate?.toDateString() || null);
+  }, [goal.dueDate]);
+
+  const handleTextChange = (e) => {
     if (!isOwner) return;
     const text = e.target.value;
     setText(text);
     updateGoalText(text);
+  };
+
+  const handleDateChange = (newDate) => {
+    if (!isOwner) return;
+    setDueDate(newDate);
+    updateGoalDueDate(newDate);
   };
 
   const contextActions = [
@@ -74,7 +85,7 @@ export const GoalRow = React.memo(function GoalRow({
             <div className='w-full'>
               <Textarea
                 value={text}
-                onChange={onTextChange}
+                onChange={handleTextChange}
                 placeholder='Enter goal'
                 className='min-h-9 min-w-52'
                 readOnly={!isOwner}
@@ -83,12 +94,7 @@ export const GoalRow = React.memo(function GoalRow({
           </div>
         </TableCell>
         <TableCell className='align-top'>
-          <Input
-            type='date'
-            value={goal.dueDate ? goal.dueDate.toISOString().slice(0, 10) : ''}
-            onChange={updateGoalDueDate}
-            disabled={!isOwner}
-          />
+          <DatePicker date={dueDate} onDateChange={handleDateChange} disabled={!isOwner} />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
           <StatusSelect value={goal.status} onValueChange={updateGoalStatus} disabled={!isOwner} />

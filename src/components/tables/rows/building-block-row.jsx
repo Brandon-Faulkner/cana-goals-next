@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ContextActions } from '@/components/tables/context-actions';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { StatusSelect } from '@/components/tables/status-select';
+import { DatePicker } from '@/components/tables/date-picker';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { ChevronsUpDown, Trash2, Grid2x2Plus } from 'lucide-react';
 
@@ -19,13 +19,24 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
   deleteBuildingBlock,
 }) {
   const [text, setText] = useState(buildingBlock.text || '');
-  useEffect(() => setText(buildingBlock.text || ''), [buildingBlock.text]);
+  const [dueDate, setDueDate] = useState(buildingBlock.dueDate?.toDateString() || null);
 
-  const onTextChange = (e) => {
+  useEffect(() => setText(buildingBlock.text || ''), [buildingBlock.text]);
+  useEffect(() => {
+    setDueDate(buildingBlock.dueDate?.toDateString() || null);
+  }, [buildingBlock.dueDate]);
+
+  const handleTextChange = (e) => {
     if (!isOwner) return;
     const text = e.target.value;
     setText(text);
     updateBuildingBlockText(text);
+  };
+
+  const handleDateChange = (newDate) => {
+    if (!isOwner) return;
+    setDueDate(newDate);
+    updateBuildingBlockDueDate(newDate);
   };
 
   const contextActions = [
@@ -51,7 +62,7 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
             <div className='w-full'>
               <Textarea
                 value={text}
-                onChange={onTextChange}
+                onChange={handleTextChange}
                 placeholder='Enter building block'
                 className='min-h-9 min-w-52'
                 readOnly={!isOwner}
@@ -60,12 +71,7 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
           </div>
         </TableCell>
         <TableCell className='align-top'>
-          <Input
-            type='date'
-            value={buildingBlock.dueDate ? buildingBlock.dueDate.toISOString().slice(0, 10) : ''}
-            onChange={updateBuildingBlockDueDate}
-            disabled={!isOwner}
-          />
+          <DatePicker date={dueDate} onDateChange={handleDateChange} disabled={!isOwner} />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
           <StatusSelect

@@ -18,7 +18,7 @@ export const CommentRow = React.memo(function CommentRow({
   const [text, setText] = useState(comment.text || '');
   useEffect(() => setText(comment.text || ''), [comment.text]);
 
-  const onTextChange = (e) => {
+  const handleTextChange = (e) => {
     if (!isOwner) return;
     const text = e.target.value;
     setText(text);
@@ -53,7 +53,7 @@ export const CommentRow = React.memo(function CommentRow({
             <div className='w-full'>
               <Textarea
                 value={text}
-                onChange={onTextChange}
+                onChange={handleTextChange}
                 placeholder={isOwner ? 'Enter comment' : 'View comment'}
                 readOnly={!isOwner}
               />

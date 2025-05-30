@@ -16,6 +16,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 export function GoalLanguageDialog({ open, onOpenChange }) {
   return (
@@ -66,7 +67,7 @@ export function GoalLanguageDialog({ open, onOpenChange }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button type='button' variant='secondary'>
-              Close
+              <X /> Close
             </Button>
           </DialogClose>
         </DialogFooter>
