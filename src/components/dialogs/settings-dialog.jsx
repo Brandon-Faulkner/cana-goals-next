@@ -112,7 +112,7 @@ export function SettingsDialog({ open, onOpenChange }) {
         <DialogFooter>
           <DialogClose asChild>
             <Button type='button' variant='secondary'>
-              <X/> Close
+              <X /> Close
             </Button>
           </DialogClose>
           <Button type='submit' onClick={handleSave}>

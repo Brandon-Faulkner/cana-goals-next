@@ -108,7 +108,7 @@ export default function Page() {
   useEffect(() => {
     document.title = 'Cana Goals | Reset Password';
   }, []);
-  
+
   return (
     <Suspense fallback={<Spinner />}>
       <PageContent />
