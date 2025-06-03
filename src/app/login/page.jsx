@@ -13,7 +13,7 @@ export default function Page() {
         <div className='flex w-full max-w-md flex-col gap-6'>
           <div className='flex items-center gap-2 self-center text-lg font-medium'>
             <Image
-              src='/android-chrome-192x192.png'
+              src='/cana-goals-transparent.png'
               alt='Cana Goals main logo'
               width={24}
               height={24}
