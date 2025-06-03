@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/sonner';
 import PWAInstallPrompt from '@/components/pwa/pwa-install-prompt';
 import { PWALifecycle } from '@/components/pwa/pwa-lifecycle';
 import { OfflineDetector } from '@/components/pwa/offline-detector';
+import DynamicThemeColor from '@/components/pwa/dynamic-theme-color';
 import localFont from 'next/font/local';
 
 const futura = localFont({
@@ -90,10 +91,6 @@ export const metadata = {
   },
 };
 
-export const viewport = {
-  themeColor: '#2d2d2d',
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
@@ -104,6 +101,7 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
+          <DynamicThemeColor />
           <AuthProvider>
             <SavingStateProvider>
               <PWALifecycle />
