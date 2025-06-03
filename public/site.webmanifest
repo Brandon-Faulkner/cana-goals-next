@@ -1,0 +1,49 @@
+{
+  "name": "Cana Goals",
+  "short_name": "Cana Goals",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#00aa63",
+  "background_color": "#2d2d2d",
+  "orientation": "any",
+  "display": "standalone",
+  "dir": "auto",
+  "lang": "en-US",
+  "scope": "/",
+  "start_url": "/",
+  "description": "A web app used to add, monitor and complete goals during 100 day or 300 day goal periods for Cana Church staff members.",
+  "categories": ["productivity", "lifestyle"],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "View Goals",
+      "short_name": "Goals",
+      "description": "View your current goals",
+      "url": "/main",
+      "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

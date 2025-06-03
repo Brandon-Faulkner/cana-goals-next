@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/auth-provider';
 import { checkActionCode } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
-import { Spinner } from '@/components/ui/spinner';
+import Spinner from '@/components/ui/spinner';
 
 function PageContent() {
   const router = useRouter();

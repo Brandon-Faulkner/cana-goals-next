@@ -3,6 +3,9 @@ import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from '@/contexts/auth-provider';
 import { SavingStateProvider } from '@/contexts/saving-state-context';
 import { Toaster } from '@/components/ui/sonner';
+import PWAInstallPrompt from '@/components/pwa/pwa-install-prompt';
+import { PWALifecycle } from '@/components/pwa/pwa-lifecycle';
+import { OfflineDetector } from '@/components/pwa/offline-detector';
 import localFont from 'next/font/local';
 
 const futura = localFont({
@@ -74,6 +77,17 @@ export const metadata = {
   },
   applicationName: 'Cana Goals',
   msTileColor: '#2d2d2d',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Cana Goals',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+    'application-name': 'Cana Goals',
+    'msapplication-TileColor': '#2d2d2d',
+    'msapplication-config': '/browserconfig.xml',
+  },
 };
 
 export const viewport = {
@@ -92,7 +106,10 @@ export default function RootLayout({ children }) {
         >
           <AuthProvider>
             <SavingStateProvider>
+              <PWALifecycle />
+              <OfflineDetector />
               {children}
+              <PWAInstallPrompt />
               <Toaster position='top-right' richColors />
             </SavingStateProvider>
           </AuthProvider>
