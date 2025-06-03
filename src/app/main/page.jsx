@@ -60,7 +60,8 @@ export default function Page() {
 
       return {
         status: configKey,
-        total: goalCount + blockCount,
+        goals: goalCount,
+        blocks: blockCount,
         fill: chartConfig[configKey]?.color,
       };
     });

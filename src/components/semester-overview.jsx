@@ -1,11 +1,15 @@
+import { useState, useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { CircleX, BriefcaseBusiness, CheckCheck, Hourglass, TriangleAlert } from 'lucide-react';
 
 export const chartConfig = {
-  total: {
-    label: 'Total',
+  goals: {
+    label: 'Goals',
+  },
+  blocks: {
+    label: 'Blocks',
   },
   notworkingon: {
     label: 'Not Working On',
@@ -35,14 +39,38 @@ export const chartConfig = {
 };
 
 export function SemesterOverview({ semesterData }) {
+  const [activeChart, setActiveChart] = useState('goals');
+
+  const total = useMemo(
+    () => ({
+      goals: semesterData.reduce((acc, curr) => acc + curr.goals, 0),
+      blocks: semesterData.reduce((acc, curr) => acc + curr.blocks, 0),
+    }),
+    [semesterData],
+  );
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className='text-lg'>Semester Overview</CardTitle>
-        <CardDescription>
-          These values come from the statuses of goals and building blocks that are not empty for
-          this semester.
-        </CardDescription>
+    <Card className='py-0'>
+      <CardHeader className='flex flex-col items-stretch border-b !p-0 sm:flex-row'>
+        <div className='flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-0'>
+          <CardTitle className='text-lg'>Semester Overview</CardTitle>
+          <CardDescription>Progress over time between goals and building blocks</CardDescription>
+        </div>
+        <div className='flex'>
+          {['goals', 'blocks'].map((key) => (
+            <button
+              key={key}
+              data-active={activeChart === key}
+              className='data-[active=true]:bg-muted/50 relative z-30 flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6'
+              onClick={() => setActiveChart(key)}
+            >
+              <span className='text-muted-foreground text-xs'>{chartConfig[key].label}</span>
+              <span className='text-center text-lg leading-none font-bold sm:text-3xl'>
+                {total[key].toLocaleString()}
+              </span>
+            </button>
+          ))}
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className={'max-h-80 min-h-48 w-full'}>
@@ -52,11 +80,11 @@ export function SemesterOverview({ semesterData }) {
             layout='vertical'
             margin={{
               left: -30,
-              right: 10,
+              right: 15,
             }}
           >
             <CartesianGrid horizontal vertical strokeDasharray='3 3' />
-            <XAxis type='number' dataKey='total' />
+            <XAxis type='number' />
             <YAxis
               dataKey='status'
               type='category'
@@ -80,7 +108,7 @@ export function SemesterOverview({ semesterData }) {
               }}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Bar dataKey='total' radius={5}>
+            <Bar dataKey={activeChart} radius={5}>
               <LabelList position='right' offset={6} className='fill-foreground' fontSize={12} />
             </Bar>
           </BarChart>
