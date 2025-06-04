@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { updateSemesterFocus } from '@/lib/goal-handlers';
+import { useAuth } from '@/contexts/auth-provider';
 
 const useDebouncedFocusText = (semesterId) => {
   return useCallback(
@@ -18,6 +19,8 @@ const useDebouncedFocusText = (semesterId) => {
 };
 
 export function GoalFocus({ semesterId, focus }) {
+  const { userDoc } = useAuth();
+  const isAdmin = userDoc?.admin;
   const [text, setText] = useState(focus || '');
   useEffect(() => setText(focus || ''), [focus]);
   const debouncedFocustext = useDebouncedFocusText(semesterId);
@@ -39,6 +42,8 @@ export function GoalFocus({ semesterId, focus }) {
           value={text}
           onChange={handleTextChange}
           placeholder='Enter the current semesters goal focus.'
+          readOnly={!isAdmin}
+          disabled={!isAdmin}
         ></Textarea>
       </CardContent>
     </Card>

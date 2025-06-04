@@ -80,7 +80,7 @@ export function StatusSelect({ value, onValueChange, disabled = false }) {
           document.body,
         )}
       <Select value={value} onValueChange={handleValueChange} disabled={disabled}>
-        <SelectTrigger className={cn('w-full min-w-44 border-2', bgColor)}>
+        <SelectTrigger className={cn('w-full min-w-44 border-2', bgColor)} aria-label='Status selection'>
           <SelectValue>
             <div className='flex items-center gap-2'>
               {StatusIcon && <StatusIcon className={cn('h-4 w-4', bgColor)} />}

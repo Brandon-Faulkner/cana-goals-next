@@ -54,18 +54,18 @@ export function SemesterOverview({ semesterData }) {
       <CardHeader className='flex flex-col items-stretch border-b !p-0 sm:flex-row'>
         <div className='flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-0'>
           <CardTitle className='text-lg'>Semester Overview</CardTitle>
-          <CardDescription>Progress over time between goals and building blocks</CardDescription>
+          <CardDescription>These values come from the statuses of goals and building blocks that are not empty for this semester.</CardDescription>
         </div>
         <div className='flex'>
           {['goals', 'blocks'].map((key) => (
             <button
               key={key}
               data-active={activeChart === key}
-              className='data-[active=true]:bg-muted/50 relative z-30 flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6'
+              className='data-[active=true]:bg-muted/50 relative flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6'
               onClick={() => setActiveChart(key)}
             >
               <span className='text-muted-foreground text-xs'>{chartConfig[key].label}</span>
-              <span className='text-center text-lg leading-none font-bold sm:text-3xl'>
+              <span className='text-lg leading-none font-bold sm:text-3xl'>
                 {total[key].toLocaleString()}
               </span>
             </button>

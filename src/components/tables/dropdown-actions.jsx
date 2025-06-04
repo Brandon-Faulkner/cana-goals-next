@@ -19,7 +19,7 @@ export function DropdownActions({ actions = [] }) {
     <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' size='icon' className='ml-2'>
+          <Button variant='ghost' size='icon' className='ml-2' aria-label='Dropdown actions'>
             <MoreVertical className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
