@@ -3,10 +3,10 @@ import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from '@/contexts/auth-provider';
 import { SavingStateProvider } from '@/contexts/saving-state-context';
 import { Toaster } from '@/components/ui/sonner';
-import PWAInstallPrompt from '@/components/pwa/pwa-install-prompt';
+import { PWAInstallPrompt } from '@/components/pwa/pwa-install-prompt';
 import { PWALifecycle } from '@/components/pwa/pwa-lifecycle';
 import { OfflineDetector } from '@/components/pwa/offline-detector';
-import DynamicThemeColor from '@/components/pwa/dynamic-theme-color';
+import { DynamicThemeColor } from '@/components/pwa/dynamic-theme-color';
 import localFont from 'next/font/local';
 
 const futura = localFont({

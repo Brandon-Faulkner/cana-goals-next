@@ -70,13 +70,14 @@ export function SemesterOverview({ semesterData, peopleData }) {
       goals: totalGoals,
       blocks: semesterData.reduce((acc, curr) => acc + curr.blocks, 0),
       completionRate,
+      teamProgress: completionRate + '%',
     };
   }, [semesterData]);
 
   return (
     <Card className='py-0'>
       <CardHeader className='flex flex-col items-stretch border-b !p-0 sm:flex-row'>
-        <div className='flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-0'>
+        <div className='flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3'>
           <CardTitle className='text-lg'>Semester Overview</CardTitle>
           <CardDescription>
             These values come from the statuses of goals and building blocks that are not empty for
@@ -109,7 +110,6 @@ export function SemesterOverview({ semesterData, peopleData }) {
           <Table className='max-h-80 min-h-48'>
             <TableHeader>
               <TableRow>
-                <TableHead>Rank</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Goals</TableHead>
                 <TableHead>Blocks</TableHead>
@@ -120,7 +120,6 @@ export function SemesterOverview({ semesterData, peopleData }) {
             <TableBody>
               {teamProgress.map((person) => (
                 <TableRow key={person.id || person.name}>
-                  <TableCell>{person.rank}</TableCell>
                   <TableCell>{person.name}</TableCell>
                   <TableCell>{person.goals}</TableCell>
                   <TableCell>{person.blocks}</TableCell>
@@ -131,7 +130,10 @@ export function SemesterOverview({ semesterData, peopleData }) {
             </TableBody>
           </Table>
         ) : (
-          <ChartContainer config={chartConfig} className={'max-h-80 min-h-48 w-full'}>
+          <ChartContainer
+            config={chartConfig}
+            className={'max-h-80 min-h-48 w-full overflow-hidden'}
+          >
             <BarChart
               accessibilityLayer
               data={semesterData}
@@ -139,10 +141,11 @@ export function SemesterOverview({ semesterData, peopleData }) {
               margin={{
                 left: -30,
                 right: 15,
+                bottom: 20,
               }}
             >
               <CartesianGrid horizontal vertical strokeDasharray='3 3' />
-              <XAxis type='number' />
+              <XAxis type='number' hide />
               <YAxis
                 dataKey='status'
                 type='category'
