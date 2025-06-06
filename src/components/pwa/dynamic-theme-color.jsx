@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
-export default function DynamicThemeColor() {
+export function DynamicThemeColor() {
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {

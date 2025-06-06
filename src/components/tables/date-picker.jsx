@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useSemesters } from '@/hooks/use-semesters';
 
-export function DatePicker({ date, onDateChange }) {
+export function DatePicker({ date, onDateChange, disabled = false }) {
   const { currentSemester } = useSemesters();
 
   const semesterStartDate = currentSemester?.start?.toDate();
@@ -23,6 +23,7 @@ export function DatePicker({ date, onDateChange }) {
             'w-full min-w-48 justify-start text-left font-normal',
             !date && 'text-muted-foreground',
           )}
+          disabled={disabled}
         >
           <CalendarIcon className='mr-2 h-4 w-4' />
           {date ? format(date, 'PPP') : <span>Pick a due date</span>}

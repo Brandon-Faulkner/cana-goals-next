@@ -66,6 +66,7 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
                 placeholder='Enter building block'
                 className='min-h-9 min-w-52'
                 readOnly={!isOwner}
+                disabled={!isOwner}
               />
             </div>
           </div>

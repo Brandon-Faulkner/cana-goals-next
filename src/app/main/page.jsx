@@ -42,7 +42,7 @@ export default function Page() {
     }
   }, [currentSemester?.id]);
 
-  const semesterStatuses = useMemo(() => {
+  const [peopleData, semesterStatuses] = useMemo(() => {
     const statuses = ['Not Working On', 'Working On', 'Completed', 'Waiting', 'Stuck'];
 
     // Flatten all building blocks across every goal and non-empty building block text
@@ -50,20 +50,46 @@ export default function Page() {
       .flatMap((g) => g.buildingBlocks || [])
       .filter((block) => block.text?.trim());
 
-    return statuses.map((status) => {
+    // Aggregate per-user stats
+    const peopleMap = new Map();
+    for (const goal of goals) {
+      if (!goal.userId) continue;
+      if (!peopleMap.has(goal.userId)) {
+        peopleMap.set(goal.userId, {
+          id: goal.userId,
+          name: goal.userName,
+          goals: 0,
+          blocks: 0,
+          goalsCompleted: 0,
+          blocksCompleted: 0,
+        });
+      }
+      const person = peopleMap.get(goal.userId);
+      if (goal.text?.trim()) person.goals += 1;
+      if (goal.status === 'Completed' && goal.text?.trim()) person.goalsCompleted += 1;
+      // Count building blocks for this goal
+      if (Array.isArray(goal.buildingBlocks)) {
+        const blocks = goal.buildingBlocks.filter((b) => b.text?.trim());
+        person.blocks += blocks.length;
+        person.blocksCompleted += blocks.filter((b) => b.status === 'Completed').length;
+      }
+    }
+    const peopleData = Array.from(peopleMap.values());
+
+    // Status breakdown for chart
+    const semesterStatuses = statuses.map((status) => {
       const configKey = status.toLowerCase().replace(/\s+/g, '');
-
-      // Count goals with this status and non-empty text
       const goalCount = goals.filter((g) => g.status === status && g.text?.trim()).length;
-      // Count building blocks with this status and non-empty text
       const blockCount = allBlocks.filter((b) => b.status === status).length;
-
       return {
         status: configKey,
-        total: goalCount + blockCount,
+        goals: goalCount,
+        blocks: blockCount,
         fill: chartConfig[configKey]?.color,
       };
     });
+
+    return [peopleData, semesterStatuses];
   }, [goals]);
 
   return (
@@ -122,7 +148,7 @@ export default function Page() {
             {loading || goalsLoading ? (
               <SemesterOverviewSkeleton />
             ) : (
-              <SemesterOverview semesterData={semesterStatuses} />
+              <SemesterOverview semesterData={semesterStatuses} peopleData={peopleData} />
             )}
             {loading || goalsLoading ? (
               <GoalFocusSkeleton />

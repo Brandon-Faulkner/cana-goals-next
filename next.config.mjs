@@ -11,6 +11,8 @@ export default withPWA({
   swcMinify: true,
   disable: process.env.NODE_ENV === 'development',
   workboxOptions: {
+    skipWaiting: false,
+    clientsClaim: false,
     disableDevLogs: true,
     runtimeCaching: [
       {

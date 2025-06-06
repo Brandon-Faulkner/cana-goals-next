@@ -75,6 +75,7 @@ export const GoalRow = React.memo(function GoalRow({
               size='icon'
               className='mt-1.5 h-6 w-6 flex-shrink-0'
               onClick={toggleGoalExpanded}
+              aria-label='Expand/Collapse goal row'
             >
               {expanded ? (
                 <ChevronDown className='h-4 w-4' />
@@ -87,8 +88,9 @@ export const GoalRow = React.memo(function GoalRow({
                 value={text}
                 onChange={handleTextChange}
                 placeholder='Enter goal'
-                className='min-h-9 min-w-52'
+                className='min-w-52'
                 readOnly={!isOwner}
+                disabled={!isOwner}
               />
             </div>
           </div>

@@ -66,16 +66,17 @@ export function PWAInstallPrompt() {
         </div>
         <div className='flex flex-shrink-0 gap-2'>
           <Button size='sm' onClick={() => handleInstall(promptEvent)} className='h-8 px-3'>
-            <Download className='mr-1 h-3 w-3' />
+            <Download />
             Install
           </Button>
           <Button variant='outline' size='sm' onClick={handleDismiss} className='h-8 w-8 p-0'>
-            <X className='h-3 w-3' />
+            <X />
           </Button>
         </div>
       </div>,
       {
         duration: Infinity,
+        classNames: { content: 'w-full' },
         position: 'bottom-center',
         id: 'pwa-install-prompt',
       },
@@ -114,5 +115,3 @@ export function PWAInstallPrompt() {
   // This component doesn't render anything - it just manages the toast
   return null;
 }
-
-export default PWAInstallPrompt;
