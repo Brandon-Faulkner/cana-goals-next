@@ -7,7 +7,8 @@
     "build": "prettier --check src/ && next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "release": "git add . && npm version $npm_config_type -m \"$npm_config_message v%s\" && git push && git push --tags"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
