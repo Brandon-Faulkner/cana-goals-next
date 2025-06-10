@@ -32,7 +32,7 @@ const statuses = [
   { value: 'Stuck', icon: TriangleAlert, color: 'border-chart-5 text-chart-5' },
 ];
 
-export function StatusSelect({ value, onValueChange, disabled = false }) {
+export function StatusSelect({ value, onValueChange, forGoal = false, disabled = false }) {
   const { userDoc } = useAuth();
   const [showConfetti, setShowConfetti] = useState(false);
   const selected = statuses.find((s) => s.value === value);
@@ -40,8 +40,9 @@ export function StatusSelect({ value, onValueChange, disabled = false }) {
   const bgColor = selected?.color ?? 'bg-white';
 
   const handleValueChange = (newStatus) => {
-    // Check if user is changing to "Completed" and has confetti enabled
+    // Check if user is changing goal to "Completed" and has confetti enabled
     if (
+      forGoal &&
       newStatus === 'Completed' &&
       value !== 'Completed' &&
       userDoc?.settings?.confetti !== false

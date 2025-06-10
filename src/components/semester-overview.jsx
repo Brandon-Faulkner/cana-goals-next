@@ -14,7 +14,7 @@ import {
 
 export const chartConfig = {
   teamProgress: {
-    label: 'Team Progress',
+    label: 'Goal Completion',
   },
   goals: {
     label: 'Goals',
@@ -67,10 +67,9 @@ export function SemesterOverview({ semesterData, peopleData }) {
     const completedGoals = semesterData.find((s) => s.status === 'completed')?.goals || 0;
     const completionRate = totalGoals ? Math.round((completedGoals / totalGoals) * 100) : 0;
     return {
+      teamProgress: completionRate + '%',
       goals: totalGoals,
       blocks: semesterData.reduce((acc, curr) => acc + curr.blocks, 0),
-      completionRate,
-      teamProgress: completionRate + '%',
     };
   }, [semesterData]);
 
@@ -83,18 +82,13 @@ export function SemesterOverview({ semesterData, peopleData }) {
             These values come from the statuses of goals and building blocks that are not empty for
             this semester.
           </CardDescription>
-          <div className='mt-2 flex gap-4'>
-            <span className='text-sm font-medium'>
-              Goal Completion Rate: <span className='font-bold'>{total.completionRate}%</span>
-            </span>
-          </div>
         </div>
         <div className='xxs:flex-row flex flex-col'>
           {['teamProgress', 'goals', 'blocks'].map((key) => (
             <button
               key={key}
               data-active={activeChart === key}
-              className='data-[active=true]:bg-muted/50 relative flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t border-l px-6 py-4 text-left even:border-l sm:border-t-0 sm:px-8 sm:py-6 md:min-w-36'
+              className='data-[active=true]:bg-muted/50 relative flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t border-l px-6 py-4 text-left even:border-l sm:border-t-0 sm:px-8 sm:py-6 md:min-w-40'
               onClick={() => setActiveChart(key)}
             >
               <span className='text-muted-foreground text-xs'>{chartConfig[key].label}</span>
@@ -105,15 +99,15 @@ export function SemesterOverview({ semesterData, peopleData }) {
           ))}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className={activeChart === 'teamProgress' ? 'mb-5' : ''}>
         {activeChart === 'teamProgress' ? (
-          <Table className='max-h-80 min-h-48'>
+          <Table className='max-h-80'>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Goals</TableHead>
-                <TableHead>Blocks</TableHead>
                 <TableHead>Goals Completed</TableHead>
+                <TableHead>Blocks</TableHead>
                 <TableHead>Blocks Completed</TableHead>
               </TableRow>
             </TableHeader>
@@ -122,9 +116,13 @@ export function SemesterOverview({ semesterData, peopleData }) {
                 <TableRow key={person.id || person.name}>
                   <TableCell>{person.name}</TableCell>
                   <TableCell>{person.goals}</TableCell>
+                  <TableCell className={person.goalsCompleted !== 0 ? 'text-primary' : ''}>
+                    {person.goalsCompleted}
+                  </TableCell>
                   <TableCell>{person.blocks}</TableCell>
-                  <TableCell>{person.goalsCompleted}</TableCell>
-                  <TableCell>{person.blocksCompleted}</TableCell>
+                  <TableCell className={person.blocksCompleted !== 0 ? 'text-primary' : ''}>
+                    {person.blocksCompleted}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
