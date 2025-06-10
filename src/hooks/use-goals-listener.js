@@ -14,6 +14,7 @@ export function useGoalsListener(currentSemesterId, user, loadingAuth) {
       return;
     }
 
+    setGoals([]);
     setIsLoadingGoals(true);
 
     // --- GOALS LISTENER ---

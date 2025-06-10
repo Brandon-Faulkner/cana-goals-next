@@ -1,8 +1,29 @@
 export const versionNotes = {
-  currentVersion: '3.0',
+  currentVersion: '1.2.0',
   versions: [
     {
-      version: '3.0',
+      version: '1.2.0',
+      features: [
+        {
+          title: 'Improved Semester Overview',
+          items: [
+            'Added 3 toggle buttons: Goal Completion, Goals, and Blocks.',
+            'Goal Completion shows a table of each user and their goal, block, and completion counts.',
+            'Goals and Blocks show bar charts of goal or block counts per status.',
+          ],
+        },
+        {
+          title: 'Added Slack Integration',
+          items: ['Setup the existing Slack integration to now work with this application.'],
+        },
+        {
+          title: 'UI Fixes',
+          items: ['Fixed some style issues for smaller devices, and better UI consistencies.'],
+        },
+      ],
+    },
+    {
+      version: '1.1.0',
       features: [
         {
           title: 'Migration to Next.js, Vercel Hosting, and Firestore Database',

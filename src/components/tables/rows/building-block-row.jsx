@@ -72,13 +72,17 @@ export const BuildingBlockRow = React.memo(function BuildingBlockRow({
           </div>
         </TableCell>
         <TableCell className='align-top'>
-          <DatePicker date={dueDate} onDateChange={handleDateChange} disabled={!isOwner} />
+          <DatePicker
+            date={dueDate}
+            onDateChange={handleDateChange}
+            disabled={!isOwner || text === ''}
+          />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
           <StatusSelect
             value={buildingBlock.status}
             onValueChange={updateBuildingBlockStatus}
-            disabled={!isOwner}
+            disabled={!isOwner || text === ''}
           />
 
           <DropdownActions actions={contextActions} />

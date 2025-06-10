@@ -96,10 +96,19 @@ export const GoalRow = React.memo(function GoalRow({
           </div>
         </TableCell>
         <TableCell className='align-top'>
-          <DatePicker date={dueDate} onDateChange={handleDateChange} disabled={!isOwner} />
+          <DatePicker
+            date={dueDate}
+            onDateChange={handleDateChange}
+            disabled={!isOwner || text === ''}
+          />
         </TableCell>
         <TableCell className='flex items-start justify-between align-top'>
-          <StatusSelect value={goal.status} onValueChange={updateGoalStatus} disabled={!isOwner} />
+          <StatusSelect
+            value={goal.status}
+            onValueChange={updateGoalStatus}
+            forGoal
+            disabled={!isOwner || text === ''}
+          />
 
           <DropdownActions actions={contextActions} />
         </TableCell>

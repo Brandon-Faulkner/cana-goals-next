@@ -9,6 +9,7 @@ import {
   Settings,
   SquarePen,
   Globe,
+  CalendarPlus,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -43,8 +44,10 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
 import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
+import { AddSemesterDialog } from '@/components/dialogs/add-semester-dialog';
 import { SettingsDialog } from '@/components/dialogs/settings-dialog';
 import { SignOutDialog } from '@/components/dialogs/sign-out-dialog';
+import { useAuth } from '@/contexts/auth-provider';
 
 export function AppSidebar({
   semesters = [],
@@ -55,10 +58,13 @@ export function AppSidebar({
 }) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { userDoc } = useAuth();
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
+  const [showAddSemester, setShowAddSemester] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
+  const isAdmin = userDoc?.admin;
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);
@@ -144,6 +150,13 @@ export function AppSidebar({
                   <Globe /> Goal Language
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton size='lg' onClick={() => setShowAddSemester(true)}>
+                    <CalendarPlus /> Add Semester
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -190,6 +203,11 @@ export function AppSidebar({
       </SidebarContent>
       <GoalLanguageDialog open={showGoalLanguage} onOpenChange={setShowGoalLanguage} />
       <VersionNotesDialog open={showVersionNotes} onOpenChange={setShowVersionNotes} />
+      <AddSemesterDialog
+        open={showAddSemester}
+        onOpenChange={setShowAddSemester}
+        isAdmin={isAdmin}
+      />
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
       <SignOutDialog
         open={showSignOutDialog}
