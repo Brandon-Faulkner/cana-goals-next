@@ -8,7 +8,8 @@ import {
   getDocs,
   writeBatch,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, functions } from '@/lib/firebase';
+import { httpsCallable } from 'firebase/functions';
 import { setSavingState } from '@/lib/saving-state-controller';
 
 export const updateSemesterFocus = async (semesterId, focus) => {
@@ -73,11 +74,30 @@ export const updateGoalDueDate = async (semesterId, goalId, dueDate) => {
   }
 };
 
-export const updateGoalStatus = async (semesterId, goalId, status) => {
+export const updateGoalStatus = async (
+  semesterId,
+  goalId,
+  status,
+  ownerUserName,
+  ownerSlackId,
+  goalText,
+  semesterName,
+) => {
   setSavingState({ isSaving: true, hasError: false });
   const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     await updateDoc(ref, { status });
+
+    // Send slack notification
+    if (ownerSlackId && ownerUserName) {
+      try {
+        const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
+        const message = `Status of goal "${goalText.substring(0, 50)}${goalText.length > 50 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;
+        await callSendSlackMessage({ message });
+      } catch (slackError) {
+        console.error('Error sending Slack notification for goal status:', slackError);
+      }
+    }
   } catch (error) {
     setSavingState({ isSaving: false, hasError: true });
     throw error;

@@ -7,7 +7,8 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, functions } from '@/lib/firebase';
+import { httpsCallable } from 'firebase/functions';
 import { setSavingState } from '@/lib/saving-state-controller';
 
 export const addBuildingBlock = async (semesterId, goalId, initialDueDate) => {
@@ -58,11 +59,32 @@ export const updateBuildingBlockDueDate = async (semesterId, goalId, blockId, du
   }
 };
 
-export const updateBuildingBlockStatus = async (semesterId, goalId, blockId, status) => {
+export const updateBuildingBlockStatus = async (
+  semesterId,
+  goalId,
+  blockId,
+  status,
+  ownerUserName,
+  ownerSlackId,
+  goalText,
+  blockText,
+  semesterName,
+) => {
   setSavingState({ isSaving: true, hasError: false });
   const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     await updateDoc(ref, { status });
+
+    // Send slack notification
+    if (ownerSlackId && ownerUserName) {
+      try {
+        const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
+        const message = `Status of building block "${blockText.substring(0, 40)}${blockText.length > 40 ? '...' : ''}" for goal "${goalText.substring(0, 40)}${goalText.length > 40 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;
+        await callSendSlackMessage({ message });
+      } catch (slackError) {
+        console.error('Error sending Slack notification for goal status:', slackError);
+      }
+    }
   } catch (error) {
     setSavingState({ isSaving: false, hasError: true });
     throw error;
