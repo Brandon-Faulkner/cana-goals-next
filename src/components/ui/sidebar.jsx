@@ -222,6 +222,7 @@ function Sidebar({
 
 function SidebarTrigger({ className, onClick, ...props }) {
   const { toggleSidebar } = useSidebar();
+  const { isMobile } = useSidebar();
 
   return (
     <Tooltip>
@@ -242,13 +243,14 @@ function SidebarTrigger({ className, onClick, ...props }) {
           <span className='sr-only'>Toggle Sidebar</span>
         </Button>
       </TooltipTrigger>
-      <TooltipContent side='right' align='center' children='Toggle Sidebar' />
+      <TooltipContent side='right' align='center' hidden={isMobile} children='Toggle Sidebar' />
     </Tooltip>
   );
 }
 
 function SidebarRail({ className, ...props }) {
   const { toggleSidebar } = useSidebar();
+  const { isMobile } = useSidebar();
 
   return (
     <Tooltip>
@@ -271,7 +273,7 @@ function SidebarRail({ className, ...props }) {
           {...props}
         />
       </TooltipTrigger>
-      <TooltipContent side='right' align='center' children='Toggle Sidebar' />
+      <TooltipContent side='right' align='center' hidden={isMobile} children='Toggle Sidebar' />
     </Tooltip>
   );
 }

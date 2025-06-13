@@ -12,6 +12,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const chartConfig = {
   teamProgress: {
@@ -52,6 +53,7 @@ export const chartConfig = {
 
 export function SemesterOverview({ semesterData, peopleData }) {
   const [activeChart, setActiveChart] = useState('teamProgress');
+  const { isMobile } = useIsMobile();
 
   const teamProgress = useMemo(() => {
     if (!peopleData) return [];
@@ -103,6 +105,7 @@ export function SemesterOverview({ semesterData, peopleData }) {
               <TooltipContent
                 side='bottom'
                 align='center'
+                hidden={isMobile}
                 children={`View data for ${chartConfig[key].label}`}
               />
             </Tooltip>

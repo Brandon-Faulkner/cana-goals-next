@@ -9,6 +9,7 @@ import { DatePicker } from '@/components/tables/date-picker';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { ChevronsUpDown, ListChecks, Grid2X2Plus, MessageSquarePlus, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const GoalRow = React.memo(function GoalRow({
   goal,
@@ -23,6 +24,7 @@ export const GoalRow = React.memo(function GoalRow({
   addComment,
   deleteGoal,
 }) {
+  const { isMobile } = useIsMobile();
   const [text, setText] = useState(goal.text || '');
   const [dueDate, setDueDate] = useState(goal.dueDate?.toDateString() || null);
 
@@ -90,6 +92,7 @@ export const GoalRow = React.memo(function GoalRow({
               <TooltipContent
                 side='right'
                 align='center'
+                hidden={isMobile}
                 children={expanded ? 'Collapse row' : 'Expand row'}
               />
             </Tooltip>

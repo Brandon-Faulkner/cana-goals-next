@@ -11,10 +11,12 @@ import { MoreVertical } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { useBlockContextMenu } from '@/hooks/use-block-context-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function DropdownActions({ actions = [] }) {
   const [openDialogKey, setOpenDialogKey] = useState(null);
   useBlockContextMenu(!!openDialogKey);
+  const { isMobile } = useIsMobile();
 
   return (
     <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>
@@ -27,7 +29,12 @@ export function DropdownActions({ actions = [] }) {
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
-          <TooltipContent side='left' align='center' children='View more actions' />
+          <TooltipContent
+            side='left'
+            align='center'
+            hidden={isMobile}
+            children='View more actions'
+          />
         </Tooltip>
         <DropdownMenuContent align='end'>
           {actions.map((action, i) =>
