@@ -38,6 +38,7 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'firebase/auth';
@@ -54,11 +55,14 @@ export function AppSidebar({
   loadingSemesters = false,
   currentSemester,
   onSelectSemester,
+  usersInCurrentSemester = [],
+  onUserSelect,
   ...props
 }) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { userDoc } = useAuth();
+  const { isMobile, setOpenMobile } = useSidebar();
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
   const [showAddSemester, setShowAddSemester] = useState(false);
@@ -98,7 +102,7 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
+              <SidebarMenuItem tooltip='Change light/dark/system theme'>
                 <Select value={theme} onValueChange={handleThemeChange}>
                   <SelectTrigger
                     className='w-full px-2 text-lg'
@@ -140,18 +144,18 @@ export function AppSidebar({
                   </SelectContent>
                 </Select>
               </SidebarMenuItem>
-              <SidebarMenuItem>
+              <SidebarMenuItem tooltip='View the newest version notes'>
                 <SidebarMenuButton size='lg' onClick={() => setShowVersionNotes(true)}>
                   <SquarePen /> What&apos;s New
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
+              <SidebarMenuItem tooltip='View goal language and how to use it'>
                 <SidebarMenuButton size='lg' onClick={() => setShowGoalLanguage(true)}>
                   <Globe /> Goal Language
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {isAdmin && (
-                <SidebarMenuItem>
+                <SidebarMenuItem tooltip='Add a new goal semester'>
                   <SidebarMenuButton size='lg' onClick={() => setShowAddSemester(true)}>
                     <CalendarPlus /> Add Semester
                   </SidebarMenuButton>
@@ -165,6 +169,7 @@ export function AppSidebar({
           <SidebarGroup>
             <SidebarGroupLabel
               asChild
+              tooltip='Show/Hide available semesters'
               className='group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-lg'
             >
               <CollapsibleTrigger>
@@ -187,12 +192,43 @@ export function AppSidebar({
                         <SidebarMenuSubItem key={semester.id}>
                           <SidebarMenuSubButton
                             isActive={currentSemester?.id === semester.id}
+                            tooltip={
+                              currentSemester?.id === semester.id
+                                ? 'Current selected semester'
+                                : 'Click to view semester'
+                            }
                             size='lg'
                             onClick={() => onSelectSemester(semester)}
                             className={'cursor-pointer'}
                           >
                             {semester.semester}
                           </SidebarMenuSubButton>
+                          {/* Display users if this is the current semester and users exist */}
+                          {currentSemester?.id === semester.id &&
+                            usersInCurrentSemester &&
+                            usersInCurrentSemester.length > 0 && (
+                              <SidebarMenuSub>
+                                {usersInCurrentSemester.map((person) => (
+                                  <SidebarMenuSubItem
+                                    key={person.id}
+                                    tooltip={`View ${person.name}'s goals`}
+                                  >
+                                    <SidebarMenuSubButton
+                                      onClick={() => {
+                                        if (onUserSelect) {
+                                          onUserSelect(person.id);
+                                        }
+                                        if (isMobile) {
+                                          setOpenMobile(false);
+                                        }
+                                      }}
+                                    >
+                                      {person.name}
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                ))}
+                              </SidebarMenuSub>
+                            )}
                         </SidebarMenuSubItem>
                       ))}
                 </SidebarMenuSub>
@@ -216,7 +252,12 @@ export function AppSidebar({
       />
       <Separator />
       <SidebarFooter>
-        <SidebarMenuButton size='lg' className='mb-2' onClick={() => setShowSettings(true)}>
+        <SidebarMenuButton
+          size='lg'
+          tooltip='View & update your settings'
+          className='mb-2'
+          onClick={() => setShowSettings(true)}
+        >
           <Settings /> Settings
         </SidebarMenuButton>
         <Button type='button' variant='destructive' onClick={() => setShowSignOutDialog(true)}>
