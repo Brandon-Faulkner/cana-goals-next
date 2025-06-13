@@ -7,6 +7,7 @@ import { PWAInstallPrompt } from '@/components/pwa/pwa-install-prompt';
 import { PWALifecycle } from '@/components/pwa/pwa-lifecycle';
 import { OfflineDetector } from '@/components/pwa/offline-detector';
 import { DynamicThemeColor } from '@/components/pwa/dynamic-theme-color';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import localFont from 'next/font/local';
 
 const futura = localFont({
@@ -106,7 +107,7 @@ export default function RootLayout({ children }) {
             <SavingStateProvider>
               <PWALifecycle />
               <OfflineDetector />
-              {children}
+              <TooltipProvider delayDuration={800}>{children}</TooltipProvider>
               <PWAInstallPrompt />
               <Toaster position='top-right' richColors />
             </SavingStateProvider>

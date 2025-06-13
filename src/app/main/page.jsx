@@ -26,6 +26,7 @@ export default function Page() {
   const {
     savingState: { isSaving, hasError },
   } = useSavingState();
+  const [highlightedUserId, setHighlightedUserId] = useState(null);
 
   useEffect(() => {
     document.title = 'Cana Goals | Dashboard';
@@ -92,6 +93,27 @@ export default function Page() {
     return [peopleData, semesterStatuses];
   }, [goals]);
 
+  useEffect(() => {
+    if (highlightedUserId) {
+      const timer = setTimeout(() => {
+        setHighlightedUserId(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [highlightedUserId]);
+
+  const scrollToUserGoalCard = (userId) => {
+    setHighlightedUserId(userId);
+    const cardId = `user-goals-${userId}`;
+    const cardElement = document.getElementById(cardId);
+    if (cardElement) {
+      const cardRect = cardElement.getBoundingClientRect();
+      const cardTopRelativeToDocument = cardRect.top + window.scrollY;
+      const targetScrollY = cardTopRelativeToDocument - 72; //Header height of 64px + some extra padding
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+    }
+  };
+
   return (
     <RouteGuard>
       <SidebarProvider>
@@ -100,6 +122,8 @@ export default function Page() {
           loadingSemesters={loading}
           currentSemester={currentSemester}
           onSelectSemester={setCurrentSemester}
+          usersInCurrentSemester={peopleData}
+          onUserSelect={scrollToUserGoalCard}
         />
         <SidebarInset>
           <header className='bg-background sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b px-4'>
@@ -168,6 +192,7 @@ export default function Page() {
                   userName={userDoc.name}
                   goals={goals.filter((g) => g.userId === userDoc.id)}
                   currentSemester={currentSemester}
+                  isHighlighted={highlightedUserId === userDoc.id}
                 />
               )
             )}
@@ -200,6 +225,7 @@ export default function Page() {
                       userName={otherUserName}
                       goals={otherUserGoals}
                       currentSemester={currentSemester}
+                      isHighlighted={highlightedUserId === otherUserId}
                     />
                   ))}
           </div>

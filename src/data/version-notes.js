@@ -1,6 +1,22 @@
 export const versionNotes = {
-  currentVersion: '1.2.0',
+  currentVersion: '1.3.0',
   versions: [
+    {
+      version: '1.3.0',
+      features: [
+        {
+          title: 'Jump to User Goal Card',
+          items: [
+            'In the sidebar, under Goal Semesters and the current selected semester, there is a list of all the users with goals for that semester.',
+            'Clicking on one of those names will close the sidebar (on mobile) and scroll the page to the selected users card. It will also briefly highlight the card.',
+          ],
+        },
+        {
+          title: 'Tooltips',
+          items: ['Added some tooltips in the sidebar and various places on the main page.'],
+        },
+      ],
+    },
     {
       version: '1.2.0',
       features: [

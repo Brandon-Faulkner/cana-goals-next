@@ -36,21 +36,22 @@ const useDebouncedBlockText = (semesterId, goalId) => {
 
 export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   goal,
-  semesterId,
+  currentSemester,
   isOwner,
   userName,
+  userSlackId,
   expanded,
   toggleGoalExpanded,
   addBuildingBlock,
 }) {
-  const debouncedBlockText = useDebouncedBlockText(semesterId, goal.id);
+  const debouncedBlockText = useDebouncedBlockText(currentSemester.id, goal.id);
 
   const handleUpdateBuildingBlockDate = (blockId, date) => {
     if (!isOwner) {
       toast.error('You can only update building blocks on your own goals.');
       return;
     }
-    toast.promise(updateBuildingBlockDueDate(semesterId, goal.id, blockId, date), {
+    toast.promise(updateBuildingBlockDueDate(currentSemester.id, goal.id, blockId, date), {
       loading: 'Saving building block due date...',
       success: 'Building block due date saved',
       error: 'Failed to save building block due date',
@@ -58,15 +59,31 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   };
 
   const handleUpdateBuildingBlockStatus = (blockId, status) => {
+    const block = goal.buildingBlocks.find((b) => b.id === blockId);
+    if (!block) return;
+
     if (!isOwner) {
       toast.error('You can only update building blocks on your own goals.');
       return;
     }
-    toast.promise(updateBuildingBlockStatus(semesterId, goal.id, blockId, status), {
-      loading: 'Saving building block status...',
-      success: 'Building block status saved',
-      error: 'Failed to save building block status',
-    });
+    toast.promise(
+      updateBuildingBlockStatus(
+        currentSemester.id,
+        goal.id,
+        blockId,
+        status,
+        userName,
+        userSlackId,
+        goal.text,
+        block.text,
+        currentSemester.semester,
+      ),
+      {
+        loading: 'Saving building block status...',
+        success: 'Building block status saved',
+        error: 'Failed to save building block status',
+      },
+    );
   };
 
   const handleDeleteBuildingBlock = (props, blockId) => {
@@ -79,7 +96,7 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
             props.onSuccess?.(false);
             return null;
           }
-          return toast.promise(deleteBuildingBlock(semesterId, goal.id, blockId), {
+          return toast.promise(deleteBuildingBlock(currentSemester.id, goal.id, blockId), {
             loading: 'Deleting building block...',
             success: () => {
               props.onSuccess?.(true);

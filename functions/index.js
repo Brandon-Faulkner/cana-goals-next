@@ -51,7 +51,7 @@ exports.sendSlackUserStatus = onCall(async (request) => {
   }
 });
 
-// Automatically runs when a comment is created to email the goal owner
+// Automatically runs when a comment is created to email the goal owner and notify slack
 exports.notifyOnComment = onDocumentCreated(
   'semesters/{semesterId}/goals/{goalId}/comments/{commentId}',
   async (event) => {
@@ -72,7 +72,20 @@ exports.notifyOnComment = onDocumentCreated(
     if (!ownerSnap.exists) return;
 
     const owner = ownerSnap.data();
-    if (!owner.settings?.emails || !owner.email) return;
+    const sendEmailNotif = owner.settings?.emails && owner.email;
+
+    // Fetch commenter's profile for Slack ID
+    let commenterSlackId = commenterName;
+    try {
+      const commenterDocSnap = await admin.firestore().doc(`users/${commenterId}`).get();
+      if (commenterDocSnap.exists && commenterDocSnap.data()?.slackId) {
+        commenterSlackId = `<@${commenterDocSnap.data().slackId}>`;
+      }
+    } catch (e) {
+      console.error("Error fetching commenter's Slack ID:", e);
+    }
+
+    const ownerSlackId = owner.slackId ? `<@${owner.slackId}>` : owner.name;
 
     // Determine goal text for email template
     const goalText = goalData.text || 'your goal';
@@ -82,22 +95,34 @@ exports.notifyOnComment = onDocumentCreated(
     const semesterName =
       semSnap.exists && semSnap.data().semester ? semSnap.data().semester : semesterId;
 
-    // Prepare your EmailJS params
-    const templateParams = {
-      to_email: owner.email,
-      to_name: owner.name,
-      comment_name: commenterName,
-      message: text,
-      goal_content: goalText,
-      semester: semesterName,
-    };
+    // Prepare EmailJS params
+    if (sendEmailNotif) {
+      const templateParams = {
+        to_email: owner.email,
+        to_name: owner.name,
+        comment_name: commenterName,
+        message: text,
+        goal_content: goalText,
+        semester: semesterName,
+      };
 
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
-      console.log('📬 Comment notification sent to', owner.email);
-    } catch (err) {
-      console.error('EmailJS error:', err);
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+        console.log('📬 Comment notification sent to', owner.email);
+      } catch (err) {
+        console.error('EmailJS error:', err);
+      }
+    }
+
+    // Prepare and send Slack notification
+    if (owner.slackId) {
+      const slackMessage = `${commenterSlackId} left a comment on goal "${goalText.substring(0, 50)}${goalText.length > 50 ? '...' : ''}" for ${ownerSlackId} in the ${semesterName} semester.`;
+      try {
+        await axios.post(SLACK_MESSAGE_WEBHOOK, { text: slackMessage });
+        console.log('💬 Slack notification for comment sent.');
+      } catch (error) {
+        console.error('Error sending Slack message for comment:', error);
+      }
     }
   },
 );
-

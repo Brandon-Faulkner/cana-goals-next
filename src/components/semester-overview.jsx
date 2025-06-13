@@ -11,6 +11,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const chartConfig = {
   teamProgress: {
@@ -85,17 +86,26 @@ export function SemesterOverview({ semesterData, peopleData }) {
         </div>
         <div className='xxs:flex-row flex flex-col'>
           {['teamProgress', 'goals', 'blocks'].map((key) => (
-            <button
-              key={key}
-              data-active={activeChart === key}
-              className='data-[active=true]:bg-muted/50 relative flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t border-l px-6 py-4 text-left even:border-l sm:border-t-0 sm:px-8 sm:py-6 md:min-w-40'
-              onClick={() => setActiveChart(key)}
-            >
-              <span className='text-muted-foreground text-xs'>{chartConfig[key].label}</span>
-              <span className='text-lg leading-none font-bold sm:text-3xl'>
-                {total[key]?.toLocaleString()}
-              </span>
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  key={key}
+                  data-active={activeChart === key}
+                  className='data-[active=true]:bg-muted/50 relative flex flex-1 cursor-pointer flex-col justify-center gap-1 border-t border-l px-6 py-4 text-left even:border-l sm:border-t-0 sm:px-8 sm:py-6 md:min-w-40'
+                  onClick={() => setActiveChart(key)}
+                >
+                  <span className='text-muted-foreground text-xs'>{chartConfig[key].label}</span>
+                  <span className='text-lg leading-none font-bold sm:text-3xl'>
+                    {total[key]?.toLocaleString()}
+                  </span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side='bottom'
+                align='center'
+                children={`View data for ${chartConfig[key].label}`}
+              />
+            </Tooltip>
           ))}
         </div>
       </CardHeader>

@@ -81,15 +81,29 @@ export const GoalTable = React.memo(function GoalTable({
   };
 
   const handleUpdateGoalStatus = (goalId, status) => {
+    const goal = goals.find((g) => g.id === goalId);
+    if (!goal) return;
+
     if (!isOwner) {
       toast.error('You can only update goals on your own table.');
       return;
     }
-    toast.promise(updateGoalStatus(currentSemester.id, goalId, status), {
-      loading: 'Saving goal status...',
-      success: 'Goal status saved',
-      error: 'Failed to save goal status',
-    });
+    toast.promise(
+      updateGoalStatus(
+        currentSemester.id,
+        goalId,
+        status,
+        userDoc.name,
+        userDoc.slackId,
+        goal.text,
+        currentSemester.semester,
+      ),
+      {
+        loading: 'Saving goal status...',
+        success: 'Goal status saved',
+        error: 'Failed to save goal status',
+      },
+    );
   };
 
   const handleAddBuildingBlock = (goalId) => {
@@ -211,9 +225,10 @@ export const GoalTable = React.memo(function GoalTable({
                       <div className='border-muted my-4 ml-6 border-l-4 pl-4'>
                         <BuildingBlockTable
                           goal={goal}
-                          semesterId={currentSemester.id}
+                          currentSemester={currentSemester}
                           isOwner={isOwner}
                           userName={userName}
+                          userSlackId={userDoc.slackId}
                           expanded={expandedGoals[goal.id]}
                           toggleGoalExpanded={() => toggleGoalExpanded(goal.id, setExpandedGoals)}
                           addBuildingBlock={() => handleAddBuildingBlock(goal.id)}

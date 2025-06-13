@@ -17,7 +17,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -105,23 +105,21 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={0}>
-        <div
-          data-slot='sidebar-wrapper'
-          style={{
-            '--sidebar-width': SIDEBAR_WIDTH,
-            '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-            ...style,
-          }}
-          className={cn(
-            'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipProvider>
+      <div
+        data-slot='sidebar-wrapper'
+        style={{
+          '--sidebar-width': SIDEBAR_WIDTH,
+          '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+          ...style,
+        }}
+        className={cn(
+          'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </div>
     </SidebarContext.Provider>
   );
 }
@@ -226,21 +224,26 @@ function SidebarTrigger({ className, onClick, ...props }) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Button
-      data-sidebar='trigger'
-      data-slot='sidebar-trigger'
-      variant='ghost'
-      size='icon'
-      className={cn('size-7', className)}
-      onClick={(event) => {
-        onClick?.(event);
-        toggleSidebar();
-      }}
-      {...props}
-    >
-      <PanelLeftIcon />
-      <span className='sr-only'>Toggle Sidebar</span>
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          data-sidebar='trigger'
+          data-slot='sidebar-trigger'
+          variant='ghost'
+          size='icon'
+          className={cn('size-7', className)}
+          onClick={(event) => {
+            onClick?.(event);
+            toggleSidebar();
+          }}
+          {...props}
+        >
+          <PanelLeftIcon />
+          <span className='sr-only'>Toggle Sidebar</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side='right' align='center' children='Toggle Sidebar' />
+    </Tooltip>
   );
 }
 
@@ -248,24 +251,28 @@ function SidebarRail({ className, ...props }) {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <button
-      data-sidebar='rail'
-      data-slot='sidebar-rail'
-      aria-label='Toggle Sidebar'
-      tabIndex={-1}
-      onClick={toggleSidebar}
-      title='Toggle Sidebar'
-      className={cn(
-        'hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex',
-        'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
-        '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
-        'hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full',
-        '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
-        '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
-        className,
-      )}
-      {...props}
-    />
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          data-sidebar='rail'
+          data-slot='sidebar-rail'
+          aria-label='Toggle Sidebar'
+          tabIndex={-1}
+          onClick={toggleSidebar}
+          className={cn(
+            'hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex',
+            'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
+            '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
+            'hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full',
+            '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
+            '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
+            className,
+          )}
+          {...props}
+        />
+      </TooltipTrigger>
+      <TooltipContent side='right' align='center' children='Toggle Sidebar' />
+    </Tooltip>
   );
 }
 
@@ -352,10 +359,11 @@ function SidebarGroup({ className, ...props }) {
   );
 }
 
-function SidebarGroupLabel({ className, asChild = false, ...props }) {
+function SidebarGroupLabel({ tooltip, className, asChild = false, ...props }) {
   const Comp = asChild ? Slot : 'div';
+  const { isMobile, state } = useSidebar();
 
-  return (
+  const div = (
     <Comp
       data-slot='sidebar-group-label'
       data-sidebar='group-label'
@@ -366,6 +374,22 @@ function SidebarGroupLabel({ className, asChild = false, ...props }) {
       )}
       {...props}
     />
+  );
+
+  if (!tooltip) {
+    return div;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{div}</TooltipTrigger>
+      <TooltipContent
+        side='right'
+        align='center'
+        hidden={state !== 'expanded' || isMobile}
+        children={tooltip}
+      />
+    </Tooltip>
   );
 }
 
@@ -410,14 +434,32 @@ function SidebarMenu({ className, ...props }) {
   );
 }
 
-function SidebarMenuItem({ className, ...props }) {
-  return (
+function SidebarMenuItem({ tooltip, className, ...props }) {
+  const { isMobile, state } = useSidebar();
+
+  const li = (
     <li
       data-slot='sidebar-menu-item'
       data-sidebar='menu-item'
       className={cn('group/menu-item relative', className)}
       {...props}
     />
+  );
+
+  if (!tooltip) {
+    return li;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{li}</TooltipTrigger>
+      <TooltipContent
+        side='right'
+        align='center'
+        hidden={state !== 'expanded' || isMobile}
+        children={tooltip}
+      />
+    </Tooltip>
   );
 }
 
@@ -470,12 +512,6 @@ function SidebarMenuButton({
     return button;
   }
 
-  if (typeof tooltip === 'string') {
-    tooltip = {
-      children: tooltip,
-    };
-  }
-
   return (
     <Tooltip>
       <TooltipTrigger asChild>{button}</TooltipTrigger>
@@ -483,7 +519,7 @@ function SidebarMenuButton({
         side='right'
         align='center'
         hidden={state !== 'expanded' || isMobile}
-        {...tooltip}
+        children={tooltip}
       />
     </Tooltip>
   );
@@ -572,8 +608,10 @@ function SidebarMenuSub({ className, ...props }) {
   );
 }
 
-function SidebarMenuSubItem({ className, ...props }) {
-  return (
+function SidebarMenuSubItem({ tooltip, className, ...props }) {
+  const { isMobile, state } = useSidebar();
+
+  const li = (
     <li
       data-slot='sidebar-menu-sub-item'
       data-sidebar='menu-sub-item'
@@ -581,25 +619,43 @@ function SidebarMenuSubItem({ className, ...props }) {
       {...props}
     />
   );
+
+  if (!tooltip) {
+    return li;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{li}</TooltipTrigger>
+      <TooltipContent
+        side='right'
+        align='center'
+        hidden={state !== 'expanded' || isMobile}
+        children={tooltip}
+      />
+    </Tooltip>
+  );
 }
 
 function SidebarMenuSubButton({
   asChild = false,
   size = 'md',
   isActive = false,
+  tooltip,
   className,
   ...props
 }) {
-  const Comp = asChild ? Slot : 'a';
+  const Comp = asChild ? Slot : 'button';
+  const { isMobile, state } = useSidebar();
 
-  return (
+  const button = (
     <Comp
       data-slot='sidebar-menu-sub-button'
       data-sidebar='menu-sub-button'
       data-size={size}
       data-active={isActive}
       className={cn(
-        'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+        'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent/80 hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 w-full min-w-0 -translate-x-px cursor-pointer items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
         'data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',
@@ -609,6 +665,22 @@ function SidebarMenuSubButton({
       )}
       {...props}
     />
+  );
+
+  if (!tooltip) {
+    return button;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent
+        side='right'
+        align='center'
+        hidden={state !== 'expanded' || isMobile}
+        children={tooltip}
+      />
+    </Tooltip>
   );
 }
 
