@@ -53,7 +53,7 @@ export const chartConfig = {
 
 export function SemesterOverview({ semesterData, peopleData }) {
   const [activeChart, setActiveChart] = useState('teamProgress');
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
 
   const teamProgress = useMemo(() => {
     if (!peopleData) return [];

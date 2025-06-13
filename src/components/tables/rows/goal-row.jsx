@@ -24,7 +24,7 @@ export const GoalRow = React.memo(function GoalRow({
   addComment,
   deleteGoal,
 }) {
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
   const [text, setText] = useState(goal.text || '');
   const [dueDate, setDueDate] = useState(goal.dueDate?.toDateString() || null);
 

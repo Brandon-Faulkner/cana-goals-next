@@ -16,7 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 export function DropdownActions({ actions = [] }) {
   const [openDialogKey, setOpenDialogKey] = useState(null);
   useBlockContextMenu(!!openDialogKey);
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
 
   return (
     <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>
