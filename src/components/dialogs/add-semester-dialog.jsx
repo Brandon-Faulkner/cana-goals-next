@@ -13,11 +13,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { CalendarIcon, CalendarPlus, X } from 'lucide-react';
+import { SemesterGroupsList } from '@/components/semester-groups-list';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { useGroups } from '@/hooks/use-groups';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -25,6 +27,8 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
   const [semesterName, setSemesterName] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const { groups, loading: groupsLoading } = useGroups();
 
   const handleAddSemester = async () => {
     if (!isAdmin) {
@@ -37,12 +41,18 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
       return;
     }
 
+    if (!selectedGroupId) {
+      toast.error('Please select a group to associate with this semester.');
+      return;
+    }
+
     const semestersRef = collection(db, 'semesters');
     const semesterData = {
       end: Timestamp.fromDate(new Date(endDate)),
       focus: '',
       semester: semesterName,
       start: Timestamp.fromDate(new Date(startDate)),
+      group: selectedGroupId,
     };
 
     await toast.promise(addDoc(semestersRef, semesterData), {
@@ -92,6 +102,18 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
           <div className='grid gap-3'>
             <Label>Semester End Date</Label>
             <DatePicker date={endDate} onDateChange={setEndDate} />
+          </div>
+          <div className='grid gap-3'>
+            <Label>Semester Group</Label>
+            {groupsLoading ? (
+              <p className='text-muted-foreground text-sm'>Loading groups...</p>
+            ) : (
+              <SemesterGroupsList
+                options={groups}
+                value={selectedGroupId}
+                setValue={setSelectedGroupId}
+              />
+            )}
           </div>
         </div>
         <DialogFooter>

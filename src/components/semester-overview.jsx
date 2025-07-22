@@ -88,7 +88,7 @@ export function SemesterOverview({ semesterData, peopleData }) {
         </div>
         <div className='xxs:flex-row flex flex-col'>
           {['teamProgress', 'goals', 'blocks'].map((key) => (
-            <Tooltip>
+            <Tooltip key={key}>
               <TooltipTrigger asChild>
                 <button
                   key={key}

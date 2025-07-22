@@ -1,18 +1,32 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/contexts/auth-provider';
 
 export function useSemesters() {
   const [semesters, setSemesters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSemester, setCurrentSemester] = useState(null);
+  const [currentGroupId, setCurrentGroupId] = useState('');
+  const { userDoc } = useAuth();
 
   useEffect(() => {
-    const q = query(collection(db, 'semesters'), orderBy('start', 'desc'));
+    if (!currentGroupId && userDoc?.group?.length) {
+      setCurrentGroupId(userDoc.group[0]);
+      return;
+    }
+
+    if (!currentGroupId) return;
+
+    const semesterQuery = query(
+      collection(db, 'semesters'),
+      where('group', '==', currentGroupId),
+      orderBy('start', 'desc'),
+    );
 
     const unsubscribe = onSnapshot(
-      q,
+      semesterQuery,
       (snapshot) => {
         const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -39,13 +53,20 @@ export function useSemesters() {
         setLoading(false);
       },
       (error) => {
-        console.error('Error fetching semesters in real-time: ', error);
+        console.error('Error fetching semesters: ', error);
         setLoading(false);
       },
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [currentGroupId, userDoc]);
 
-  return { semesters, loading, currentSemester, setCurrentSemester };
+  return {
+    semesters,
+    loading,
+    currentSemester,
+    setCurrentSemester,
+    currentGroupId,
+    setCurrentGroupId,
+  };
 }

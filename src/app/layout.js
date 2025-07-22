@@ -107,7 +107,9 @@ export default function RootLayout({ children }) {
             <SavingStateProvider>
               <PWALifecycle />
               <OfflineDetector />
-              <TooltipProvider delayDuration={800}>{children}</TooltipProvider>
+              <TooltipProvider delayDuration={1600} skipDelayDuration={0}>
+                {children}
+              </TooltipProvider>
               <PWAInstallPrompt />
               <Toaster position='top-right' richColors />
             </SavingStateProvider>

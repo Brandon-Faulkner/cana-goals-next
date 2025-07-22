@@ -10,6 +10,7 @@ import {
   SquarePen,
   Globe,
   CalendarPlus,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -46,6 +47,7 @@ import { auth } from '@/lib/firebase';
 import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
 import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
 import { AddSemesterDialog } from '@/components/dialogs/add-semester-dialog';
+import { SwitchGroupDialog } from '@/components/dialogs/switch-group-dialog';
 import { SettingsDialog } from '@/components/dialogs/settings-dialog';
 import { SignOutDialog } from '@/components/dialogs/sign-out-dialog';
 import { useAuth } from '@/contexts/auth-provider';
@@ -66,6 +68,7 @@ export function AppSidebar({
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
   const [showAddSemester, setShowAddSemester] = useState(false);
+  const [showSwitchGroup, setShowSwitchGroup] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
   const isAdmin = userDoc?.admin;
@@ -244,6 +247,7 @@ export function AppSidebar({
         onOpenChange={setShowAddSemester}
         isAdmin={isAdmin}
       />
+      <SwitchGroupDialog open={showSwitchGroup} onOpenChange={setShowSwitchGroup} />
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
       <SignOutDialog
         open={showSignOutDialog}
@@ -252,6 +256,14 @@ export function AppSidebar({
       />
       <Separator />
       <SidebarFooter>
+        <SidebarMenuButton
+          size='lg'
+          tooltip='Switch between your assigned groups'
+          className='mb-2'
+          onClick={() => setShowSwitchGroup(true)}
+        >
+          <ArrowLeftRight /> Switch Group
+        </SidebarMenuButton>
         <SidebarMenuButton
           size='lg'
           tooltip='View & update your settings'
