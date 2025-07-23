@@ -13,12 +13,14 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { SemesterGroupsList } from '@/components/semester-groups-list';
-import { useAuth } from '@/contexts/auth-provider';
-import { useSemesters } from '@/hooks/use-semesters';
-import { useGroups } from '@/hooks/use-groups';
+import { useAuth } from '@/contexts/auth-context';
+import { useSemesters } from '@/contexts/semesters-context';
+import { useGroups } from '@/contexts/groups-context';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export function SwitchGroupDialog({ open, onOpenChange }) {
-  const { userDoc } = useAuth();
+  const { user, userDoc } = useAuth();
   const { currentGroupId, setCurrentGroupId } = useSemesters();
   const [selectedGroup, setSelectedGroup] = useState('');
   const { groups, loading } = useGroups();
@@ -30,23 +32,40 @@ export function SwitchGroupDialog({ open, onOpenChange }) {
   }, [open, currentGroupId]);
 
   const userGroups = useMemo(() => {
-    if (!userDoc?.group || !groups.length) return [];
-    return groups.filter((group) => userDoc.group.includes(group.id));
+    if (!userDoc?.assignedGroups || !groups.length) return [];
+    return groups.filter((group) => userDoc.assignedGroups.includes(group.id));
   }, [userDoc, groups]);
 
   const handleSave = async () => {
+    if (!user) {
+      toast.error('You must be logged in to switch groups.');
+      return;
+    }
+
     if (!selectedGroup) {
       toast.error('Please select a group.');
       return;
     }
 
     setCurrentGroupId(selectedGroup);
+    const userDocRef = doc(db, 'users', user.uid);
+    const groupToSave = {
+      activeGroup: selectedGroup,
+    };
 
-    if (onOpenChange) {
-      onOpenChange(false);
-    }
-
-    toast.success('Group switched successfully');
+    await toast.promise(updateDoc(userDocRef, groupToSave), {
+      loading: 'Switching groups...',
+      success: () => {
+        if (onOpenChange) {
+          onOpenChange(false);
+        }
+        return 'Switched groups successfully';
+      },
+      error: (err) => {
+        console.error('Error switching groups:', err);
+        return 'Failed to switch groups. Please try again.';
+      },
+    });
   };
 
   return (
@@ -54,7 +73,9 @@ export function SwitchGroupDialog({ open, onOpenChange }) {
       <DialogContent className='sm:max-w-xl'>
         <DialogHeader>
           <DialogTitle>Switch Group</DialogTitle>
-          <DialogDescription>Select a group to view its semesters and goals.</DialogDescription>
+          <DialogDescription>
+            Switch between groups you are part of to view its semesters and goals.
+          </DialogDescription>
         </DialogHeader>
         <Separator />
         <div className='grid gap-6 py-4'>

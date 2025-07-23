@@ -1,10 +1,18 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 
-export function useSemesters() {
+const SemestersContext = createContext({
+  semesters: null,
+  loading: true,
+  currentSemester: null,
+  currentGroupId: null,
+  userDoc: null,
+});
+
+export function SemestersProvider({ children }) {
   const [semesters, setSemesters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSemester, setCurrentSemester] = useState(null);
@@ -12,8 +20,12 @@ export function useSemesters() {
   const { userDoc } = useAuth();
 
   useEffect(() => {
-    if (!currentGroupId && userDoc?.group?.length) {
-      setCurrentGroupId(userDoc.group[0]);
+    if (!currentGroupId) {
+      if (userDoc?.activeGroup) {
+        setCurrentGroupId(userDoc.activeGroup);
+      } else if (userDoc?.assignedGroups?.length) {
+        setCurrentGroupId(userDoc.assignedGroups[0]);
+      }
       return;
     }
 
@@ -42,7 +54,6 @@ export function useSemesters() {
 
         setSemesters(docs);
 
-        // Preserve current selection if still valid, else try currentByDate or first semester
         setCurrentSemester((prevCurrent) => {
           if (prevCurrent && docs.some((doc) => doc.id === prevCurrent.id)) {
             return docs.find((doc) => doc.id === prevCurrent.id);
@@ -61,12 +72,24 @@ export function useSemesters() {
     return () => unsubscribe();
   }, [currentGroupId, userDoc]);
 
-  return {
-    semesters,
-    loading,
-    currentSemester,
-    setCurrentSemester,
-    currentGroupId,
-    setCurrentGroupId,
-  };
+  return (
+    <SemestersContext.Provider
+      value={{
+        semesters,
+        loading,
+        currentSemester,
+        setCurrentSemester,
+        currentGroupId,
+        setCurrentGroupId,
+      }}
+    >
+      {children}
+    </SemestersContext.Provider>
+  );
+}
+
+export function useSemesters() {
+  const context = useContext(SemestersContext);
+  if (!context) throw new Error('useSemesters must be used within a SemestersProvider');
+  return context;
 }

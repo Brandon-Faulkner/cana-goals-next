@@ -18,13 +18,15 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { useGroups } from '@/hooks/use-groups';
+import { useGroups } from '@/contexts/groups-context';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
   const [semesterName, setSemesterName] = useState('');
+  const [semesterFocus, setSemesterFocus] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedGroupId, setSelectedGroupId] = useState('');
@@ -49,7 +51,7 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
     const semestersRef = collection(db, 'semesters');
     const semesterData = {
       end: Timestamp.fromDate(new Date(endDate)),
-      focus: '',
+      focus: semesterFocus,
       semester: semesterName,
       start: Timestamp.fromDate(new Date(startDate)),
       group: selectedGroupId,
@@ -71,14 +73,24 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
     });
   };
 
+  const handleDialogOpenChange = (isOpen) => {
+    if (!isOpen) {
+      clearInput();
+    }
+    if (onOpenChange) {
+      onOpenChange(isOpen);
+    }
+  };
+
   const clearInput = () => {
     setSemesterName('');
     setStartDate(null);
     setEndDate(null);
+    setSelectedGroupId('');
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent className='sm:max-w-xl'>
         <DialogHeader>
           <DialogTitle>Add Semester</DialogTitle>
@@ -93,6 +105,16 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
               placeholder='20XX Season'
               value={semesterName}
               onChange={(e) => setSemesterName(e.target.value)}
+            />
+          </div>
+          <div className='grid gap-3'>
+            <Label htmlFor='comment'>
+              Semester Focus <span className='text-primary'>(optional)</span>
+            </Label>
+            <Textarea
+              placeholder='Enter the goal focus for this semester'
+              value={semesterFocus}
+              onChange={(e) => setSemesterFocus(e.target.value)}
             />
           </div>
           <div className='grid gap-3'>

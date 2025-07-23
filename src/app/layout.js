@@ -1,7 +1,6 @@
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
-import { AuthProvider } from '@/contexts/auth-provider';
-import { SavingStateProvider } from '@/contexts/saving-state-context';
+import { ContextProviders } from '@/contexts/context-providers';
 import { Toaster } from '@/components/ui/sonner';
 import { PWAInstallPrompt } from '@/components/pwa/pwa-install-prompt';
 import { PWALifecycle } from '@/components/pwa/pwa-lifecycle';
@@ -103,17 +102,15 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <DynamicThemeColor />
-          <AuthProvider>
-            <SavingStateProvider>
-              <PWALifecycle />
-              <OfflineDetector />
-              <TooltipProvider delayDuration={1600} skipDelayDuration={0}>
-                {children}
-              </TooltipProvider>
-              <PWAInstallPrompt />
-              <Toaster position='top-right' richColors />
-            </SavingStateProvider>
-          </AuthProvider>
+          <ContextProviders>
+            <PWALifecycle />
+            <OfflineDetector />
+            <TooltipProvider delayDuration={1200} skipDelayDuration={0}>
+              {children}
+            </TooltipProvider>
+            <PWAInstallPrompt />
+            <Toaster position='top-right' richColors />
+          </ContextProviders>
         </ThemeProvider>
       </body>
     </html>

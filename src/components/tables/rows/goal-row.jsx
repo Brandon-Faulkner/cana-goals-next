@@ -8,8 +8,6 @@ import { StatusSelect } from '@/components/tables/status-select';
 import { DatePicker } from '@/components/tables/date-picker';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { ChevronsUpDown, ListChecks, Grid2X2Plus, MessageSquarePlus, Trash2 } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export const GoalRow = React.memo(function GoalRow({
   goal,
@@ -24,7 +22,6 @@ export const GoalRow = React.memo(function GoalRow({
   addComment,
   deleteGoal,
 }) {
-  const isMobile = useIsMobile();
   const [text, setText] = useState(goal.text || '');
   const [dueDate, setDueDate] = useState(goal.dueDate?.toDateString() || null);
 
@@ -73,29 +70,19 @@ export const GoalRow = React.memo(function GoalRow({
       <TableRow className='group animate-in fade-in-0 zoom-in-95'>
         <TableCell>
           <div className='flex items-start gap-2'>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='mt-1.5 h-6 w-6 flex-shrink-0'
-                  onClick={toggleGoalExpanded}
-                  aria-label='Expand/Collapse goal row'
-                >
-                  {expanded ? (
-                    <ChevronDown className='h-4 w-4' />
-                  ) : (
-                    <ChevronRight className='h-4 w-4' />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent
-                side='right'
-                align='center'
-                hidden={isMobile}
-                children={expanded ? 'Collapse row' : 'Expand row'}
-              />
-            </Tooltip>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='mt-1.5 h-6 w-6 flex-shrink-0'
+              onClick={toggleGoalExpanded}
+              aria-label='Expand/Collapse goal row'
+            >
+              {expanded ? (
+                <ChevronDown className='h-4 w-4' />
+              ) : (
+                <ChevronRight className='h-4 w-4' />
+              )}
+            </Button>
             <div className='w-full'>
               <Textarea
                 value={text}

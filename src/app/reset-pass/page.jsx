@@ -3,7 +3,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ResetPassForm } from '@/components/forms/reset-pass-form';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import { checkActionCode } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';

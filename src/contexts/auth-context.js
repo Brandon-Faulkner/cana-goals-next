@@ -1,11 +1,10 @@
 'use client';
-import { createContext, useContext, useEffect, useState, memo } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
-// Define the context shape
 const AuthContext = createContext({
   user: null,
   userDoc: null,
@@ -13,7 +12,7 @@ const AuthContext = createContext({
   error: null,
 });
 
-export const AuthProvider = memo(function AuthProvider({ children }) {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userDoc, setUserDoc] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +81,7 @@ export const AuthProvider = memo(function AuthProvider({ children }) {
       {!loading && children}
     </AuthContext.Provider>
   );
-});
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

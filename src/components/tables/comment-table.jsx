@@ -14,7 +14,7 @@ import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentRow } from '@/components/tables/rows/comment-row';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { updateCommentText, deleteComment } from '@/lib/comment-handlers';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import { ChevronsUpDown, MessageSquarePlus } from 'lucide-react';
 
 const useDebouncedCommentText = (semesterId, goalId) => {

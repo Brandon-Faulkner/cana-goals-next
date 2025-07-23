@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
 
 export function SettingsDialog({ open, onOpenChange }) {
