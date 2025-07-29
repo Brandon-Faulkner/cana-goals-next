@@ -5,12 +5,12 @@ import { collection, collectionGroup, onSnapshot, query, where, orderBy } from '
 
 export function useGoalsListener(currentSemesterId, user, loadingAuth) {
   const [goals, setGoals] = useState([]);
-  const [isLoadingGoals, setIsLoadingGoals] = useState(true);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(false);
 
   useEffect(() => {
     if (!currentSemesterId || !user || loadingAuth) {
       setGoals([]);
-      setIsLoadingGoals(true);
+      setIsLoadingGoals(false);
       return;
     }
 
@@ -254,7 +254,7 @@ export function useGoalsListener(currentSemesterId, user, loadingAuth) {
       unsubGoals();
       unsubBlocks();
       unsubComments();
-      setIsLoadingGoals(true);
+      setIsLoadingGoals(false);
     };
   }, [currentSemesterId, user, loadingAuth]);
 

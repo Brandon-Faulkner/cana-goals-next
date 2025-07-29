@@ -115,6 +115,11 @@ export default function Page() {
     }
   };
 
+  const isInitialLoading = loading || loadingAuth;
+  const isSemesterEmpty = semesters.length === 0 || !currentSemester;
+  const showEmptyState = !isInitialLoading && isSemesterEmpty;
+  const showContent = !isInitialLoading && !isSemesterEmpty && !goalsLoading;
+
   return (
     <RouteGuard>
       <SidebarProvider>
@@ -170,14 +175,22 @@ export default function Page() {
             </div>
           </header>
           <div className='flex flex-1 flex-col gap-4 p-4'>
-            {loading || goalsLoading || loadingAuth ? (
+            {isInitialLoading || goalsLoading ? (
               <>
                 <SemesterOverviewSkeleton />
                 <GoalFocusSkeleton />
                 <GoalsCardSkeleton />
                 <GoalsCardSkeleton />
               </>
-            ) : currentSemester ? (
+            ) : showEmptyState ? (
+              <div className='flex flex-col items-center justify-center gap-4 p-8 text-center'>
+                <h2 className='text-2xl font-semibold'>No Semesters Available</h2>
+                <p className='text-muted-foreground'>
+                  There are no semesters associated with the current group.{' '}
+                  {userDoc?.admin && 'Add a semester from the sidebar to get started.'}
+                </p>
+              </div>
+            ) : showContent ? (
               <>
                 <SemesterOverview semesterData={semesterStatuses} peopleData={peopleData} />
                 <GoalFocus semesterId={currentSemester.id} focus={semesterFocus} />
@@ -220,15 +233,7 @@ export default function Page() {
                     />
                   ))}
               </>
-            ) : (
-              <div className='flex flex-col items-center justify-center gap-4 p-8 text-center'>
-                <h2 className='text-2xl font-semibold'>No Semesters Available</h2>
-                <p className='text-muted-foreground'>
-                  There are no semesters associated with the current group.{' '}
-                  {userDoc?.admin && 'Add a semester from the sidebar to get started.'}
-                </p>
-              </div>
-            )}
+            ) : null}
           </div>
         </SidebarInset>
       </SidebarProvider>
