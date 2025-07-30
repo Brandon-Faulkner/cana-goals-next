@@ -1,6 +1,19 @@
 export const versionNotes = {
-  currentVersion: '1.4.0',
+  currentVersion: '1.5.0',
   versions: [
+    {
+      version: '1.5.0',
+      features: [
+        {
+          title: 'Admin Dashboard',
+          items: [
+            'For admins, there is now a dedicated portal to manage users, semesters, and groups.',
+            'At the bottom of the sidebar, above the new Switch Group button, admins will find a link to the Admin Dashboard.',
+            'In the admin portal, admins can switch between tables that allow creating, updating, and deleting data.',
+          ],
+        },
+      ],
+    },
     {
       version: '1.4.0',
       features: [

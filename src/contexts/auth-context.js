@@ -4,6 +4,7 @@ import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
 
 const AuthContext = createContext({
   user: null,
@@ -34,15 +35,28 @@ export function AuthProvider({ children }) {
             const userDocRef = doc(db, 'users', currentUser.uid);
             unsubscribeUserDoc = onSnapshot(
               userDocRef,
-              (docSnap) => {
+              async (docSnap) => {
                 if (docSnap.exists()) {
-                  setUserDoc({ id: docSnap.id, ...docSnap.data() });
+                  const userData = { id: docSnap.id, ...docSnap.data() };
+
+                  // Check if disabled before setting anything
+                  if (userData.disabled) {
+                    await signOut(auth);
+                    setUser(null);
+                    setUserDoc(null);
+                    setError('Your account has been disabled.');
+                    setLoading(false);
+                    return;
+                  }
+
+                  setUserDoc(userData);
                 } else {
                   console.warn('No user profile found in Firestore.');
                   setUserDoc(null);
                 }
                 setLoading(false);
               },
+
               (err) => {
                 console.error('Error listening to user doc:', err);
                 setError(err.message);

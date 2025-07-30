@@ -1,8 +1,4 @@
 import { useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
 import {
   Dialog,
   DialogClose,
@@ -12,7 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { CalendarIcon, CalendarPlus, X } from 'lucide-react';
+import { CalendarPlus, X } from 'lucide-react';
+import { SemesterDatePicker } from '@/components/semester-date-picker';
 import { SemesterGroupsList } from '@/components/semester-groups-list';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -21,8 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { useGroups } from '@/contexts/groups-context';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { addSemester } from '@/lib/semesters-handlers';
+import { Timestamp } from 'firebase/firestore';
 
 export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
   const [semesterName, setSemesterName] = useState('');
@@ -48,7 +45,6 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
       return;
     }
 
-    const semestersRef = collection(db, 'semesters');
     const semesterData = {
       end: Timestamp.fromDate(new Date(endDate)),
       focus: semesterFocus,
@@ -57,12 +53,11 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
       group: selectedGroupId,
     };
 
-    await toast.promise(addDoc(semestersRef, semesterData), {
+    await toast.promise(addSemester(semesterData), {
       loading: 'Adding semester...',
       success: () => {
         if (onOpenChange) {
           onOpenChange(false);
-          clearInput();
         }
         return 'Semester added successfully';
       },
@@ -108,7 +103,7 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
             />
           </div>
           <div className='grid gap-3'>
-            <Label htmlFor='comment'>
+            <Label>
               Semester Focus <span className='text-primary'>(optional)</span>
             </Label>
             <Textarea
@@ -119,11 +114,11 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
           </div>
           <div className='grid gap-3'>
             <Label>Semester Start Date</Label>
-            <DatePicker date={startDate} onDateChange={setStartDate} />
+            <SemesterDatePicker date={startDate} onDateChange={setStartDate} />
           </div>
           <div className='grid gap-3'>
             <Label>Semester End Date</Label>
-            <DatePicker date={endDate} onDateChange={setEndDate} />
+            <SemesterDatePicker date={endDate} onDateChange={setEndDate} />
           </div>
           <div className='grid gap-3'>
             <Label>Semester Group</Label>
@@ -140,7 +135,7 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type='button' variant='secondary' onClick={clearInput}>
+            <Button type='button' variant='secondary'>
               <X /> Cancel
             </Button>
           </DialogClose>
@@ -150,35 +145,5 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function DatePicker({ date, onDateChange }) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant='outline'
-          className={cn(
-            'w-full min-w-48 justify-start text-left font-normal',
-            !date && 'text-muted-foreground',
-          )}
-        >
-          <CalendarIcon className='mr-2 h-4 w-4' />
-          {date ? format(date, 'PPP') : <span>Pick a date</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
-        <Calendar
-          mode='single'
-          defaultMonth={new Date()}
-          selected={date}
-          onSelect={onDateChange}
-          autoFocus
-          startMonth={new Date()}
-          hidden={[{ before: new Date() }]}
-        />
-      </PopoverContent>
-    </Popover>
   );
 }

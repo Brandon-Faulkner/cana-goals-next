@@ -11,6 +11,7 @@ import {
   Globe,
   CalendarPlus,
   ArrowLeftRight,
+  LayoutDashboard,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -261,6 +262,11 @@ export function AppSidebar({
       />
       <Separator />
       <SidebarFooter>
+        {isAdmin && (
+          <SidebarMenuButton onClick={() => router.replace('/admin')}>
+            <LayoutDashboard /> Admin Dashboard
+          </SidebarMenuButton>
+        )}
         <SidebarMenuButton
           tooltip='Switch between your assigned groups'
           onClick={() => setShowSwitchGroup(true)}
