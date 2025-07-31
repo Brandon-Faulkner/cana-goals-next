@@ -272,11 +272,15 @@ export function AppSidebar({
           onClick={() => setShowSwitchGroup(true)}
         >
           <ArrowLeftRight /> Switch Group
-          {!groupsLoading && groups && currentGroupId && (
-            <SidebarMenuBadge className='bg-primary text-primary-foreground mr-2 shadow-lg'>
-              {groups.find((g) => g.id === currentGroupId)?.name || ''}
+          {groupsLoading ? (
+            <SidebarMenuBadge className='bg-muted text-muted-foreground mr-2'>
+              Loading...
             </SidebarMenuBadge>
-          )}
+          ) : groups?.length > 0 && currentGroupId ? (
+            <SidebarMenuBadge className='bg-primary text-primary-foreground mr-2 shadow-lg'>
+              {groups.find((g) => g.id === currentGroupId)?.name}
+            </SidebarMenuBadge>
+          ) : null}
         </SidebarMenuButton>
         <SidebarMenuButton onClick={() => setShowSettings(true)}>
           <Settings /> Settings

@@ -17,9 +17,17 @@ export function SemestersProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [currentSemester, setCurrentSemester] = useState(null);
   const [currentGroupId, setCurrentGroupId] = useState('');
-  const { userDoc } = useAuth();
+  const { user, userDoc } = useAuth();
 
   useEffect(() => {
+    if (!user) {
+      setSemesters([]);
+      setCurrentSemester(null);
+      setCurrentGroupId('');
+      setLoading(false);
+      return;
+    }
+
     if (!currentGroupId) {
       if (userDoc?.activeGroup) {
         setCurrentGroupId(userDoc.activeGroup);
@@ -65,12 +73,14 @@ export function SemestersProvider({ children }) {
       },
       (error) => {
         console.error('Error fetching semesters: ', error);
+        setSemesters([]);
+        setCurrentSemester(null);
         setLoading(false);
       },
     );
 
     return () => unsubscribe();
-  }, [currentGroupId, userDoc]);
+  }, [currentGroupId, user, userDoc]);
 
   return (
     <SemestersContext.Provider
