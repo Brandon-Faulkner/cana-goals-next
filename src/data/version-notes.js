@@ -7,7 +7,7 @@ export const versionNotes = {
         {
           title: 'Fixed groups not loading on log in',
           items: [
-            'Fixed a bug where the Switch Group badge for the active group and groups a user is assigned to weren\'t showing on first log in.',
+            "Fixed a bug where the Switch Group badge for the active group and groups a user is assigned to weren't showing on first log in.",
           ],
         },
       ],
