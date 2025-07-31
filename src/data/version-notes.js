@@ -1,6 +1,17 @@
 export const versionNotes = {
-  currentVersion: '1.5.0',
+  currentVersion: '1.5.1',
   versions: [
+    {
+      version: '1.5.1',
+      features: [
+        {
+          title: 'Fixed groups not loading on log in',
+          items: [
+            'Fixed a bug where the Switch Group badge for the active group and groups a user is assigned to weren\'t showing on first log in.',
+          ],
+        },
+      ],
+    },
     {
       version: '1.5.0',
       features: [
