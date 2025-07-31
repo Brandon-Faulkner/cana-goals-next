@@ -20,7 +20,7 @@ export function GroupsProvider({ children }) {
       setLoading(false);
       return;
     }
-    
+
     const unsubscribe = onSnapshot(
       collection(db, 'groups'),
       (snapshot) => {
