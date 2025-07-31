@@ -28,7 +28,7 @@ import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { CommentDialog } from '@/components/dialogs/comment-dialog';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import { ChevronsUpDown, ListChecks } from 'lucide-react';
 
 const useDebouncedGoalText = (semesterId) => {

@@ -3,7 +3,7 @@ import debounce from 'lodash/debounce';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { updateSemesterFocus } from '@/lib/goal-handlers';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 
 const useDebouncedFocusText = (semesterId) => {
   return useCallback(

@@ -10,32 +10,19 @@ import { Button } from '@/components/ui/button';
 import { MoreVertical } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { useBlockContextMenu } from '@/hooks/use-block-context-menu';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export function DropdownActions({ actions = [] }) {
   const [openDialogKey, setOpenDialogKey] = useState(null);
   useBlockContextMenu(!!openDialogKey);
-  const isMobile = useIsMobile();
 
   return (
     <Dialog open={!!openDialogKey} onOpenChange={(val) => !val && setOpenDialogKey(null)}>
       <DropdownMenu>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost' size='icon' className='ml-2' aria-label='Dropdown actions'>
-                <MoreVertical className='h-4 w-4' />
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent
-            side='left'
-            align='center'
-            hidden={isMobile}
-            children='View more actions'
-          />
-        </Tooltip>
+        <DropdownMenuTrigger asChild>
+          <Button variant='ghost' size='icon' className='ml-2' aria-label='Dropdown actions'>
+            <MoreVertical className='h-4 w-4' />
+          </Button>
+        </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           {actions.map((action, i) =>
             action === 'seperator' ? (

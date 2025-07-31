@@ -1,6 +1,51 @@
 export const versionNotes = {
-  currentVersion: '1.3.0',
+  currentVersion: '1.5.0',
   versions: [
+    {
+      version: '1.5.0',
+      features: [
+        {
+          title: 'Admin Dashboard',
+          items: [
+            'For admins, there is now a dedicated portal to manage users, semesters, and groups.',
+            'At the bottom of the sidebar, above the new Switch Group button, admins will find a link to the Admin Dashboard.',
+            'In the admin portal, admins can switch between tables that allow creating, updating, and deleting data.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.0',
+      features: [
+        {
+          title: 'Group Assignments',
+          items: [
+            'Semesters and users are now assigned to different groups.',
+            'Each semester will be assigned to a singular group, while users can be assigned to multiple groups.',
+            'Each group will contain its own semesters and users.',
+            'If a user is part of more than one group, they can switch between them at the bottom of the sidebar.',
+          ],
+        },
+        {
+          title: 'UI Adjustments',
+          items: [
+            'Converted the rest of the visible semester dates to be in Month Day, Year format instead of MM/DD/YY.',
+          ],
+        },
+        {
+          title: 'Improved Performance',
+          items: [
+            'Converted hooks such as useSemesters and useGroups to be context based to only limit database calls to mounts/unmounts.',
+          ],
+        },
+        {
+          title: 'Removed Some Tooltips',
+          items: [
+            'Removed some tooltips that were not needed for actions that are clear on their own.',
+          ],
+        },
+      ],
+    },
     {
       version: '1.3.0',
       features: [

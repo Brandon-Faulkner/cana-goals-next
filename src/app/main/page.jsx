@@ -11,10 +11,11 @@ import { GoalsCard } from '@/components/goals-card';
 import { SemesterOverviewSkeleton } from '@/components/skeletons/semester-overview-skeleton';
 import { GoalFocusSkeleton } from '@/components/skeletons/goal-focus-skeleton';
 import { GoalsCardSkeleton } from '@/components/skeletons/goals-card-skeleton';
-import { useSemesters } from '@/hooks/use-semesters';
+import { useSemesters } from '@/contexts/semesters-context';
 import { useGoalsListener } from '@/hooks/use-goals-listener';
 import { useSavingState } from '@/contexts/saving-state-context';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
+import { format } from 'date-fns';
 import { db } from '@/lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 
@@ -114,6 +115,11 @@ export default function Page() {
     }
   };
 
+  const isInitialLoading = loading || loadingAuth;
+  const isSemesterEmpty = semesters.length === 0 || !currentSemester;
+  const showEmptyState = !isInitialLoading && isSemesterEmpty;
+  const showContent = !isInitialLoading && !isSemesterEmpty && !goalsLoading;
+
   return (
     <RouteGuard>
       <SidebarProvider>
@@ -138,8 +144,8 @@ export default function Page() {
                     <h1 className='text-base font-medium'>{currentSemester.semester}</h1>
                     <ChevronsRight className='mx-2 hidden size-4 sm:block' />
                     <p className='text-xs italic sm:text-sm'>
-                      {currentSemester.start.toDate().toLocaleDateString()} -{' '}
-                      {currentSemester.end.toDate().toLocaleDateString()}
+                      {format(currentSemester.start.toDate(), 'MMMM d, yyyy')} -{' '}
+                      {format(currentSemester.end.toDate(), 'MMMM d, yyyy')}
                     </p>
                   </>
                 ) : (
@@ -169,40 +175,38 @@ export default function Page() {
             </div>
           </header>
           <div className='flex flex-1 flex-col gap-4 p-4'>
-            {loading || goalsLoading ? (
-              <SemesterOverviewSkeleton />
-            ) : (
-              <SemesterOverview semesterData={semesterStatuses} peopleData={peopleData} />
-            )}
-            {loading || goalsLoading ? (
-              <GoalFocusSkeleton />
-            ) : (
-              <GoalFocus semesterId={currentSemester?.id} focus={semesterFocus} />
-            )}
+            {isInitialLoading || goalsLoading ? (
+              <>
+                <SemesterOverviewSkeleton />
+                <GoalFocusSkeleton />
+                <GoalsCardSkeleton />
+                <GoalsCardSkeleton />
+              </>
+            ) : showEmptyState ? (
+              <div className='flex flex-col items-center justify-center gap-4 p-8 text-center'>
+                <h2 className='text-2xl font-semibold'>No Semesters Available</h2>
+                <p className='text-muted-foreground'>
+                  There are no semesters associated with the current group.{' '}
+                  {userDoc?.admin && 'Add a semester from the sidebar to get started.'}
+                </p>
+              </div>
+            ) : showContent ? (
+              <>
+                <SemesterOverview semesterData={semesterStatuses} peopleData={peopleData} />
+                <GoalFocus semesterId={currentSemester.id} focus={semesterFocus} />
 
-            {/* Always render the current user's table first */}
-            {loadingAuth || goalsLoading ? (
-              <GoalsCardSkeleton />
-            ) : (
-              userDoc &&
-              currentSemester && (
-                <GoalsCard
-                  key={userDoc.id}
-                  userId={userDoc.id}
-                  userName={userDoc.name}
-                  goals={goals.filter((g) => g.userId === userDoc.id)}
-                  currentSemester={currentSemester}
-                  isHighlighted={highlightedUserId === userDoc.id}
-                />
-              )
-            )}
+                {userDoc && (
+                  <GoalsCard
+                    key={userDoc.id}
+                    userId={userDoc.id}
+                    userName={userDoc.name}
+                    goals={goals.filter((g) => g.userId === userDoc.id)}
+                    currentSemester={currentSemester}
+                    isHighlighted={highlightedUserId === userDoc.id}
+                  />
+                )}
 
-            {/* Render other users tables if they have goals, EXCLUDING the current user */}
-            {goalsLoading
-              ? Array.from({ length: 2 }).map((_, index) => (
-                  <GoalsCardSkeleton key={`other-skeleton-${index}`} />
-                ))
-              : Object.entries(
+                {Object.entries(
                   goals.reduce((acc, goal) => {
                     if (!acc[goal.userId]) {
                       acc[goal.userId] = {
@@ -228,6 +232,8 @@ export default function Page() {
                       isHighlighted={highlightedUserId === otherUserId}
                     />
                   ))}
+              </>
+            ) : null}
           </div>
         </SidebarInset>
       </SidebarProvider>

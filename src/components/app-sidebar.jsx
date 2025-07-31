@@ -10,6 +10,8 @@ import {
   SquarePen,
   Globe,
   CalendarPlus,
+  ArrowLeftRight,
+  LayoutDashboard,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -39,6 +41,7 @@ import {
   SidebarMenuSubButton,
   SidebarRail,
   useSidebar,
+  SidebarMenuBadge,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'firebase/auth';
@@ -46,9 +49,12 @@ import { auth } from '@/lib/firebase';
 import { GoalLanguageDialog } from '@/components/dialogs/goal-language-dialog';
 import { VersionNotesDialog } from '@/components/dialogs/version-notest-dialog';
 import { AddSemesterDialog } from '@/components/dialogs/add-semester-dialog';
+import { SwitchGroupDialog } from '@/components/dialogs/switch-group-dialog';
 import { SettingsDialog } from '@/components/dialogs/settings-dialog';
 import { SignOutDialog } from '@/components/dialogs/sign-out-dialog';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
+import { useSemesters } from '@/contexts/semesters-context';
+import { useGroups } from '@/contexts/groups-context';
 
 export function AppSidebar({
   semesters = [],
@@ -62,10 +68,13 @@ export function AppSidebar({
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { userDoc } = useAuth();
+  const { groups, loading: groupsLoading } = useGroups();
+  const { currentGroupId } = useSemesters();
   const { isMobile, setOpenMobile } = useSidebar();
   const [showGoalLanguage, setShowGoalLanguage] = useState(false);
   const [showVersionNotes, setShowVersionNotes] = useState(false);
   const [showAddSemester, setShowAddSemester] = useState(false);
+  const [showSwitchGroup, setShowSwitchGroup] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showSignOutDialog, setShowSignOutDialog] = useState(false);
   const isAdmin = userDoc?.admin;
@@ -102,7 +111,7 @@ export function AppSidebar({
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem tooltip='Change light/dark/system theme'>
+              <SidebarMenuItem>
                 <Select value={theme} onValueChange={handleThemeChange}>
                   <SelectTrigger
                     className='w-full px-2 text-lg'
@@ -144,18 +153,18 @@ export function AppSidebar({
                   </SelectContent>
                 </Select>
               </SidebarMenuItem>
-              <SidebarMenuItem tooltip='View the newest version notes'>
+              <SidebarMenuItem>
                 <SidebarMenuButton size='lg' onClick={() => setShowVersionNotes(true)}>
                   <SquarePen /> What&apos;s New
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem tooltip='View goal language and how to use it'>
+              <SidebarMenuItem>
                 <SidebarMenuButton size='lg' onClick={() => setShowGoalLanguage(true)}>
                   <Globe /> Goal Language
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {isAdmin && (
-                <SidebarMenuItem tooltip='Add a new goal semester'>
+                <SidebarMenuItem>
                   <SidebarMenuButton size='lg' onClick={() => setShowAddSemester(true)}>
                     <CalendarPlus /> Add Semester
                   </SidebarMenuButton>
@@ -244,6 +253,7 @@ export function AppSidebar({
         onOpenChange={setShowAddSemester}
         isAdmin={isAdmin}
       />
+      <SwitchGroupDialog open={showSwitchGroup} onOpenChange={setShowSwitchGroup} />
       <SettingsDialog open={showSettings} onOpenChange={setShowSettings} />
       <SignOutDialog
         open={showSignOutDialog}
@@ -252,12 +262,23 @@ export function AppSidebar({
       />
       <Separator />
       <SidebarFooter>
+        {isAdmin && (
+          <SidebarMenuButton onClick={() => router.replace('/admin')}>
+            <LayoutDashboard /> Admin Dashboard
+          </SidebarMenuButton>
+        )}
         <SidebarMenuButton
-          size='lg'
-          tooltip='View & update your settings'
-          className='mb-2'
-          onClick={() => setShowSettings(true)}
+          tooltip='Switch between your assigned groups'
+          onClick={() => setShowSwitchGroup(true)}
         >
+          <ArrowLeftRight /> Switch Group
+          {!groupsLoading && groups && currentGroupId && (
+            <SidebarMenuBadge className='bg-primary text-primary-foreground mr-2 shadow-lg'>
+              {groups.find((g) => g.id === currentGroupId)?.name || ''}
+            </SidebarMenuBadge>
+          )}
+        </SidebarMenuButton>
+        <SidebarMenuButton onClick={() => setShowSettings(true)}>
           <Settings /> Settings
         </SidebarMenuButton>
         <Button type='button' variant='destructive' onClick={() => setShowSignOutDialog(true)}>

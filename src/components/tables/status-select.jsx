@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/select';
 import { CircleX, BriefcaseBusiness, CheckCheck, Hourglass, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import Fireworks from 'react-canvas-confetti/dist/presets/fireworks';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';

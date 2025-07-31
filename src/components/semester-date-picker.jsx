@@ -1,18 +1,11 @@
-'use client';
-import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { useSemesters } from '@/contexts/semesters-context';
+import { Button } from '@/components/ui/button';
 
-export function DatePicker({ date, onDateChange, disabled = false }) {
-  const { currentSemester } = useSemesters();
-
-  const semesterStartDate = currentSemester?.start?.toDate();
-  const semesterEndDate = currentSemester?.end?.toDate();
-
+export function SemesterDatePicker({ date, onDateChange }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -22,22 +15,20 @@ export function DatePicker({ date, onDateChange, disabled = false }) {
             'w-full min-w-48 justify-start text-left font-normal',
             !date && 'text-muted-foreground',
           )}
-          disabled={disabled}
         >
           <CalendarIcon className='mr-2 h-4 w-4' />
-          {date ? format(date, 'PPP') : <span>Pick a due date</span>}
+          {date ? format(date, 'PPP') : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className='w-auto p-0' align='start'>
         <Calendar
           mode='single'
-          defaultMonth={date}
+          defaultMonth={new Date()}
           selected={date}
           onSelect={onDateChange}
           autoFocus
-          startMonth={semesterStartDate}
-          endMonth={semesterEndDate}
-          hidden={[{ before: semesterStartDate }, { after: semesterEndDate }]}
+          startMonth={new Date()}
+          hidden={[{ before: new Date() }]}
         />
       </PopoverContent>
     </Popover>
