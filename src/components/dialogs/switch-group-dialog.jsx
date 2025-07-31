@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -31,10 +31,7 @@ export function SwitchGroupDialog({ open, onOpenChange }) {
     }
   }, [open, currentGroupId]);
 
-  const userGroups = useMemo(() => {
-    if (!userDoc?.assignedGroups || !groups.length) return [];
-    return groups.filter((group) => userDoc.assignedGroups.includes(group.id));
-  }, [userDoc, groups]);
+  const userGroups = groups?.filter((group) => userDoc?.assignedGroups?.includes(group.id));
 
   const handleSave = async () => {
     if (!user) {

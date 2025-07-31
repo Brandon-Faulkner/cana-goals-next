@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/contexts/auth-context';
 
 const GroupsContext = createContext({
   groups: null,
@@ -11,8 +12,15 @@ const GroupsContext = createContext({
 export function GroupsProvider({ children }) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) {
+      setGroups([]);
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onSnapshot(
       collection(db, 'groups'),
       (snapshot) => {
@@ -24,12 +32,13 @@ export function GroupsProvider({ children }) {
       },
       (error) => {
         console.error('Error fetching groups:', error);
+        setGroups([]);
         setLoading(false);
       },
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   return <GroupsContext.Provider value={{ groups, loading }}>{children}</GroupsContext.Provider>;
 }
