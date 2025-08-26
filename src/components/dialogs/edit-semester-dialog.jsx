@@ -50,9 +50,7 @@ export function EditSemesterDialog({ open, onOpenChange, semesterDoc }) {
     await toast.promise(updateSemester(semesterDoc.id, updatedData), {
       loading: 'Updating semester...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'Semester updated successfully';
       },
       error: (err) => {

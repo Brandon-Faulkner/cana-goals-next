@@ -56,9 +56,7 @@ export function AddSemesterDialog({ open, onOpenChange, isAdmin }) {
     await toast.promise(addSemester(semesterData), {
       loading: 'Adding semester...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'Semester added successfully';
       },
       error: (err) => {

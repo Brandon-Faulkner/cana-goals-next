@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { LogIn, LoaderCircle } from 'lucide-react';
+import { LogIn, LoaderCircle, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   signInWithEmailAndPassword,
@@ -19,6 +19,7 @@ import { auth } from '@/lib/firebase';
 
 export function LoginForm({ className, ...props }) {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -81,19 +82,34 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <div className='grid gap-3'>
                   <Label htmlFor='password'>Password</Label>
-                  <Input
-                    id='password'
-                    type='password'
-                    placeholder='*********'
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        password: e.target.value,
-                      }))
-                    }
-                    required
-                  />
+                  <div className='relative'>
+                    <Input
+                      id='password'
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder='*********'
+                      autoComplete='current-password'
+                      className='pr-10'
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          password: e.target.value,
+                        }))
+                      }
+                      required
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      aria-pressed={showPassword}
+                      title={showPassword ? 'Hide password' : 'Show password'}
+                      className='text-muted-foreground hover:text-foreground absolute inset-y-0 right-0 flex cursor-pointer items-center px-3'
+                    >
+                      {showPassword ? <EyeOff className='h-4 w-4' /> : <Eye className='h-4 w-4' />}
+                    </button>
+                  </div>
                 </div>
                 <div className='flex flex-wrap items-center justify-between gap-4'>
                   <div className='flex items-center space-x-2'>

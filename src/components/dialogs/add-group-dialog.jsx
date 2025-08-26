@@ -30,9 +30,7 @@ export function AddGroupDialog({ open, onOpenChange }) {
     await toast.promise(addGroup(name, description), {
       loading: 'Creating group...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'Group added successfully';
       },
       error: (err) => {

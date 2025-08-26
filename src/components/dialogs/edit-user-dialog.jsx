@@ -52,9 +52,7 @@ export function EditUserDialog({ open, onOpenChange, user }) {
     await toast.promise(updateUserDoc(user.id, updatedData), {
       loading: 'Updating user...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'User updated successfully';
       },
       error: (err) => {

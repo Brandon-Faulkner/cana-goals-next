@@ -20,6 +20,7 @@ import { DropdownActions } from '@/components/tables/dropdown-actions';
 import { EditUserDialog } from '@/components/dialogs/edit-user-dialog';
 import { AddUserDialog } from '@/components/dialogs/add-user-dialog';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
+import { deleteUserDoc } from '@/lib/user-handlers';
 import { useGroups } from '@/contexts/groups-context';
 import { toast } from 'sonner';
 
@@ -67,7 +68,7 @@ export function ManageUsers({ isAdmin }) {
             props.onSuccess?.(false);
             return null;
           }
-          return toast.promise(console.log('Deleting user:', userId), {
+          return toast.promise(deleteUserDoc(userId), {
             loading: 'Deleting user...',
             success: () => {
               props.onSuccess?.(true);
@@ -93,7 +94,6 @@ export function ManageUsers({ isAdmin }) {
       dialog: true,
       dialogContent: (props) => handleDeleteUser(props, user.id),
       destructive: true,
-      disabled: true,
     },
   ];
 
