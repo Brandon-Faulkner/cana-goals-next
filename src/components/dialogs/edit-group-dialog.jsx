@@ -42,9 +42,7 @@ export function EditGroupDialog({ open, onOpenChange, group }) {
     await toast.promise(updateGroup(group.id, updatedData), {
       loading: 'Updating group...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'Group updated successfully';
       },
       error: (err) => {

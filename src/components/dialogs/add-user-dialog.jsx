@@ -46,9 +46,7 @@ export function AddUserDialog({ open, onOpenChange }) {
     await toast.promise(createUserWithDoc(email, password, name, slackId, selectedGroups), {
       loading: 'Creating user...',
       success: () => {
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
+        handleDialogOpenChange(false);
         return 'User created successfully';
       },
       error: (err) => {

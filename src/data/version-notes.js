@@ -1,6 +1,21 @@
 export const versionNotes = {
-  currentVersion: '1.5.1',
+  currentVersion: '1.5.2',
   versions: [
+    {
+      version: '1.5.2',
+      features: [
+        {
+          title: 'Updated admin user management',
+          items: [
+            'Changed admin user create and delete to be done server side to avoid any client issues and to improve security.',
+          ],
+        },
+        {
+          title: 'Login password peek',
+          items: ['Added a toggle to show and hide your password for the login screen.'],
+        },
+      ],
+    },
     {
       version: '1.5.1',
       features: [
