@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Edit, Users, Trash2 } from 'lucide-react';
 import { ContextActions } from '@/components/tables/context-actions';
 import { DropdownActions } from '@/components/tables/dropdown-actions';
@@ -19,7 +20,7 @@ import { AdminCardSkeleton } from '@/components/skeletons/admin-card-skeleton';
 import { toast } from 'sonner';
 import { useGroups } from '@/contexts/groups-context';
 
-export function ManageGroups() {
+export function ManageGroups({ isAdmin }) {
   const { groups, loading: groupsLoading } = useGroups();
   const [search, setSearch] = useState('');
   const [addOpen, setAddOpen] = useState(false);
@@ -31,6 +32,11 @@ export function ManageGroups() {
   });
 
   const handleEditClick = (group) => {
+    if (!isAdmin) {
+      toast.error('You must be an admin to edit groups.');
+      return;
+    }
+
     setSelectedGroup(group);
     setEditOpen(true);
   };
@@ -40,6 +46,12 @@ export function ManageGroups() {
       <DeleteDialog
         triggerText='Delete Group'
         deleteAction={() => {
+          if (!isAdmin) {
+            toast.error('You must be an admin to delete groups.');
+            props.onSuccess?.(false);
+            return null;
+          }
+
           return toast.promise(console.log('Deleting group:', groupId), {
             loading: 'Deleting group...',
             success: () => {
@@ -106,6 +118,7 @@ export function ManageGroups() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
+                    <TableHead>Slack Notifications</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className='text-right'>Actions</TableHead>
                   </TableRow>
@@ -115,6 +128,11 @@ export function ManageGroups() {
                     <ContextActions key={group.id} actions={contextActions(group)}>
                       <TableRow key={group.id}>
                         <TableCell>{group.name}</TableCell>
+                        <TableCell>
+                          <Badge variant={group.slackEnabled ? 'default' : 'outline'}>
+                            {group.slackEnabled ? 'Enabled' : 'Disabled'}
+                          </Badge>
+                        </TableCell>
                         <TableCell>{group.description || '-'}</TableCell>
                         <TableCell className='text-right'>
                           <DropdownActions actions={contextActions(group)} />

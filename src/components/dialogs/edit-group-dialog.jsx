@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { X, Save } from 'lucide-react';
@@ -19,11 +20,13 @@ import { updateGroup } from '@/lib/group-handlers';
 
 export function EditGroupDialog({ open, onOpenChange, group }) {
   const [name, setName] = useState('');
+  const [slackEnabled, setSlackEnabled] = useState(false);
   const [description, setDescription] = useState('');
 
   useEffect(() => {
     if (group) {
       setName(group.name || '');
+      setSlackEnabled(group.slackEnabled || false);
       setDescription(group.description || '');
     }
   }, [group]);
@@ -36,6 +39,7 @@ export function EditGroupDialog({ open, onOpenChange, group }) {
 
     const updatedData = {
       name,
+      slackEnabled,
       description,
     };
 
@@ -55,6 +59,7 @@ export function EditGroupDialog({ open, onOpenChange, group }) {
   const handleDialogOpenChange = (isOpen) => {
     if (!isOpen) {
       setName(group?.name || '');
+      setSlackEnabled(group?.slackEnabled || false);
       setDescription(group?.description || '');
     }
     if (onOpenChange) {
@@ -79,6 +84,23 @@ export function EditGroupDialog({ open, onOpenChange, group }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder='Group name'
+            />
+          </div>
+          <div className='flex items-center justify-between space-x-2 p-1'>
+            <div className='grid gap-1.5'>
+              <Label htmlFor='slack-enabled' className='cursor-pointer font-semibold'>
+                Slack Notifications
+              </Label>
+              <p className='text-muted-foreground text-sm'>
+                Post comments and status changes to Slack for this group (only for members with a
+                Slack ID).
+              </p>
+            </div>
+            <Switch
+              id='slack-enabled'
+              checked={slackEnabled}
+              onCheckedChange={setSlackEnabled}
+              className='cursor-pointer'
             />
           </div>
           <div className='grid gap-3'>

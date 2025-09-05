@@ -1,4 +1,4 @@
-import { collection, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { setSavingState } from '@/lib/saving-state-controller';
 

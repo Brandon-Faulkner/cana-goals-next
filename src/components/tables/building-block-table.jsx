@@ -20,6 +20,7 @@ import {
   deleteBuildingBlock,
 } from '@/lib/building-block-handlers';
 import { ChevronsUpDown, Grid2x2Plus } from 'lucide-react';
+import { useActiveGroup } from '@/hooks/use-active-group';
 
 const useDebouncedBlockText = (semesterId, goalId) => {
   return useCallback(
@@ -44,6 +45,7 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
   toggleGoalExpanded,
   addBuildingBlock,
 }) {
+  const { slackEnabled } = useActiveGroup();
   const debouncedBlockText = useDebouncedBlockText(currentSemester.id, goal.id);
 
   const handleUpdateBuildingBlockDate = (blockId, date) => {
@@ -77,6 +79,7 @@ export const BuildingBlockTable = React.memo(function BuildingBlockTable({
         goal.text,
         block.text,
         currentSemester.semester,
+        slackEnabled,
       ),
       {
         loading: 'Saving building block status...',

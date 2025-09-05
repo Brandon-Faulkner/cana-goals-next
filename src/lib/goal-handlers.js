@@ -82,14 +82,17 @@ export const updateGoalStatus = async (
   ownerSlackId,
   goalText,
   semesterName,
+  slackEnabled,
 ) => {
   setSavingState({ isSaving: true, hasError: false });
   const ref = doc(db, 'semesters', semesterId, 'goals', goalId);
   try {
     await updateDoc(ref, { status });
 
-    // Send slack notification
-    if (ownerSlackId && ownerUserName) {
+    // Send slack notification if allowed
+    if (ownerSlackId && ownerUserName && slackEnabled) {
+      console.log('Goal');
+      return;
       try {
         const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
         const message = `Status of goal "${goalText.substring(0, 50)}${goalText.length > 50 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;
