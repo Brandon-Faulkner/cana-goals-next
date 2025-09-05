@@ -1,12 +1,13 @@
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { setSavingState } from '@/lib/saving-state-controller';
 
-export const addGroup = async (name, description) => {
+export const addGroup = async (name, slackEnabled, description) => {
   setSavingState({ isSaving: true, hasError: false });
   try {
     const groupData = {
       name,
+      slackEnabled,
       description,
     };
     await addDoc(collection(db, 'groups'), groupData);

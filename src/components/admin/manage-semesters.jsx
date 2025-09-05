@@ -22,7 +22,7 @@ import { useGroups } from '@/contexts/groups-context';
 import { AddSemesterDialog } from '@/components/dialogs/add-semester-dialog';
 import { EditSemesterDialog } from '@/components/dialogs/edit-semester-dialog';
 
-export function ManageSemesters() {
+export function ManageSemesters({ isAdmin }) {
   const [semesters, setSemesters] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -50,6 +50,10 @@ export function ManageSemesters() {
   };
 
   const handleEditClick = (semester) => {
+    if (!isAdmin) {
+      toast.error('You must be an admin to edit semesters.');
+      return;
+    }
     setSelectedSemester(semester);
     setEditOpen(true);
   };
@@ -59,6 +63,12 @@ export function ManageSemesters() {
       <DeleteDialog
         triggerText='Delete Semester'
         deleteAction={() => {
+          if (!isAdmin) {
+            toast.error('You must be an admin to delete semesters.');
+            props.onSuccess?.(false);
+            return null;
+          }
+
           return toast.promise(console.log('Deleting semester:', semesterId), {
             loading: 'Deleting semester...',
             success: () => {
@@ -158,7 +168,7 @@ export function ManageSemesters() {
             </div>
           )}
 
-          <AddSemesterDialog open={addOpen} onOpenChange={setAddOpen} />
+          <AddSemesterDialog open={addOpen} onOpenChange={setAddOpen} isAdmin={isAdmin} />
           <EditSemesterDialog
             open={editOpen}
             onOpenChange={setEditOpen}

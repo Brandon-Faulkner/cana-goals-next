@@ -30,6 +30,7 @@ import { CommentDialog } from '@/components/dialogs/comment-dialog';
 import { DeleteDialog } from '@/components/dialogs/delete-dialog';
 import { useAuth } from '@/contexts/auth-context';
 import { ChevronsUpDown, ListChecks } from 'lucide-react';
+import { useActiveGroup } from '@/hooks/use-active-group';
 
 const useDebouncedGoalText = (semesterId) => {
   return useCallback(
@@ -51,6 +52,7 @@ export const GoalTable = React.memo(function GoalTable({
   currentSemester,
 }) {
   const { userDoc } = useAuth();
+  const { slackEnabled } = useActiveGroup();
   const isOwner = userDoc?.id === userId;
   const [expandedGoals, setExpandedGoals] = useState({});
   const allExpanded = goals.length > 0 && goals.every((g) => expandedGoals[g.id]);
@@ -97,6 +99,7 @@ export const GoalTable = React.memo(function GoalTable({
         userDoc.slackId,
         goal.text,
         currentSemester.semester,
+        slackEnabled,
       ),
       {
         loading: 'Saving goal status...',

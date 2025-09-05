@@ -54,6 +54,11 @@ export function ManageUsers({ isAdmin }) {
   };
 
   const handleEditClick = (user) => {
+    if (!isAdmin) {
+      toast.error('You must be an admin to edit users.');
+      return;
+    }
+
     setSelectedUser(user);
     setEditOpen(true);
   };

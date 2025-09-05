@@ -69,14 +69,17 @@ export const updateBuildingBlockStatus = async (
   goalText,
   blockText,
   semesterName,
+  slackEnabled,
 ) => {
   setSavingState({ isSaving: true, hasError: false });
   const ref = doc(db, 'semesters', semesterId, 'goals', goalId, 'buildingBlocks', blockId);
   try {
     await updateDoc(ref, { status });
 
-    // Send slack notification
-    if (ownerSlackId && ownerUserName) {
+    // Send slack notification if allowed
+    if (ownerSlackId && ownerUserName && slackEnabled) {
+      console.log('Building block');
+      return;
       try {
         const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
         const message = `Status of building block "${blockText.substring(0, 40)}${blockText.length > 40 ? '...' : ''}" for goal "${goalText.substring(0, 40)}${goalText.length > 40 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;

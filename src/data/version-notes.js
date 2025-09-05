@@ -1,6 +1,19 @@
 export const versionNotes = {
-  currentVersion: '1.5.2',
+  currentVersion: '1.5.3',
   versions: [
+    {
+      version: '1.5.3',
+      features: [
+        {
+          title: 'Added a Slack Notification gate for groups',
+          items: [
+            'Admins can now set if a group has Slack enabled or not. This can be found by either adding a new group or editing a current one.',
+            'All group members must have a Slack ID and must be added to the #cana-goals channel for the Slack feature to work.',
+            'In the future, admins will be able to select which channel in Slack groups will post to.',
+          ],
+        },
+      ],
+    },
     {
       version: '1.5.2',
       features: [

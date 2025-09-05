@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Users, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -19,6 +20,7 @@ import { addGroup } from '@/lib/group-handlers';
 
 export function AddGroupDialog({ open, onOpenChange }) {
   const [name, setName] = useState('');
+  const [slackEnabled, setSlackEnabled] = useState(false);
   const [description, setDescription] = useState('');
 
   const handleAddGroup = async () => {
@@ -27,7 +29,7 @@ export function AddGroupDialog({ open, onOpenChange }) {
       return;
     }
 
-    await toast.promise(addGroup(name, description), {
+    await toast.promise(addGroup(name, slackEnabled, description), {
       loading: 'Creating group...',
       success: () => {
         handleDialogOpenChange(false);
@@ -51,6 +53,7 @@ export function AddGroupDialog({ open, onOpenChange }) {
 
   const clearInput = () => {
     setName('');
+    setSlackEnabled(false);
     setDescription('');
   };
 
@@ -68,6 +71,23 @@ export function AddGroupDialog({ open, onOpenChange }) {
           <div className='grid gap-3'>
             <Label>Group Name</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div className='flex items-center justify-between space-x-2 p-1'>
+            <div className='grid gap-1.5'>
+              <Label htmlFor='slack-enabled' className='cursor-pointer font-semibold'>
+                Slack Notifications
+              </Label>
+              <p className='text-muted-foreground text-sm'>
+                Post comments and status changes to Slack for this group (only for members with a
+                Slack ID).
+              </p>
+            </div>
+            <Switch
+              id='slack-enabled'
+              checked={slackEnabled}
+              onCheckedChange={setSlackEnabled}
+              className='cursor-pointer'
+            />
           </div>
           <div className='grid gap-3'>
             <Label>
