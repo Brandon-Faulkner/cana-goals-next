@@ -91,8 +91,6 @@ export const updateGoalStatus = async (
 
     // Send slack notification if allowed
     if (ownerSlackId && ownerUserName && slackEnabled) {
-      console.log('Goal');
-      return;
       try {
         const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
         const message = `Status of goal "${goalText.substring(0, 50)}${goalText.length > 50 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;

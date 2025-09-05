@@ -1,6 +1,17 @@
 export const versionNotes = {
-  currentVersion: '1.5.3',
+  currentVersion: '1.5.4',
   versions: [
+    {
+      version: '1.5.4',
+      features: [
+        {
+          title: 'Fixed a bug with the goal focus',
+          items: [
+            'Fixed a bug where there was a missing import statement and the wrong argument in a function call.',
+          ],
+        },
+      ],
+    },
     {
       version: '1.5.3',
       features: [

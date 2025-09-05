@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 import debounce from 'lodash/debounce';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,7 +29,7 @@ export function GoalFocus({ semesterId, focus }) {
   const handleTextChange = (e) => {
     const text = e.target.value;
     setText(text);
-    debouncedFocustext(semesterId, text);
+    debouncedFocustext(text);
   };
 
   return (

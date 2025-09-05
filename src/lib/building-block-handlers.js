@@ -78,8 +78,6 @@ export const updateBuildingBlockStatus = async (
 
     // Send slack notification if allowed
     if (ownerSlackId && ownerUserName && slackEnabled) {
-      console.log('Building block');
-      return;
       try {
         const callSendSlackMessage = httpsCallable(functions, 'sendSlackMessage');
         const message = `Status of building block "${blockText.substring(0, 40)}${blockText.length > 40 ? '...' : ''}" for goal "${goalText.substring(0, 40)}${goalText.length > 40 ? '...' : ''}" in the ${semesterName} semester for <@${ownerSlackId}> changed to "*${status}*"`;
